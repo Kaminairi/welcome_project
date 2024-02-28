@@ -27,6 +27,10 @@ public class LoginServiceImp implements LoginService {
         //首次登录没有盐值，并且是固定密码，登录后获得一个盐值，然后更改密码
         //1 通过id查询获得账号,盐值和加密密码
         //2 如果返回成功，存在id 那么给输入值加密 然后比较密码
+
+
+
+        //分支测试1 login
         return Result.success(null);
     }
 }
