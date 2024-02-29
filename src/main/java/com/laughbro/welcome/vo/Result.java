@@ -32,3 +32,5 @@ public class Result {
         return new Result(code, msg, data);
     }
 }
+
+
