@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Update;
 public interface UserMapper {
     /**
      * 【调用接口】 login
-     * 【作用】 判断账号密码是否存在以及匹配
+     * 【作用】 通过id拉取用户信息
      * @param id 用户id
      * @return 存在返回 该用户所有信息
      *         不存在返回  null
