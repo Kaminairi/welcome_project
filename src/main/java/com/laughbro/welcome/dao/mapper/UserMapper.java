@@ -30,4 +30,6 @@ public interface UserMapper {
             "set pwd=#{pwd} " +
             "where id like #{id} ")
     public void update_user_pwd_by_id(String pwd, String id);
+
+
 }
