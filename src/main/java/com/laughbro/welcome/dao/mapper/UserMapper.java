@@ -14,6 +14,8 @@ public interface UserMapper {
      * @return 存在返回 该用户所有信息
      *         不存在返回  null
      */
-    @Select("select * from users where id=#{id} and pwd=#{pwd}")
-    public User login_select_user_exist_by_id_pwd(String id, String pwd);
+    @Select("select * from users where id=#{id}")
+    public User login_select_user_exist_by_id(String id);
+
+
 }
