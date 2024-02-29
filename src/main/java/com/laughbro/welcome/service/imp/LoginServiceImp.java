@@ -115,7 +115,9 @@ public class LoginServiceImp implements LoginService {
         }else{
             //如果验证码相同
             if(verificationCode.equals(loginSmsParams.getCode())){
-                return Result.success(verificationCode);
+                //调取该用户的信息
+                User user=userMapper.select_user_all_by_tel(loginSmsParams.getTel());
+                return Result.success(user);
             }else {
                 return Result.fail(111, "验证码不正确", null);
             }

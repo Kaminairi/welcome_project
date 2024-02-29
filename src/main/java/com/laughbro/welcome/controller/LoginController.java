@@ -1,16 +1,14 @@
 package com.laughbro.welcome.controller;
 
-import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.service.LoginService;
+import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.login_params.Login_Idpwd_Params;
 import com.laughbro.welcome.vo.params.login_params.Login_Sms_Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpSession;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 public class LoginController {
@@ -18,7 +16,7 @@ public class LoginController {
     private LoginService loginService;
 
     /**
-     * 登录方法
+     * 登录方法1  通过账号和密码来登录
      * @param
      * @return
      */
@@ -26,12 +24,20 @@ public class LoginController {
     public Result login_idpwd(@RequestBody Login_Idpwd_Params loginIdpwdParams){
         return loginService.login_idpwd(loginIdpwdParams);
     }
-
+    /**
+     * 登录方法2  通过手机号和验证码来登录
+     * @param
+     * @return
+     */
     @PostMapping("/login_sms")
     public Result login_sms(@RequestBody Login_Sms_Params loginSmsParams,HttpSession session){
         return loginService.login_sms(loginSmsParams,session);
     }
-
+    /**
+     * 登录方法2 匹配的工具接口  通过手机号申请验证码
+     * @param
+     * @return
+     */
     @PostMapping("/sendMsg")
     public Result send_msg(@RequestBody Login_Sms_Params loginSmsParams,HttpSession session) throws Exception {
         loginService.send_msg(loginSmsParams,session);

@@ -31,5 +31,14 @@ public interface UserMapper {
             "where id like #{id} ")
     public void update_user_pwd_by_id(String pwd, String id);
 
+    /**
+     * 【调用接口】 login_sms
+     * 【作用】 通过id拉取用户信息
+     * @param id 用户id
+     * @return 存在返回 该用户所有信息
+     *         不存在返回  null
+     */
+    @Select("select * from users where tel=#{tel}")
+    public User select_user_all_by_tel(String id);
 
 }
