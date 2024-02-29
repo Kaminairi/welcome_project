@@ -22,4 +22,5 @@ public class WebMVCConfig implements WebMvcConfigurer {
         registry.addMapping("/**").allowedOrigins("http://localhost:8080").exposedHeaders("*");
     }
 
+
 }
