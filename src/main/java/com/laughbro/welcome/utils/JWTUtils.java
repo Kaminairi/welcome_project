@@ -1,16 +1,20 @@
 package com.laughbro.welcome.utils;
 
-import java.util.Calendar;
-import java.util.Map;
+import java.util.*;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.Data;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Map;
 
+@Component
 public class JWTUtils {
     /**
      * 密钥要⾃⼰保管好
@@ -30,6 +34,21 @@ public class JWTUtils {
         builder.withExpiresAt(instance.getTime());//指定令牌的过期时间
         return builder.sign(Algorithm.HMAC256(SECRET));
     }
+
+    public String buildToken(String id,String name){
+        Map<String, Object> map = new HashMap<>();
+        Calendar instance = Calendar.getInstance();
+        instance.add(Calendar.SECOND, 2000);
+
+        String token = JWT.create().withHeader(map) //header
+                .withClaim("userId", id)//payload
+                .withClaim("username", name)//payload
+                .withExpiresAt(instance.getTime())//指定令牌的过期时间
+                .sign(Algorithm.HMAC256(SECRET)); //签名，密钥⾃⼰记住
+        return token;
+    }
+
+
     /**
      * 验证token
      */

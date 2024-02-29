@@ -17,6 +17,5 @@ public class User {
     private Date birthday;
     private String tel;
     private String email;
-    private String salt;
 
 }
