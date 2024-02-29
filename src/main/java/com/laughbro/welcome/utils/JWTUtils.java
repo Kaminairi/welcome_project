@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import java.util.Calendar;
 import java.util.Map;
 
+/**
+ * JWT工具类
+ */
 @Component
 public class JWTUtils {
     /**
