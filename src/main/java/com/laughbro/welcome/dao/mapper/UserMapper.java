@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Update;
 
 public interface UserMapper {
     /**
-     * 【调用接口】 login
+     * 【调用接口】 login_idpwd
      * 【作用】 通过id拉取用户信息
      * @param id 用户id
      * @return 存在返回 该用户所有信息
@@ -20,7 +20,7 @@ public interface UserMapper {
 
 
     /**
-     * 【调用接口】 login
+     * 【调用接口】 login_idpwd
      * 【作用】 更新密码，用于更改密码和写入加密密码
      * @param pwd
      * @param id

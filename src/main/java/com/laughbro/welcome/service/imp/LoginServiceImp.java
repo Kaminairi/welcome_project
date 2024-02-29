@@ -24,6 +24,8 @@ public class LoginServiceImp implements LoginService {
     @Autowired
     private HttpServletResponse response;
 
+    //初始密码
+    private static String INIT_PWD ="123456";
 
     /**
      * 失败的返回
@@ -32,14 +34,14 @@ public class LoginServiceImp implements LoginService {
      * @return 包含自定义code和msg以及data的json
      */
     @Override
-    public Result login(LoginParams loginParams){
+    public Result login_idpwd(LoginParams loginParams){
         User user=userMapper.select_user_all_by_id(loginParams.getId());
         //没有此用户
         if(user.equals(null)){
             return Result.fail(101,"登录请求失败：没有当前用户",null);
         }else{
             //第一次登录,没有加密
-            if(user.getPwd().equals("123456")){
+            if(user.getPwd().equals(INIT_PWD)){
                 //判断一下是不是输入的初始密码
                 if(loginParams.getPwd().equals(user.getPwd())){
                     //生成加密
@@ -70,19 +72,13 @@ public class LoginServiceImp implements LoginService {
                     System.out.println(token);
                     //塞入head
                     response.addHeader("Authorization", token);
-
+                    return Result.success(user);
                     //return Result.success(token);
                 } else {
                     // 密码验证失败
+                    return Result.fail(101,"密码错误",null);
                 }
-
-
-
-
-
             }
-
-
         }
 
 
@@ -93,7 +89,6 @@ public class LoginServiceImp implements LoginService {
 
 
 
-        //分支测试1 login
-        return Result.success(user);
+
     }
 }
