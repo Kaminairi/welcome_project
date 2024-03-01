@@ -1,13 +1,18 @@
 package com.laughbro.welcome.dao.pojo;
 
-import java.sql.Date;
+import lombok.Data;
 
+import java.sql.Date;
+@Data
 public class Task {
-    private int task_id;
-    private int set_id;
-    private int loc_id;
+    private Integer task_id;
+    private Integer set_id;
+    private Integer loc_id;
     private String task_demand;
     private Date task_ctime;
+    private Date task_btime;
     private Date task_dtime;
+    private Integer is_mainline;
+    private String task_type;
 
 }
