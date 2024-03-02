@@ -1,21 +1,16 @@
 package com.laughbro.welcome.dao.pojo;
 
 import lombok.Data;
-import org.joda.time.DateTime;
-
-import java.math.BigInteger;
-import java.sql.Date;
-
 @Data
 public class Task {
-    private BigInteger TaskId;
-    private BigInteger SetId;
-    private BigInteger LocId;
-    private String TaskDemand;
-    private DateTime TaskCtime;
-    private DateTime TaskBtime;
-    private DateTime TaskDtime;
-    private int IsMainline;
-    private String TaskType;
+    private Integer id;
+    private Integer SetId;
+    private Integer loc;
+    private String demand;
+    private String ctime;
+    private String btime;
+    private String dtime;
+    private Integer IsMainline;
+    private String type;
 
 }
