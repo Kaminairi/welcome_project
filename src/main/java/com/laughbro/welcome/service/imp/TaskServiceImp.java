@@ -16,16 +16,16 @@ public class TaskServiceImp implements TaskService {
      * 【作用】 获取主线任务
      */
     @Override
-    public Result GetMainTask(){
-        return Result.success(taskMapper.select_task_main());
+    public Result GetMainTask(TaskParams taskParams){
+        return Result.success(taskMapper.select_task_main(taskParams.getId(),1));
     }
     /**
      * 【调用接口】 quest/main
      * 【作用】 获取支线任务
      */
     @Override
-    public Result GetNmainTask(){
-        return Result.success(taskMapper.select_task_nmain());
+    public Result GetNmainTask(TaskParams taskParams){
+        return Result.success(taskMapper.select_task_nmain(taskParams.getId(),0));
     }
     /**
      * 【调用接口】 quest/main

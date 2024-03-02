@@ -17,15 +17,15 @@ public class TaskController {
      * 【作用】 获取主线任务
      */
     @GetMapping ("/quest/main")
-    public Result GetMainTask(){return taskService.GetMainTask();}
+    public Result GetMainTask(@RequestBody TaskParams taskParams){return taskService.GetMainTask(taskParams);}
     /**
      * 【作用】 获取支线任务
      */
     @GetMapping("/quest/nmain")
-    public Result GetNmainTask(){return taskService.GetNmainTask();}
+    public Result GetNmainTask(@RequestBody TaskParams taskParams){return taskService.GetNmainTask(taskParams);}
     /**
      * 【作用】 通过id获取已完成任务
      */
-    @PostMapping("/quest/finish")
+    @GetMapping("/quest/finish")
     public Result GetFinishTask(@RequestBody TaskParams taskParams){return taskService.GetFinishTask(taskParams);}
 }

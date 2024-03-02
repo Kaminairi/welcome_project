@@ -12,13 +12,13 @@ public interface TaskService {
      * 【调用接口】 quest/main
      * 【作用】 获取主线任务
      */
-    Result GetMainTask();
+    Result GetMainTask(TaskParams taskParams);
 
     /**
      * 【调用接口】 quest/nmain
      * 【作用】 获取支线任务
      */
-    Result GetNmainTask();
+    Result GetNmainTask(TaskParams taskParams);
 
     /**
      * 【调用接口】 quest/main

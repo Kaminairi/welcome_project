@@ -16,8 +16,8 @@ public interface TaskMapper {
      * @return 存在返回 所有主线任务
      *         不存在返回  null
      */
-    @Select("select * from tasks where is_mainline=1")
-    List<Task> select_task_main();
+    @Select("call sp_get_unfinish_task_by_userid_ismainline(#{id},#{is_mainline})")
+    List<Task> select_task_main(String id,Integer is_mainline);
 
     /**
      * 【调用接口】 quest/nmain
@@ -26,8 +26,8 @@ public interface TaskMapper {
      * @return 存在返回 所有支线任务
      *         不存在返回  null
      */
-    @Select("select * from tasks where is_mainline!=1")
-    List<Task> select_task_nmain();
+    @Select("call sp_get_unfinish_task_by_userid_ismainline(#{id},#{is_mainline})")
+    List<Task> select_task_nmain(String id,Integer is_mainline);
 
     /**
      * 【调用接口】 quest/finish
