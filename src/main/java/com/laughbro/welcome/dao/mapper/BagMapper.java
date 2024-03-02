@@ -4,6 +4,7 @@ import com.laughbro.welcome.dao.pojo.Item;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mapper
@@ -22,6 +23,14 @@ public interface BagMapper {
     public List<Item> select_itemown_all_by_id(String id);
 
 
+    /**
+     * 【调用接口】
+     * 【作用】 获取物品
+     * @param
+     * @return
+     */
+    @Select("CALL sp_update_bag_items_by_userid_itemid_num(#{user_id},#{item_id},#{num});")
+    public List<Item> update_itemown_by_userid_itemd_num(String user_id, BigInteger item_id,int num);
 
 
 }
