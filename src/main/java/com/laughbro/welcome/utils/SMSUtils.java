@@ -20,6 +20,7 @@ public class SMSUtils {
         // Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
         config.endpoint = "dysmsapi.aliyuncs.com";
         return new com.aliyun.dysmsapi20170525.Client(config);
+
     }
 
     public  void sendMsg(String code,String tel) throws  Exception {
