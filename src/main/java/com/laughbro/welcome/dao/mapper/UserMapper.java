@@ -1,9 +1,12 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 @Mapper
 
@@ -15,7 +18,9 @@ public interface UserMapper {
      * @return 存在返回 该用户所有信息
      *         不存在返回  null
      */
-    @Select("select * from users where id=#{id}")
+    @Select("select * " +
+            "from users " +
+            "where id=#{id}")
     public User select_user_all_by_id(String id);
 
 
@@ -38,7 +43,11 @@ public interface UserMapper {
      * @return 存在返回 该用户所有信息
      *         不存在返回  null
      */
-    @Select("select * from users where tel=#{tel}")
+    @Select("select * " +
+            "from users " +
+            "where tel=#{tel}")
     public User select_user_all_by_tel(String id);
+
+
 
 }
