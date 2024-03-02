@@ -1,9 +1,8 @@
 package com.laughbro.welcome.controller;
 
-import com.laughbro.welcome.dao.mapper.BagMapper;
 import com.laughbro.welcome.service.BagService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.bag_params.Bag_ViewItem_Params;
+import com.laughbro.welcome.vo.params.bag_params.BagViewItemParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ public class BagController {
      * @return
      */
     @PostMapping("/bag_viewall")
-    public Result bag_viewall(@RequestBody Bag_ViewItem_Params bagViewItemParams){
+    public Result bag_viewall(@RequestBody BagViewItemParams bagViewItemParams){
         return bagService.bag_viewall(bagViewItemParams);
     }
 

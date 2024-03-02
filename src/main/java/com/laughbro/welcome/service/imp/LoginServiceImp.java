@@ -1,15 +1,14 @@
 package com.laughbro.welcome.service.imp;
 
 import com.laughbro.welcome.dao.mapper.UserMapper;
-import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.LoginService;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.SMSUtils;
 import com.laughbro.welcome.utils.ValidateCodeUtils;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.login_params.Login_Idpwd_Params;
-import com.laughbro.welcome.vo.params.login_params.Login_Sms_Params;
+import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
+import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Service
 public class LoginServiceImp implements LoginService {
@@ -50,7 +48,7 @@ public class LoginServiceImp implements LoginService {
      * @return 包含自定义code和msg以及data的json
      */
     @Override
-    public Result login_idpwd(Login_Idpwd_Params loginIdpwdParams) {
+    public Result login_idpwd(LoginIdpwdParams loginIdpwdParams) {
         User user = userMapper.select_user_all_by_id(loginIdpwdParams.getId());
         //没有此用户
         if (user.equals(null)) {
@@ -108,7 +106,7 @@ public class LoginServiceImp implements LoginService {
      * @return
      */
     @Override
-    public Result login_sms(Login_Sms_Params loginSmsParams,HttpSession session) {
+    public Result login_sms(LoginSmsParams loginSmsParams, HttpSession session) {
         // 从Session中获取验证码
         session = request.getSession();
         String verificationCode = (String) session.getAttribute(loginSmsParams.getTel());
@@ -135,7 +133,7 @@ public class LoginServiceImp implements LoginService {
      * @return
      */
     @Override
-    public int send_msg(Login_Sms_Params loginSmsParams, HttpSession session) throws Exception {
+    public int send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
         //生成随机数
         String code = validateCodeUtils.generateValidateCode(4);
         //发送短信

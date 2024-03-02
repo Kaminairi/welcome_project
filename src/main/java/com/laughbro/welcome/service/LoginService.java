@@ -1,24 +1,20 @@
 package com.laughbro.welcome.service;
 
 
-import com.laughbro.welcome.dao.pojo.Task;
-import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.login_params.Login_Idpwd_Params;
-import com.laughbro.welcome.vo.params.login_params.Login_Sms_Params;
+import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
+import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public interface LoginService {
 
-    Result login_idpwd(Login_Idpwd_Params loginIdpwdParams);
+    Result login_idpwd(LoginIdpwdParams loginIdpwdParams);
 
-    Result login_sms(Login_Sms_Params loginSmsParams,HttpSession session);
+    Result login_sms(LoginSmsParams loginSmsParams, HttpSession session);
 
 
-    int send_msg(Login_Sms_Params loginSmsParams, HttpSession session) throws Exception;
+    int send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception;
 
 
 

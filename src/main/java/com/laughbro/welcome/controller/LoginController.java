@@ -2,8 +2,8 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.LoginService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.login_params.Login_Idpwd_Params;
-import com.laughbro.welcome.vo.params.login_params.Login_Sms_Params;
+import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
+import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login_idpwd")
-    public Result login_idpwd(@RequestBody Login_Idpwd_Params loginIdpwdParams){
+    public Result login_idpwd(@RequestBody LoginIdpwdParams loginIdpwdParams){
         return loginService.login_idpwd(loginIdpwdParams);
     }
     /**
@@ -30,7 +30,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login_sms")
-    public Result login_sms(@RequestBody Login_Sms_Params loginSmsParams,HttpSession session){
+    public Result login_sms(@RequestBody LoginSmsParams loginSmsParams, HttpSession session){
         return loginService.login_sms(loginSmsParams,session);
     }
     /**
@@ -39,7 +39,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/sendMsg")
-    public Result send_msg(@RequestBody Login_Sms_Params loginSmsParams,HttpSession session) throws Exception {
+    public Result send_msg(@RequestBody LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
         loginService.send_msg(loginSmsParams,session);
         return Result.success(1);
     }
