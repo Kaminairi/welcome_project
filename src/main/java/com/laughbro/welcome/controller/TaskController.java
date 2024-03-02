@@ -13,12 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskController {
     @Autowired
     private TaskService taskService;
+    /**
+     * 【作用】 获取主线任务
+     */
     @GetMapping ("/quest/main")
     public Result GetMainTask(){return taskService.GetMainTask();}
-
+    /**
+     * 【作用】 获取支线任务
+     */
     @GetMapping("/quest/nmain")
     public Result GetNmainTask(){return taskService.GetNmainTask();}
-
+    /**
+     * 【作用】 通过id获取已完成任务
+     */
     @PostMapping("/quest/finish")
     public Result GetFinishTask(@RequestBody TaskParams taskParams){return taskService.GetFinishTask(taskParams);}
 }
