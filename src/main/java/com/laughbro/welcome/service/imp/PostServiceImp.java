@@ -13,18 +13,34 @@ import org.springframework.stereotype.Service;
 public class PostServiceImp implements PostService {
     @Autowired
     private PostMapper postMapper;
+    /**
+     * 【调用接口】 /post
+     * 【作用】 展示所有帖子
+     */
     @Override
     public Result GetPost(){
         return Result.success(postMapper.select_post_all());
     }
+    /**
+     * 【调用接口】 /post/for-task
+     * 【作用】 发布任务贴
+     */
     @Override
     public void PostForTask(PostForTaskParams params){
         postMapper.insert_post_task(params);
     }
+    /**
+     * 【调用接口】 /post/normail
+     * 【作用】 发布常规贴
+     */
     @Override
     public void PostNormal(PostNormalParams params){
         postMapper.insert_post_normal(params);
     }
+    /**
+     * 【调用接口】 /post/detail
+     * 【作用】 展示选中文章详情，更新点击数
+     */
     @Override
     public Result PostDetail(PostDetailParams params){
         postMapper.update_post_clicktnum_by_id(params.getId());
