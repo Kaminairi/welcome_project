@@ -2,6 +2,7 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ public class PostController {
     public Result PostNormal(@RequestBody PostNormalParams params){
         postService.PostNormal(params);
         return Result.success(null);
+    }
+
+    @PostMapping("/post/detail")
+    public Result PostDetail(@RequestBody PostDetailParams params){
+        return Result.success(postService.PostDetail(params));
     }
 
 }
