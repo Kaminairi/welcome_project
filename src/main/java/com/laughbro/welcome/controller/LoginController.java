@@ -4,6 +4,7 @@ import com.laughbro.welcome.service.LoginService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +41,8 @@ public class LoginController {
      */
     @PostMapping("/sendMsg")
     public Result send_msg(@RequestBody LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
-        loginService.send_msg(loginSmsParams,session);
-        return Result.success(1);
+        String code=loginService.send_msg(loginSmsParams,session);
+        return Result.success(code);
     }
 
 

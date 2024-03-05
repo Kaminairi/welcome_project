@@ -125,7 +125,6 @@ public class LoginServiceImp implements LoginService {
     }
 
     /**
-     *
      * 用于发送短信
      * 1400609209685643
      *
@@ -133,7 +132,7 @@ public class LoginServiceImp implements LoginService {
      * @return
      */
     @Override
-    public int send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
+    public String send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
         //生成随机数
         String code = validateCodeUtils.generateValidateCode(4);
         //发送短信
@@ -143,7 +142,7 @@ public class LoginServiceImp implements LoginService {
 
         session.setAttribute(loginSmsParams.getTel(), code);
 
-        return 0;
+        return code;
     }
 
 
