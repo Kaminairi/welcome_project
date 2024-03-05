@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SMSUtils {
 
-    private static String ALIBABA_CLOUD_ACCESS_KEY_ID="LTAI5tNUepEgx5KNvxvMEEB8";
-    private static String ALIBABA_CLOUD_ACCESS_KEY_SECRET="zoDlkFTt5TZTbrDzC9Zshvhbl7r7CT";
+    private static String ALIBABA_CLOUD_ACCESS_KEY_ID="LTAI5tFuMRc51PYZvnj4Vzow";
+    private static String ALIBABA_CLOUD_ACCESS_KEY_SECRET="XaAAW6LOah61A0HELAo31XD6EqQ3ed";
     public static com.aliyun.dysmsapi20170525.Client createClient(String accessKeyId, String accessKeySecret) throws Exception {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
                 // 必填，您的 AccessKey ID
