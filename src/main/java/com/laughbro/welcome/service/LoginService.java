@@ -14,7 +14,7 @@ public interface LoginService {
     Result login_sms(LoginSmsParams loginSmsParams, HttpSession session);
 
 
-    int send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception;
+    String send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception;
 
 
 
