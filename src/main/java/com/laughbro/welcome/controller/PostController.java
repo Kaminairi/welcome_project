@@ -49,4 +49,10 @@ public class PostController {
         return Result.success(postService.PostDetail(params));
     }
 
+    @PostMapping("/post/delete/for-user")
+    public Result PostDelet(@RequestBody PostDetailParams params){
+        postService.PostDelete(params);
+        return Result.success("success");
+    }
+
 }

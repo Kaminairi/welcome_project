@@ -46,4 +46,8 @@ public class PostServiceImp implements PostService {
         postMapper.update_post_clicktnum_by_id(params.getId());
         return Result.success(postMapper.select_post_by_id(params.getId()));
     }
+    @Override
+    public void PostDelete(PostDetailParams params){
+        postMapper.delete_post_by_id(params.getId());
+    }
 }

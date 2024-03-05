@@ -44,4 +44,6 @@ public interface PostMapper {
     @Update("update posts set clicktnum=clicktnum+1 where id=#{id}")
     void update_post_clicktnum_by_id(String id);
 
+    @Delete("delete  from posts where id=#{id}")
+    void delete_post_by_id(String id);
 }
