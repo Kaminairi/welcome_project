@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PostCollectParams {
-    private String UserId;
-    private String PostId;
+    private String userid;
+    private String postid;
+
 }

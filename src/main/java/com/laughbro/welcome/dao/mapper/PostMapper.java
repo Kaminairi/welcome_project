@@ -64,6 +64,6 @@ public interface PostMapper {
     @Update("update posts set likenum=likenum+1 where id=#{id}")
     void update_post_likenum_by_id(String id);
 
-    @Insert("insert into post_collect(user_id,post_id) values (#{PostCollectParams.UserId},#{PostCollectParams.PostId})")
-    void insert_post_collect(@Param("PostCollectParams") PostCollectParams params);
+    @Insert("insert into post_collect(user_id,post_id) values (#{UserId},#{PostId})")
+    void insert_post_collect(String UserId,String PostId);
 }

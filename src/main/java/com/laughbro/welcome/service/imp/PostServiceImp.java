@@ -70,6 +70,7 @@ public class PostServiceImp implements PostService {
     }
     @Override
     public void PostCollect(PostCollectParams params){
-        postMapper.insert_post_collect(params);
+        System.out.println(params.toString());
+        postMapper.insert_post_collect(params.getUserid(),params.getPostid());
     }
 }
