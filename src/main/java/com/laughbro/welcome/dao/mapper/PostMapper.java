@@ -1,6 +1,7 @@
 package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Post;
+import com.laughbro.welcome.vo.params.post_params.PostCollectParams;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.apache.ibatis.annotations.*;
@@ -52,11 +53,17 @@ public interface PostMapper {
     List<Post> select_post_by_user_id(String id);
 
     @Select("select * from posts where title like concat('%',#{keyWord},'%')")
-    List<Post> select_post_by_key_word(@Param("keyWord") String keyWord);
+    List<Post> select_post_by_key_word(@Param("keyWord")String keyWord);
 
     @Select("select * from posts where task_id is not null")
     List<Post> select_post_by_task_id();
 
     @Select("select * from posts where id in(select post_id from post_collect where user_id=#{id})")
     List<Post> select_post_collect_by_id(String id);
+
+    @Update("update posts set likenum=likenum+1 where id=#{id}")
+    void update_post_likenum_by_id(String id);
+
+    @Insert("insert into post_collect(user_id,post_id) values (#{PostCollectParams.UserId},#{PostCollectParams.PostId})")
+    void insert_post_collect(@Param("PostCollectParams") PostCollectParams params);
 }

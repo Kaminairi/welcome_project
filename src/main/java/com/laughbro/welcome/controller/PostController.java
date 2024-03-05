@@ -70,6 +70,15 @@ public class PostController {
     public Result PostUserCollect(@RequestBody PostListForUserParams params){
         return postService.GetPostCollectById(params);
     }
-
+    @PostMapping("/post/like")
+    public Result PostLike(@RequestBody PostDetailParams params){
+        postService.UpdatePostById(params);
+        return Result.success(null);
+    }
+    @PostMapping("/post/collect")
+    public Result PostCollect(@RequestBody PostCollectParams params){
+        postService.PostCollect(params);
+        return Result.success(null);
+    }
 
 }

@@ -64,4 +64,12 @@ public class PostServiceImp implements PostService {
     public Result GetPostCollectById(PostListForUserParams params){
         return Result.success(postMapper.select_post_collect_by_id(params.getId()));
     }
+    @Override
+    public void UpdatePostById(PostDetailParams params){
+        postMapper.update_post_likenum_by_id(params.getId());
+    }
+    @Override
+    public void PostCollect(PostCollectParams params){
+        postMapper.insert_post_collect(params);
+    }
 }

@@ -19,4 +19,8 @@ public interface PostService {
     Result GetPostByTaskId();
 
     Result GetPostCollectById(PostListForUserParams params);
+
+    void UpdatePostById(PostDetailParams params);
+
+    void PostCollect(PostCollectParams params);
 }
