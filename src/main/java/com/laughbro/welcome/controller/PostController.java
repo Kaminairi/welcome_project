@@ -2,10 +2,7 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
-import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
-import com.laughbro.welcome.vo.params.post_params.PostListForUserParams;
-import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
+import com.laughbro.welcome.vo.params.post_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +44,7 @@ public class PostController {
      */
     @PostMapping("/post/detail")
     public Result PostDetail(@RequestBody PostDetailParams params){
-        return Result.success(postService.PostDetail(params));
+        return postService.PostDetail(params);
     }
 
     @PostMapping("/post/delete/for-user")
@@ -59,6 +56,10 @@ public class PostController {
     @PostMapping("/post/list/for-user")
     public Result PostListForUser(@RequestBody PostListForUserParams params){
         return postService.GetPostById(params);
+    }
+    @PostMapping("/post/list/for-keyword")
+    public Result PostSearch(@RequestBody PostSearchParams params){
+        return postService.GetPostByKeyWord(params);
     }
 
 }

@@ -1,10 +1,7 @@
 package com.laughbro.welcome.service;
 
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
-import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
-import com.laughbro.welcome.vo.params.post_params.PostListForUserParams;
-import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
+import com.laughbro.welcome.vo.params.post_params.*;
 
 public interface PostService {
     Result GetPost();
@@ -16,4 +13,6 @@ public interface PostService {
     void PostDelete(PostDetailParams params);
 
     Result GetPostById(PostListForUserParams params);
+
+    Result GetPostByKeyWord(PostSearchParams params);
 }

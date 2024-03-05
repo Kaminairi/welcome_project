@@ -49,4 +49,7 @@ public interface PostMapper {
 
     @Select("select * from posts where creator=#{id}")
     List<Post> select_post_by_user_id(String id);
+
+    @Select("select * from posts where title like concat('%',#{keyWord},'%')")
+    List<Post> select_post_by_key_word(@Param("keyWord") String keyWord);
 }

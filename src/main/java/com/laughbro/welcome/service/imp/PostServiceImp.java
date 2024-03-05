@@ -3,10 +3,7 @@ package com.laughbro.welcome.service.imp;
 import com.laughbro.welcome.dao.mapper.PostMapper;
 import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
-import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
-import com.laughbro.welcome.vo.params.post_params.PostListForUserParams;
-import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
+import com.laughbro.welcome.vo.params.post_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +51,9 @@ public class PostServiceImp implements PostService {
     @Override
     public Result GetPostById(PostListForUserParams params){
         return Result.success(postMapper.select_post_by_user_id(params.getId()));
+    }
+    @Override
+    public Result GetPostByKeyWord(PostSearchParams params){
+        return Result.success(postMapper.select_post_by_key_word(params.getKeyWord()));
     }
 }
