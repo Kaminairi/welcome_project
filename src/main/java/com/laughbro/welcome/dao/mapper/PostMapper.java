@@ -36,7 +36,7 @@ public interface PostMapper {
      *         不存在返回  null
      */
     @Select("select * from posts where id=#{id};")
-    Post select_post_by_id(String id);
+    Post select_post_by_post_id(String id);
     /**
      * 【调用接口】 /post/detail
      * 【作用】 将文章的访问数加1
@@ -46,4 +46,7 @@ public interface PostMapper {
 
     @Delete("delete  from posts where id=#{id}")
     void delete_post_by_id(String id);
+
+    @Select("select * from posts where creator=#{id}")
+    List<Post> select_post_by_user_id(String id);
 }

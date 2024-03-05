@@ -4,6 +4,7 @@ import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
+import com.laughbro.welcome.vo.params.post_params.PostListForUserParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,11 @@ public class PostController {
     public Result PostDelet(@RequestBody PostDetailParams params){
         postService.PostDelete(params);
         return Result.success("success");
+    }
+
+    @PostMapping("/post/list/for-user")
+    public Result PostListForUser(@RequestBody PostListForUserParams params){
+        return postService.GetPostById(params);
     }
 
 }

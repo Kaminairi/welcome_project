@@ -5,6 +5,7 @@ import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.PostDetailParams;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
+import com.laughbro.welcome.vo.params.post_params.PostListForUserParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,14 @@ public class PostServiceImp implements PostService {
     @Override
     public Result PostDetail(PostDetailParams params){
         postMapper.update_post_clicktnum_by_id(params.getId());
-        return Result.success(postMapper.select_post_by_id(params.getId()));
+        return Result.success(postMapper.select_post_by_post_id(params.getId()));
     }
     @Override
     public void PostDelete(PostDetailParams params){
         postMapper.delete_post_by_id(params.getId());
+    }
+    @Override
+    public Result GetPostById(PostListForUserParams params){
+        return Result.success(postMapper.select_post_by_user_id(params.getId()));
     }
 }
