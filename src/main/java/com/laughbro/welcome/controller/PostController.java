@@ -66,5 +66,10 @@ public class PostController {
     public Result PostListForTask(){
         return postService.GetPostByTaskId();
     }
+    @PostMapping("/post/list/for-usercollect")
+    public Result PostUserCollect(@RequestBody PostListForUserParams params){
+        return postService.GetPostCollectById(params);
+    }
+
 
 }

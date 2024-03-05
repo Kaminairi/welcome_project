@@ -60,4 +60,8 @@ public class PostServiceImp implements PostService {
     public Result GetPostByTaskId(){
         return Result.success(postMapper.select_post_by_task_id());
     }
+    @Override
+    public Result GetPostCollectById(PostListForUserParams params){
+        return Result.success(postMapper.select_post_collect_by_id(params.getId()));
+    }
 }

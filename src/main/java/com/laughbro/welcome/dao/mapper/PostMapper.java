@@ -56,4 +56,7 @@ public interface PostMapper {
 
     @Select("select * from posts where task_id is not null")
     List<Post> select_post_by_task_id();
+
+    @Select("select * from posts where id in(select post_id from post_collect where user_id=#{id})")
+    List<Post> select_post_collect_by_id(String id);
 }
