@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PostSearchParams {
-    private String KeyWord;
+    private String keyword;
 }
