@@ -62,4 +62,9 @@ public class PostController {
         return postService.GetPostByKeyWord(params);
     }
 
+    @PostMapping("/post/list/for-task")
+    public Result PostListForTask(){
+        return postService.GetPostByTaskId();
+    }
+
 }

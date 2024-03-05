@@ -15,4 +15,6 @@ public interface PostService {
     Result GetPostById(PostListForUserParams params);
 
     Result GetPostByKeyWord(PostSearchParams params);
+
+    Result GetPostByTaskId();
 }

@@ -4,6 +4,7 @@ import com.laughbro.welcome.dao.pojo.Post;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.apache.ibatis.annotations.*;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -52,4 +53,7 @@ public interface PostMapper {
 
     @Select("select * from posts where title like concat('%',#{keyWord},'%')")
     List<Post> select_post_by_key_word(@Param("keyWord") String keyWord);
+
+    @Select("select * from posts where task_id is not null")
+    List<Post> select_post_by_task_id();
 }

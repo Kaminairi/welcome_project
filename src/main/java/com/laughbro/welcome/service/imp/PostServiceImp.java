@@ -56,4 +56,8 @@ public class PostServiceImp implements PostService {
     public Result GetPostByKeyWord(PostSearchParams params){
         return Result.success(postMapper.select_post_by_key_word(params.getKeyWord()));
     }
+    @Override
+    public Result GetPostByTaskId(){
+        return Result.success(postMapper.select_post_by_task_id());
+    }
 }
