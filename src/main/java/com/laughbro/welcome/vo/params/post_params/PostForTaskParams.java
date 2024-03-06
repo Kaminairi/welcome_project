@@ -13,5 +13,5 @@ public class PostForTaskParams {
     private Integer likenum;
     private Integer clicktnum;
     private Integer commentnum;
-    private String TaskId;
+    private String taskid;
 }

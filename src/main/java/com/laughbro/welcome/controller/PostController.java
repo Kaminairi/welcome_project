@@ -46,35 +46,53 @@ public class PostController {
     public Result PostDetail(@RequestBody PostDetailParams params){
         return postService.PostDetail(params);
     }
-
+    /**
+     * 【作用】用户删除帖子
+     */
     @PostMapping("/post/delete/for-user")
     public Result PostDelet(@RequestBody PostDetailParams params){
         postService.PostDelete(params);
         return Result.success("success");
     }
-
+    /**
+     * 【作用】用户查询自己发布的文章
+     */
     @PostMapping("/post/list/for-user")
     public Result PostListForUser(@RequestBody PostListForUserParams params){
         return postService.GetPostById(params);
     }
+    /**
+     * 【作用】搜索文章
+     */
     @PostMapping("/post/list/for-keyword")
     public Result PostSearch(@RequestBody PostSearchParams params){
         return postService.GetPostByKeyWord(params);
     }
-
+    /**
+     * 【作用】通关攻略文章
+     */
     @PostMapping("/post/list/for-task")
     public Result PostListForTask(){
         return postService.GetPostByTaskId();
     }
+    /**
+     * 【作用】显示用户收藏文章
+     */
     @PostMapping("/post/list/for-usercollect")
     public Result PostUserCollect(@RequestBody PostListForUserParams params){
         return postService.GetPostCollectById(params);
     }
+    /**
+     * 【作用】点赞
+     */
     @PostMapping("/post/like")
     public Result PostLike(@RequestBody PostDetailParams params){
         postService.UpdatePostById(params);
         return Result.success(null);
     }
+    /**
+     * 【作用】收藏
+     */
     @PostMapping("/post/collect")
     public Result PostCollect(@RequestBody PostCollectParams params){
         postService.PostCollect(params);

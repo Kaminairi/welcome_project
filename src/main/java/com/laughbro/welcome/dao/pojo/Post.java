@@ -6,6 +6,8 @@ import java.util.Date;
 
 @Data
 public class Post {
+    private String name;
+    private String img;
     private String id;
     private String creator;
     private String title;
