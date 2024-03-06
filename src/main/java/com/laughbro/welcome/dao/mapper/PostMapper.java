@@ -87,4 +87,7 @@ public interface PostMapper {
      */
     @Insert("insert into post_collect(user_id,post_id) values (#{UserId},#{PostId})")
     void insert_post_collect(String UserId,String PostId);
+
+    @Delete("delete from post_collect where user_id=#{PostCollectParams.userid} and post_id=#{PostCollectParams.postid};")
+    void delete_post_collect_by_id(@Param("PostCollectParams") PostCollectParams params);
 }

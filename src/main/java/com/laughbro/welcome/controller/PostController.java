@@ -91,11 +91,16 @@ public class PostController {
         return Result.success(null);
     }
     /**
-     * 【作用】收藏
+     * 【作用】收藏文章
      */
     @PostMapping("/post/collect")
     public Result PostCollect(@RequestBody PostCollectParams params){
         postService.PostCollect(params);
+        return Result.success(null);
+    }
+    @PostMapping("/post/collect/delete")
+    public Result PostCollectDelete(@RequestBody PostCollectParams params){
+        postService.PostCollectDelete(params);
         return Result.success(null);
     }
 

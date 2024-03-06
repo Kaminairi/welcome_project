@@ -2,7 +2,10 @@ package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.User;
+import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
+import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -48,6 +51,9 @@ public interface UserMapper {
             "where tel=#{tel}")
     public User select_user_all_by_tel(String id);
 
+    @Update("update users set name=#{MeChangeNameParams.name} where id=#{MeChangeNameParams.userid}")
+    void update_user_name_by_id(@Param("MeChangeNameParams")MeChangeNameParams params);
 
-
+    @Update("update users set img=#{MeChangeImg.img} where id=#{MeChangeImg.userid}")
+    void update_user_img_by_id(@Param("MeChangeImg") MeChangeImgParams params);
 }
