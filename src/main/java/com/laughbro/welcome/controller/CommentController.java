@@ -56,5 +56,9 @@ public class CommentController {
         return commentService.comment_update_unread(commentUserParams);
     }
 
+    @PostMapping("/comment/update-unread-one")
+    public Result comment_update_unread_one(@RequestBody CommentComParams commentComParams){
+        return commentService.comment_update_unread_one(commentComParams);
+    }
 
 }

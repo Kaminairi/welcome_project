@@ -1,6 +1,7 @@
 package com.laughbro.welcome.service.imp;
 
 import com.laughbro.welcome.dao.mapper.CommentMapper;
+import com.laughbro.welcome.dao.mapper.PostMapper;
 import com.laughbro.welcome.dao.pojo.Comment;
 import com.laughbro.welcome.service.CommentService;
 import com.laughbro.welcome.vo.Result;
@@ -10,6 +11,7 @@ import com.laughbro.welcome.vo.params.comment_params.CommentListParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentUserParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.text.SimpleDateFormat;
@@ -20,6 +22,11 @@ public class CommentServiceImp implements CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private PostMapper postMapper;
+
+
     @Override
     public Result comment_list(CommentListParams commentListParams) {
         List<Comment> commentList = null;
@@ -90,7 +97,14 @@ public class CommentServiceImp implements CommentService {
     @Override
     public Result comment_delete(CommentComParams commentComParams) {
         commentMapper.delete_comments_by_commentid(commentComParams.getCommentid());
+        commentMapper.delete_comments_sons_by_fa_comment(commentComParams.getCommentid());
         return Result.success(null);
+    }
+
+    @Override
+    public Result comment_update_unread_one(CommentComParams commentComParams) {
+        commentMapper.update_comments_read_by_Commentid(commentComParams.getCommentid());
+        return Result.success(postMapper.select_post_by_post_id(String.valueOf(commentMapper.select_postid_by_commentid(commentComParams.getCommentid()))));
     }
 
 

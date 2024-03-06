@@ -21,4 +21,6 @@ public interface CommentService {
     Result comment_update_unread(CommentUserParams commentUserParams);
 
     Result comment_delete(CommentComParams commentComParams);
+
+    Result comment_update_unread_one(CommentComParams commentComParams);
 }

@@ -119,10 +119,27 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
      * @param
      * @return
      */
-    @Select("selert " +
-            "* " +
-            "from comments " +
-            "where creator = #{usr_id}")
+    @Select("select " +
+            "   c.id as id, " +
+            "   c.fa_post, " +
+            "   c.fa_comment, " +
+            "   c.creator, " +
+            "   u1.name as creatorname, " +
+            "   c.ctime, " +
+            "   c.likenum, " +
+            "   c.is_facomment, " +
+            "   c.reply, " +
+            "   u2.name as replyname, " +
+            "   c.contain, " +
+            "   c.replyread " +
+            "from " +
+            "   comments c " +
+            "join " +
+            "   users u1 on c.creator=u1.id " +
+            "left join " +
+            "   users u2 on c.reply=u2.id " +
+            "where " +
+            "   c.creator =#{user_id} ")
     public List<Comment> select_comments_by_user(String user_id);
 
     /**
@@ -132,12 +149,29 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
      * @param
      * @return
      */
-    @Select("selert " +
-            "* " +
-            "from comments " +
-            "where reply = #{user_id} " +
+    @Select("select " +
+            "   c.id as id, " +
+            "   c.fa_post, " +
+            "   c.fa_comment, " +
+            "   c.creator, " +
+            "   u1.name as creatorname, " +
+            "   c.ctime, " +
+            "   c.likenum, " +
+            "   c.is_facomment, " +
+            "   c.reply, " +
+            "   u2.name as replyname, " +
+            "   c.contain, " +
+            "   c.replyread " +
+            "from " +
+            "   comments c " +
+            "join " +
+            "   users u1 on c.creator=u1.id " +
+            "left join " +
+            "   users u2 on c.reply=u2.id " +
+            "where " +
+            "   c.reply =#{user_id} " +
             "and " +
-            "replyread =0")
+            "   replyread=0 ")
     public List<Comment> select_unread_comments_by_reply(String user_id);
 
     /**
@@ -146,11 +180,35 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
      * @param
      * @return
      */
-    @Select("selert " +
-            "* " +
-            "from comments " +
-            "where reply = #{user_id}")
+    @Select("select " +
+            "   c.id as id, " +
+            "   c.fa_post, " +
+            "   c.fa_comment, " +
+            "   c.creator, " +
+            "   u1.name as creatorname, " +
+            "   c.ctime, " +
+            "   c.likenum, " +
+            "   c.is_facomment, " +
+            "   c.reply, " +
+            "   u2.name as replyname, " +
+            "   c.contain, " +
+            "   c.replyread " +
+            "from " +
+            "   comments c " +
+            "join " +
+            "   users u1 on c.creator=u1.id " +
+            "left join " +
+            "   users u2 on c.reply=u2.id " +
+            "where " +
+            "   c.reply =#{user_id} " )
     public List<Comment> select_comments_by_reply(String user_id);
+
+
+    @Select("select " +
+            "fa_post " +
+            "from comments " +
+            "where id=#{commentid} ")
+    public BigInteger select_postid_by_commentid(BigInteger commentid);
 
     /**
      * 【调用接口】 login_idpwd
@@ -175,7 +233,7 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
             "comments " +
             "set replyread=1 " +
             "where id=#{comment_id} ")
-    public void update_comments_read_by_Commentid(String comment_id);
+    public void update_comments_read_by_Commentid(BigInteger comment_id);
 
     /**
      * 【调用接口】 login_idpwd
@@ -188,4 +246,15 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
             "where id=#{comment_id}")
     public void delete_comments_by_commentid(BigInteger comment_id);
 
+    @Delete("delete " +
+            "from comments "  +
+            "where " +
+            "fa_comment =#{commentid}")
+    public void delete_comments_sons_by_fa_comment(BigInteger commentid);
+
+    @Delete("delete " +
+            "from comments " +
+            "where " +
+            "fa_post = #{postid}")
+    public void delete_comments_sons_by_fa_post(BigInteger postid);
 }
