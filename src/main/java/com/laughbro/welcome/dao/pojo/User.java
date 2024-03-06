@@ -17,5 +17,8 @@ public class User {
     private Date birthday;
     private String tel;
     private String email;
-
+    //
+    private String realname;
+    private String img;
+  //  private String bio;
 }

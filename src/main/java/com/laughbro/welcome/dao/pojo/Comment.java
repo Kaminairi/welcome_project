@@ -17,6 +17,8 @@ public class Comment
 
     private String creatorname;
 
+    private String creatorimg;
+
     private  String ctime;
 
     private int likenum;
