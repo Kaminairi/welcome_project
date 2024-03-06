@@ -51,7 +51,7 @@ public class LoginServiceImp implements LoginService {
     public Result login_idpwd(LoginIdpwdParams loginIdpwdParams) {
         User user = userMapper.select_user_all_by_id(loginIdpwdParams.getId());
         //没有此用户
-        if (user.equals(null)) {
+        if (user==null) {
             return Result.fail(101, "登录请求失败：没有当前用户", null);
         } else {
             //第一次登录,没有加密
