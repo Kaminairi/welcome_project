@@ -17,13 +17,13 @@ public interface PostMapper {
      * @return 存在返回所有文章信息
      *         不存在返回  null
      */
-    @Select("select * from posts")
+    @Select("select users.name,users.img,posts.* from users,posts where posts.creator=users.id;")
     List<Post> select_post_all();
     /**
      * 【调用接口】 /post/for-task
      * 【作用】 发布任务攻略贴
      */
-    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},#{PostForTaskParams.likenum},#{PostForTaskParams.clicktnum},#{PostForTaskParams.commentnum},#{PostForTaskParams.TaskId})")
+    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},#{PostForTaskParams.likenum},#{PostForTaskParams.clicktnum},#{PostForTaskParams.commentnum},#{PostForTaskParams.taskid})")
     void insert_post_task(@Param("PostForTaskParams")PostForTaskParams postForTaskParams);
     /**
      * 【调用接口】 /post/normail
@@ -37,7 +37,7 @@ public interface PostMapper {
      * @return 存在返回文章信息
      *         不存在返回  null
      */
-    @Select("select * from posts where id=#{id};")
+    @Select("select users.name,users.img,posts.* from users,posts where posts.id=#{id} and posts.creator=users.id;")
     Post select_post_by_post_id(String id);
     /**
      * 【调用接口】 /post/detail
@@ -45,25 +45,46 @@ public interface PostMapper {
      */
     @Update("update posts set clicktnum=clicktnum+1 where id=#{id}")
     void update_post_clicktnum_by_id(String id);
-
+    /**
+     * 【调用接口】 /post/delete/for-user
+     * 【作用】 根据id删除选中文章
+     */
     @Delete("delete  from posts where id=#{id}")
     void delete_post_by_id(String id);
-
-    @Select("select * from posts where creator=#{id}")
+    /**
+     * 【调用接口】 /post/list/for-user
+     * 【作用】 根据用户id返回自己发布的文章
+     */
+    @Select("select users.name,users.img,posts.* from users,posts where posts.creator=#{id} and posts.creator=users.id")
     List<Post> select_post_by_user_id(String id);
-
-    @Select("select * from posts where title like concat('%',#{keyWord},'%')")
+    /**
+     * 【调用接口】 /post/list/for-keyword
+     * 【作用】 根据关键词返回文章
+     */
+    @Select("select users.name,users.img,posts.* from users,posts where title like concat('%',#{keyWord},'%') and posts.creator=users.id")
     List<Post> select_post_by_key_word(@Param("keyWord")String keyWord);
-
-    @Select("select * from posts where task_id is not null")
+    /**
+     * 【调用接口】 /post/list/for-task
+     * 【作用】 返回过关攻略贴
+     */
+    @Select("select users.name,users.img,posts.* from users,posts where task_id is not null and posts.creator=users.id")
     List<Post> select_post_by_task_id();
-
-    @Select("select * from posts where id in(select post_id from post_collect where user_id=#{id})")
+    /**
+     * 【调用接口】 /post/list/for-usercollect
+     * 【作用】 根据用户id返回自己收藏的文章
+     */
+    @Select("select users.name,users.img,posts.* from users,posts where posts.id in(select post_id from post_collect where user_id=#{id}) and posts.creator=users.id")
     List<Post> select_post_collect_by_id(String id);
-
+    /**
+     * 【调用接口】 /post/like
+     * 【作用】 用户给文章点赞
+     */
     @Update("update posts set likenum=likenum+1 where id=#{id}")
     void update_post_likenum_by_id(String id);
-
+    /**
+     * 【调用接口】 /post/collect
+     * 【作用】 用户收藏文章
+     */
     @Insert("insert into post_collect(user_id,post_id) values (#{UserId},#{PostId})")
     void insert_post_collect(String UserId,String PostId);
 }
