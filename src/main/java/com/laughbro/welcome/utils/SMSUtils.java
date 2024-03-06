@@ -2,6 +2,7 @@ package com.laughbro.welcome.utils;
 
 
 import com.aliyun.tea.TeaException;
+import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,6 +25,15 @@ public class SMSUtils {
 
     }
 
+
+    @Test
+    public void testmsg() throws Exception {
+
+
+        sendMsg("8888","18018363326");
+    }
+
+
     public  void sendMsg(String code,String tel) throws  Exception {
 
         // 请确保代码运行环境设置了环境变量 ALIBABA_CLOUD_ACCESS_KEY_ID 和 ALIBABA_CLOUD_ACCESS_KEY_SECRET。
@@ -32,7 +42,7 @@ public class SMSUtils {
         com.aliyun.dysmsapi20170525.models.SendSmsRequest sendSmsRequest = new com.aliyun.dysmsapi20170525.models.SendSmsRequest()
                 .setSignName("阿里云短信测试")
                 .setTemplateCode("SMS_154950909")
-                .setPhoneNumbers("18018363326")
+                .setPhoneNumbers(tel)
                 .setTemplateParam("{\"code\":\""+code+"\"}");
         com.aliyun.teautil.models.RuntimeOptions runtime = new com.aliyun.teautil.models.RuntimeOptions();
         try {
