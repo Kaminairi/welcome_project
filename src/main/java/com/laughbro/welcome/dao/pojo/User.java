@@ -12,8 +12,8 @@ public class User {
     private String pwd;
     private String sex;
     private String idcard;
-    private String native_place;
-    private String student_origin;
+    private String nativePlace;
+    private String studentOrigin;
     private Date birthday;
     private String tel;
     private String email;

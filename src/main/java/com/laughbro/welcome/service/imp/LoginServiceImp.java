@@ -117,6 +117,11 @@ public class LoginServiceImp implements LoginService {
             if(verificationCode.equals(loginSmsParams.getCode())){
                 //调取该用户的信息
                 User user=userMapper.select_user_all_by_tel(loginSmsParams.getTel());
+                //生成token
+                String token = jwtUtils.buildToken(user.getId(), user.getName());
+                System.out.println(token);
+                //塞入head
+                response.addHeader("Authorization", token);
                 return Result.success(user);
             }else {
                 return Result.fail(111, "验证码不正确", null);
