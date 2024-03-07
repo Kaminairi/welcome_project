@@ -98,10 +98,20 @@ public class PostController {
         postService.PostCollect(params);
         return Result.success(null);
     }
+    /**
+     * 【作用】删除收藏
+     */
     @PostMapping("/post/collect/delete")
     public Result PostCollectDelete(@RequestBody PostCollectParams params){
         postService.PostCollectDelete(params);
         return Result.success(null);
     }
-
+    /**
+     * 【作用】编辑文章
+     */
+    @PostMapping("/post/edit")
+    public Result PostEdit(@RequestBody PostEditParams params){
+        postService.PostEdit(params);
+        return Result.success(null);
+    }
 }

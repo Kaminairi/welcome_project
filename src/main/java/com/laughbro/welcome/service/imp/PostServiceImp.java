@@ -76,4 +76,9 @@ public class PostServiceImp implements PostService {
     public void PostCollectDelete(PostCollectParams params){
         postMapper.delete_post_collect_by_id(params);
     }
+
+    @Override
+    public void PostEdit(PostEditParams params){
+        postMapper.update_post_by_id(params);
+    }
 }

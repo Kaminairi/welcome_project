@@ -25,4 +25,6 @@ public interface PostService {
     void PostCollect(PostCollectParams params);
 
     void PostCollectDelete(PostCollectParams params);
+
+    void PostEdit(PostEditParams params);
 }

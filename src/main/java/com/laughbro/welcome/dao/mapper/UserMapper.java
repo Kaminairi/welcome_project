@@ -50,10 +50,16 @@ public interface UserMapper {
             "from users " +
             "where tel=#{tel}")
     public User select_user_all_by_tel(String id);
-
+    /**
+     * 【调用接口】 me/change/name
+     * 【作用】 更改用户昵称
+     */
     @Update("update users set name=#{MeChangeNameParams.name} where id=#{MeChangeNameParams.userid}")
     void update_user_name_by_id(@Param("MeChangeNameParams")MeChangeNameParams params);
-
+    /**
+     * 【调用接口】 me/change/img
+     * 【作用】 更改用户密码
+     */
     @Update("update users set img=#{MeChangeImg.img} where id=#{MeChangeImg.userid}")
     void update_user_img_by_id(@Param("MeChangeImg") MeChangeImgParams params);
 }

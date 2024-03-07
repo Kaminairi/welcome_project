@@ -2,6 +2,7 @@ package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Post;
 import com.laughbro.welcome.vo.params.post_params.PostCollectParams;
+import com.laughbro.welcome.vo.params.post_params.PostEditParams;
 import com.laughbro.welcome.vo.params.post_params.PostForTaskParams;
 import com.laughbro.welcome.vo.params.post_params.PostNormalParams;
 import org.apache.ibatis.annotations.*;
@@ -87,7 +88,16 @@ public interface PostMapper {
      */
     @Insert("insert into post_collect(user_id,post_id) values (#{UserId},#{PostId})")
     void insert_post_collect(String UserId,String PostId);
-
+    /**
+     * 【调用接口】 /post/collect/delete
+     * 【作用】 用户删除收藏文章
+     */
     @Delete("delete from post_collect where user_id=#{PostCollectParams.userid} and post_id=#{PostCollectParams.postid};")
     void delete_post_collect_by_id(@Param("PostCollectParams") PostCollectParams params);
+    /**
+     * 【调用接口】 /post/edit
+     * 【作用】 用户编辑发表文章
+     */
+    @Update("update posts set title=#{PostEditParams.title},contain=#{PostEditParams.contain} where id=#{PostEditParams.postid}")
+    void update_post_by_id(@Param("PostEditParams") PostEditParams params);
 }
