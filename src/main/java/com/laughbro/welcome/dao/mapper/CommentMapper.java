@@ -11,7 +11,7 @@ public interface CommentMapper {
 
 
     /**
-     * 【调用接口】
+     * 【调用接口】 /comment/list/for-post
      * 【作用】 按照时间升序调取某个文章的评论列表
      * @param
      * @return
@@ -45,7 +45,7 @@ public interface CommentMapper {
 
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 /comment/list/for-post
      * 【作用】 按照时间降序调取某个文章的评论列表
      * @param
      * @return
@@ -78,7 +78,7 @@ public interface CommentMapper {
     public List<Comment> select_comments_all_by_postid_order_time_desc(BigInteger id);
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】  /comment/like
      * 【作用】 给评论点赞
      * @param
      * @return
@@ -87,11 +87,13 @@ public interface CommentMapper {
             "comments " +
             "set likenum =likenum+1 " +
             "where id=#{id} ")
-    public void update_comments_likenum_plus_1(BigInteger id);
+    public int update_comments_likenum_plus_1(BigInteger id);
+
+
 
     /**
-     * 【调用接口】 login_idpwd
-     * 【作用】 通过id拉取用户背包信息
+     * 【调用接口】  /comment
+     * 【作用】 创建帖子的评论
      * @param
      * @return
      */
@@ -100,11 +102,11 @@ public interface CommentMapper {
             "(fa_post,       creator,ctime,is_facomment,reply,contain) " +
             "value " +
             "(#{fa_post},       #{creator},#{ctime},#{is_facomment},#{reply},#{contain}) ")
-public void insert_comments_for_post(BigInteger fa_post,String creator,String ctime,int is_facomment,String reply,String contain);
+    public int insert_comments_for_post(BigInteger fa_post,String creator,String ctime,int is_facomment,String reply,String contain);
 
     /**
-     * 【调用接口】 login_idpwd
-     * 【作用】 通过id拉取用户背包信息
+     * 【调用接口】 /comment
+     * 【作用】 创建评论的评论
      * @param
      * @return
      */
@@ -113,11 +115,11 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
             "(fa_post,fa_comment,creator,ctime,is_facomment,reply,contain) " +
             "value " +
             "(#{fa_post},#{fa_comment},#{creator},#{ctime},#{is_facomment},#{reply},#{contain}) ")
-    public void insert_comments_for_comment(BigInteger fa_post,BigInteger fa_comment,String creator,String ctime,int is_facomment,String reply,String contain);
+    public int insert_comments_for_comment(BigInteger fa_post,BigInteger fa_comment,String creator,String ctime,int is_facomment,String reply,String contain);
 
     /**
-     * 【调用接口】 login_idpwd
-     * 【作用】 通过id拉取用户背包信息
+     * 【调用接口】 /comment/list/for-user
+     * 【作用】 获得某个用户发表的评论
      * @param
      * @return
      */
@@ -145,7 +147,7 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
     public List<Comment> select_comments_by_user(String user_id);
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 暂无
      * 【作用】 获得该用户作为被回复者的所有未读回复
      * ‘
      * @param
@@ -177,7 +179,7 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
     public List<Comment> select_unread_comments_by_reply(String user_id);
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 /comment/list/for-reply
      * 【作用】 获得该用户作为被回复者的所有评论
      * @param
      * @return
@@ -205,7 +207,13 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
             "   c.reply =#{user_id} " )
     public List<Comment> select_comments_by_reply(String user_id);
 
-
+    /**
+     * 【调用接口】 /comment/update-unread-one
+     * 【作用】 获得某个评论的父文章
+     * ‘
+     * @param
+     * @return
+     */
     @Select("select " +
             "fa_post " +
             "from comments " +
@@ -213,7 +221,7 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
     public BigInteger select_postid_by_commentid(BigInteger commentid);
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 /comment/update-unread
      * 【作用】 更新改用户  所有  的被回复为已读
      * @param
      * @return
@@ -221,12 +229,13 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
     @Update("update " +
             "comments " +
             "set replyread=1 " +
-            "where reply=#{user_id} ")
-    public void update_all_comments_read_by_reply(String user_id);
+            "where reply=#{user_id} " +
+            "and replyread=0 ")
+    public int update_all_comments_read_by_reply(String user_id);
 
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 /comment/update-unread-one
      * 【作用】 更新改用户  某个  的被回复为已读
      * @param
      * @return
@@ -235,10 +244,10 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
             "comments " +
             "set replyread=1 " +
             "where id=#{comment_id} ")
-    public void update_comments_read_by_Commentid(BigInteger comment_id);
+    public  int update_comments_read_by_Commentid(BigInteger comment_id);
 
     /**
-     * 【调用接口】 login_idpwd
+     * 【调用接口】 /comment/delete
      * 【作用】 删除选中的评论
      * @param
      * @return
@@ -246,17 +255,30 @@ public void insert_comments_for_post(BigInteger fa_post,String creator,String ct
     @Delete("delete " +
             "from comments " +
             "where id=#{comment_id}")
-    public void delete_comments_by_commentid(BigInteger comment_id);
+    public int delete_comments_by_commentid(BigInteger comment_id);
 
+    /**
+     * 【调用接口】 /comment/delete
+     * 【作用】 连锁删除评论所有的子评论
+     * @param
+     * @return
+     */
     @Delete("delete " +
             "from comments "  +
             "where " +
             "fa_comment =#{commentid}")
-    public void delete_comments_sons_by_fa_comment(BigInteger commentid);
+    public int delete_comments_sons_by_fa_comment(BigInteger commentid);
 
+    /**
+     * 【调用接口】 暂无
+     * 【作用】 删除文章的子评论
+     * ‘
+     * @param
+     * @return
+     */
     @Delete("delete " +
             "from comments " +
             "where " +
             "fa_post = #{postid}")
-    public void delete_comments_sons_by_fa_post(BigInteger postid);
+    public int delete_comments_sons_by_fa_post(BigInteger postid);
 }
