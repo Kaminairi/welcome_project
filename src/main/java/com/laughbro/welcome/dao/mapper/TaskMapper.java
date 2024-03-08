@@ -10,32 +10,29 @@ import java.util.List;
 @Mapper
 public interface TaskMapper {
     /**
-     * 【调用接口】 quest/main
-     * 【作用】 查询主线任务信息
-     * @param
-     * @return 存在返回 所有主线任务
-     *         不存在返回  null
+     * 【调用接口】 /gettasksets/main/unfinish
+     * 【作用】 查询主线任务集合
      */
-    @Select("call sp_get_unfinish_task_by_userid_ismainline(#{id},#{is_mainline})")
-    List<Task> select_task_main(String id,Integer is_mainline);
+    @Select("call sp_get_sets_with_userid(#{id},#{is_mainline},#{is_now})")
+    List<Task> select_taskset_main_unfinish(String id,Integer is_mainline,Integer is_now);
 
     /**
-     * 【调用接口】 quest/nmain
-     * 【作用】 查询支线任务信息
-     * @param
-     * @return 存在返回 所有支线任务
-     *         不存在返回  null
+     * 【调用接口】 /gettasksets/nmain/unfinish
+     * 【作用】 查询支线任务集合
      */
-    @Select("call sp_get_unfinish_task_by_userid_ismainline(#{id},#{is_mainline})")
-    List<Task> select_task_nmain(String id,Integer is_mainline);
+    @Select("call sp_get_sets_with_userid(#{id},#{is_mainline},#{is_now})")
+    List<Task> select_taskset_nmain_unfinish(String id,Integer is_mainline,Integer is_now);
 
     /**
-     * 【调用接口】 quest/finish
-     * 【作用】 通过id查询用户已完成任务
-     * @param
-     * @return 存在返回 完成的所有任务
-     *         不存在返回  null
+     * 【调用接口】 get/tasks
+     * 【作用】 通过任务组id查询全部任务
      */
-    @Select("select * from tasks where id in (select task_id from task_fulfillment where user_id=#{id})")
-    List<Task> select_task_finish(String id);
+    @Select("call sp_get_tasks_by_setid(#{id},#{is_now})")
+    List<Task> select_task_by_set_id(String id,Integer is_now);
+    /**
+     * 【调用接口】 get/task
+     * 【作用】 通过任务id任务详细信息
+     */
+    @Select("select * from tasks where id=#{taskid}")
+    Task select_task_by_id(String taskid);
 }
