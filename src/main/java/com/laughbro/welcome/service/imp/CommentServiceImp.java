@@ -4,12 +4,14 @@ import com.laughbro.welcome.dao.mapper.CommentMapper;
 import com.laughbro.welcome.dao.mapper.PostMapper;
 import com.laughbro.welcome.dao.pojo.Comment;
 import com.laughbro.welcome.service.CommentService;
+import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.comment_params.CommentAddParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentComParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentListParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentUserParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -25,6 +27,9 @@ public class CommentServiceImp implements CommentService {
 
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private TimeUtils timeUtils;
 
 
     @Override
@@ -56,9 +61,8 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public Result comment_add(CommentAddParams commentAddParams) {
-        Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = sdf.format(currentDate);
+        //获得当前时间
+        String formattedDate = timeUtils.timeGetNow();
         //判断评论类型
         if(commentAddParams.getIs_facomment()==1){
             //是一级评论
@@ -72,8 +76,17 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public Result comment_like(CommentComParams commentComParams) {
-        commentMapper.update_comments_likenum_plus_1(commentComParams.getCommentid());
-        return Result.success(null);
+        //判断输入是否合法
+        if(commentComParams.getCommentid()==null){return Result.fail(444,"键入值为空",null);}
+        //更新数据库
+        int r=commentMapper.update_comments_likenum_plus_1(commentComParams.getCommentid());
+        //判断是否更新成功
+        if(r==0) {
+            //无记录更新
+            return Result.fail(201,"没有数据更新",null);
+        }else{
+            return Result.success(null);
+        }
     }
 
     @Override
@@ -90,15 +103,22 @@ public class CommentServiceImp implements CommentService {
 
     @Override
     public Result comment_update_unread(CommentUserParams commentUserParams) {
-        commentMapper.update_all_comments_read_by_reply(commentUserParams.getId());
-        return Result.success(null);
+        int r=commentMapper.update_all_comments_read_by_reply(commentUserParams.getId());
+        return Result.success("更新了数据 "+r);
     }
 
     @Override
     public Result comment_delete(CommentComParams commentComParams) {
-        commentMapper.delete_comments_by_commentid(commentComParams.getCommentid());
-        commentMapper.delete_comments_sons_by_fa_comment(commentComParams.getCommentid());
-        return Result.success(null);
+        //删除选中评论
+        int r=commentMapper.delete_comments_by_commentid(commentComParams.getCommentid());
+        if(r==0){
+            return Result.fail(1111,"无删除操作",null);
+        }else{
+            //删除其子评论
+            int r2=commentMapper.delete_comments_sons_by_fa_comment(commentComParams.getCommentid());
+            return Result.success("删除父评论 "+r+" 删除子评论 "+r2);
+        }
+
     }
 
     @Override
