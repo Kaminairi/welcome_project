@@ -6,4 +6,6 @@ import lombok.Data;
 public class TaskParams {
 
     private String id;
+
+    private String setid;
 }

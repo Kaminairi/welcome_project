@@ -14,18 +14,23 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
     /**
-     * 【作用】 获取主线任务
+     * 【作用】 获取主线任务set
      */
     @GetMapping ("/quest/main")
     public Result GetMainTask(@RequestBody TaskParams taskParams){return taskService.GetMainTask(taskParams);}
     /**
-     * 【作用】 获取支线任务
+     * 【作用】 获取支线任务set
      */
     @GetMapping("/quest/nmain")
     public Result GetNmainTask(@RequestBody TaskParams taskParams){return taskService.GetNmainTask(taskParams);}
     /**
-     * 【作用】 通过id获取已完成任务
+     * 【作用】 通过id获取已完成任务set
      */
     @GetMapping("/quest/finish")
     public Result GetFinishTask(@RequestBody TaskParams taskParams){return taskService.GetFinishTask(taskParams);}
+
+    /**
+     * 【作用】 通过setid获得任务列表
+     */
+
 }
