@@ -1,5 +1,6 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.laughbro.welcome.dao.pojo.Item;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -20,7 +21,7 @@ public interface BagMapper {
             "FROM item_possession ,items " +
             "WHERE item_possession.user_id LIKE #{id} " +
             "AND item_possession.item_id=items.id")
-    public List<Item> select_itemown_all_by_id(String id);
+    public List<Item> select_itemown_all_by_id(Page<Item> page, String id);
 
 
     /**
