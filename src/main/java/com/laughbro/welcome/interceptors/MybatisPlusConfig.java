@@ -1,18 +1,10 @@
 package com.laughbro.welcome.interceptors;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.laughbro.welcome.dao.mapper.BagMapper;
-import com.laughbro.welcome.dao.pojo.Item;
-import org.junit.Test;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 @MapperScan("org.example.dao.mapper")

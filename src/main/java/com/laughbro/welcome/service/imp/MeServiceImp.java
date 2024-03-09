@@ -6,7 +6,6 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangePwdParams;
-import com.laughbro.welcome.vo.params.me_params.MeCheckInformationParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +16,8 @@ public class MeServiceImp implements MeService {
     @Autowired
     private UserMapper userMapper;
     @Override
-    public Result CheckInformation(MeCheckInformationParams params){
-        return Result.success(userMapper.select_user_all_by_id(params.getUserid()));
+    public Result CheckInformation(String userid){
+        return Result.success(userMapper.select_user_all_by_id(userid));
     }
 
     @Override

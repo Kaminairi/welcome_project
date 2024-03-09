@@ -8,17 +8,17 @@ public interface PostService {
     void PostForTask(PostForTaskParams params);
     void PostNormal(PostNormalParams params);
 
-    Result PostDetail(PostDetailParams params);
+    Result PostDetail(String postid);
 
     void PostDelete(PostDetailParams params);
 
-    Result GetPostById(PostListForUserParams params);
+    Result GetPostByUserId(String userid);
 
-    Result GetPostByKeyWord(PostSearchParams params);
+    Result GetPostByKeyWord(String keyword);
 
     Result GetPostByTaskId();
 
-    Result GetPostCollectById(PostListForUserParams params);
+    Result GetPostCollectById(String userid);
 
     void UpdatePostById(PostDetailParams params);
 
@@ -27,4 +27,6 @@ public interface PostService {
     void PostCollectDelete(PostCollectParams params);
 
     void PostEdit(PostEditParams params);
+
+    Result GetPostById(String postid);
 }

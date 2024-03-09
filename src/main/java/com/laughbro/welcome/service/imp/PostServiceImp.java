@@ -40,33 +40,33 @@ public class PostServiceImp implements PostService {
      * 【作用】 展示选中文章详情，更新点击数
      */
     @Override
-    public Result PostDetail(PostDetailParams params){
-        postMapper.update_post_clicktnum_by_id(params.getId());
-        return Result.success(postMapper.select_post_by_post_id(params.getId()));
+    public Result PostDetail(String postid){
+        postMapper.update_post_clicktnum_by_id(postid);
+        return Result.success(postMapper.select_post_by_post_id(postid));
     }
     @Override
     public void PostDelete(PostDetailParams params){
-        postMapper.delete_post_by_id(params.getId());
+        postMapper.delete_post_by_id(params.getPostid());
     }
     @Override
-    public Result GetPostById(PostListForUserParams params){
-        return Result.success(postMapper.select_post_by_user_id(params.getId()));
+    public Result GetPostByUserId(String userid){
+        return Result.success(postMapper.select_post_by_user_id(userid));
     }
     @Override
-    public Result GetPostByKeyWord(PostSearchParams params){
-        return Result.success(postMapper.select_post_by_key_word(params.getKeyword()));
+    public Result GetPostByKeyWord(String keyword){
+        return Result.success(postMapper.select_post_by_key_word(keyword));
     }
     @Override
     public Result GetPostByTaskId(){
         return Result.success(postMapper.select_post_by_task_id());
     }
     @Override
-    public Result GetPostCollectById(PostListForUserParams params){
-        return Result.success(postMapper.select_post_collect_by_id(params.getId()));
+    public Result GetPostCollectById(String userid){
+        return Result.success(postMapper.select_post_collect_by_id(userid));
     }
     @Override
     public void UpdatePostById(PostDetailParams params){
-        postMapper.update_post_likenum_by_id(params.getId());
+        postMapper.update_post_likenum_by_id(params.getPostid());
     }
     @Override
     public void PostCollect(PostCollectParams params){
@@ -80,5 +80,9 @@ public class PostServiceImp implements PostService {
     @Override
     public void PostEdit(PostEditParams params){
         postMapper.update_post_by_id(params);
+    }
+    @Override
+    public Result GetPostById(String postid){
+        return Result.success(postMapper.select_post_by_post_id(postid));
     }
 }

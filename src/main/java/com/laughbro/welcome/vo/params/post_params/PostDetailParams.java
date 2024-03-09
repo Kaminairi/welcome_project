@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PostDetailParams {
-    private String id;//任务id
+    private String postid;//文章id
 }

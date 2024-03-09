@@ -11,8 +11,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JWTInterceptor())
-                .addPathPatterns("/post")
-                .excludePathPatterns("/login_sms")
+                .addPathPatterns("/login_sms")
                 .excludePathPatterns("/login_idpwd")
                 .excludePathPatterns("/sendMsg");
     }

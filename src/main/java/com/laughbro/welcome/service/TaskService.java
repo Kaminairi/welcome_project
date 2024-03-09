@@ -1,19 +1,16 @@
 package com.laughbro.welcome.service;
 
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.task_params.TaskParams;
-import com.laughbro.welcome.vo.params.task_params.TasksParams;
-import com.laughbro.welcome.vo.params.task_params.TaskSetParams;
 
 public interface TaskService {
 
-    Result GetTaskSetMainUnfinish(TaskSetParams taskSetParams);
+    Result GetTaskSetMainUnfinish(String userid);
 
 
-    Result GetTaskSetNmainUnfinish(TaskSetParams taskSetParams);
+    Result GetTaskSetNmainUnfinish(String userid);
 
 
-    Result GetTasks(TasksParams tasksParams);
+    Result GetTasks(String setid);
 
-    Result GetTask(TaskParams params);
+    Result GetTask(String taskid);
 }
