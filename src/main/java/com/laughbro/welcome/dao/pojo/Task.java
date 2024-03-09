@@ -6,8 +6,9 @@ import java.sql.Date;
 @Data
 public class Task {
     private Integer id;
+    private String title;
     private Integer SetId;
-    private Integer loc;
+    private Integer LocId;
     private String demand;
     private Date ctime;
     private Date btime;
