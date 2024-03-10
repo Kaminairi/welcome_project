@@ -6,10 +6,9 @@ import com.laughbro.welcome.vo.params.comment_params.CommentAddParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentComParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentListParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentUserParams;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CommentController {
@@ -21,7 +20,7 @@ public class CommentController {
     /**
      * 【作用】 获得某个文章的所有评论列表
      */
-    @PostMapping("/comment/list/for-post")
+    @GetMapping("/comment/list/for-post")
     public Result comment_list(@RequestBody CommentListParams commentListParams){
         return commentService.comment_list(commentListParams);
     }
@@ -35,14 +34,14 @@ public class CommentController {
     /**
      * 【作用】 为某个评论点赞
      */
-    @PostMapping("/comment/like")
+    @PatchMapping("/comment/like")
     public Result comment_like(@RequestBody CommentComParams commentComParams){
         return commentService.comment_like(commentComParams);
     }
     /**
      * 【作用】 获得某个用户发表的评论
      */
-    @PostMapping("/comment/list/for-user")
+    @GetMapping ("/comment/list/for-user")
     public Result comment_list_user(@RequestBody CommentUserParams commentUserParams){
         return commentService.comment_list_user(commentUserParams);
     }
@@ -50,7 +49,7 @@ public class CommentController {
     /**
      * 【作用】 获得某个用户作为被回复者的评论
      */
-    @PostMapping("/comment/list/for-reply")
+    @GetMapping("/comment/list/for-reply")
     public Result comment_list_reply(@RequestBody CommentUserParams commentUserParams){
         return commentService.comment_list_reply(commentUserParams);
     }
@@ -58,21 +57,21 @@ public class CommentController {
     /**
      * 【作用】 删除某个评论
      */
-    @PostMapping("/comment/delete")
+    @DeleteMapping("/comment/delete")
     public Result comment_delete(@RequestBody CommentComParams commentComParams){
         return commentService.comment_delete(commentComParams);
     }
     /**
      * 【作用】 将某个用户所有的未读评论设为已读
      */
-    @PostMapping("/comment/update-unread")
+    @PatchMapping("/comment/update-unread")
     public Result comment_update_unread(@RequestBody CommentUserParams commentUserParams){
         return commentService.comment_update_unread(commentUserParams);
     }
     /**
      * 【作用】 将某个用户的未读评论设为已读，用于跳转
      */
-    @PostMapping("/comment/update-unread-one")
+    @PatchMapping("/comment/update-unread-one")
     public Result comment_update_unread_one(@RequestBody CommentComParams commentComParams){
         return commentService.comment_update_unread_one(commentComParams);
     }
