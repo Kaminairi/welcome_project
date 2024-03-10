@@ -44,12 +44,12 @@ public class LoginServiceImp implements LoginService {
     /**
      * 用于使用账号密码的登录方式
      *
-     * @param loginIdpwdParams login接口的输入值，包含用户id和密码
+     * @param
      * @return 包含自定义code和msg以及data的json
      */
     @Override
-    public Result login_idpwd(LoginIdpwdParams loginIdpwdParams) {
-        User user = userMapper.select_user_all_by_id(loginIdpwdParams.getId());
+    public Result login_idpwd(String id,String pwd) {
+        User user = userMapper.select_user_all_by_id(id);
         //没有此用户
         if (user==null) {
             return Result.fail(101, "登录请求失败：没有当前用户", null);
@@ -57,7 +57,7 @@ public class LoginServiceImp implements LoginService {
             //第一次登录,没有加密
             if (user.getPwd().equals(INIT_PWD)) {
                 //判断一下是不是输入的初始密码
-                if (loginIdpwdParams.getPwd().equals(user.getPwd())) {
+                if (pwd.equals(user.getPwd())) {
                     //生成加密
                     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     String encodedPassword = passwordEncoder.encode("123456");
@@ -77,7 +77,7 @@ public class LoginServiceImp implements LoginService {
                 //不是第一次登录
                 //给输入值加密
                 PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-                String rawPassword = loginIdpwdParams.getPwd();
+                String rawPassword = pwd;
                 String encodedPasswordFromDb = user.getPwd();
                 if (passwordEncoder.matches(rawPassword, encodedPasswordFromDb)) {
                     // 密码验证通过
@@ -106,17 +106,17 @@ public class LoginServiceImp implements LoginService {
      * @return
      */
     @Override
-    public Result login_sms(LoginSmsParams loginSmsParams, HttpSession session) {
+    public Result login_sms(String tel,String code, HttpSession session) {
         // 从Session中获取验证码
         session = request.getSession();
-        String verificationCode = (String) session.getAttribute(loginSmsParams.getTel());
+        String verificationCode = (String) session.getAttribute(tel);
         if(verificationCode==null){
-            return Result.fail(111,"手机号没有验证需求",loginSmsParams);
+            return Result.fail(111,"手机号没有验证需求",tel);
         }else{
             //如果验证码相同
-            if(verificationCode.equals(loginSmsParams.getCode())){
+            if(verificationCode.equals(code)){
                 //调取该用户的信息
-                User user=userMapper.select_user_all_by_tel(loginSmsParams.getTel());
+                User user=userMapper.select_user_all_by_tel(tel);
                 //生成token
                 String token = jwtUtils.buildToken(user.getId(), user.getName());
                 System.out.println(token);
@@ -137,15 +137,15 @@ public class LoginServiceImp implements LoginService {
      * @return
      */
     @Override
-    public String send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception {
+    public String send_msg(String tel, HttpSession session) throws Exception {
         //生成随机数
         String code = validateCodeUtils.generateValidateCode(4);
         //发送短信
-        smsUtils.sendMsg(code,loginSmsParams.getTel());
+        smsUtils.sendMsg(code,tel);
         // 将验证码放入Session
         session = request.getSession();
 
-        session.setAttribute(loginSmsParams.getTel(), code);
+        session.setAttribute(tel, code);
 
         return code;
     }
