@@ -10,20 +10,14 @@ import org.springframework.stereotype.Service;
 public class TaskServiceImp implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
-
     @Override
-    public Result GetTaskSetMainUnfinish(String userid){
-        return Result.success(taskMapper.select_taskset_main_unfinish(userid,1,0));
+    public Result GetTaskSets(String userid,Integer is_mainline,Integer is_now){
+        return Result.success(taskMapper.select_tasksets(userid,is_mainline,is_now));
     }
 
     @Override
-    public Result GetTaskSetNmainUnfinish(String userid){
-        return Result.success(taskMapper.select_taskset_nmain_unfinish(userid,0,0));
-    }
-
-    @Override
-    public Result GetTasks(String setid){
-        return Result.success(taskMapper.select_task_by_set_id(setid,0));
+    public Result GetTasks(String setid,Integer is_now){
+        return Result.success(taskMapper.select_task_by_set_id(setid,is_now));
     }
 
     @Override
@@ -31,4 +25,7 @@ public class TaskServiceImp implements TaskService {
         return Result.success(taskMapper.select_task_by_id(taskid));
     }
 
+    public Result GetTaskAll(){
+        return Result.success(taskMapper.select_task_all());
+    }
 }

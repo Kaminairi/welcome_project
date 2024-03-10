@@ -4,13 +4,11 @@ import com.laughbro.welcome.vo.Result;
 
 public interface TaskService {
 
-    Result GetTaskSetMainUnfinish(String userid);
+    Result GetTaskSets(String userid, Integer isMainline, Integer isNow);
 
-
-    Result GetTaskSetNmainUnfinish(String userid);
-
-
-    Result GetTasks(String setid);
+    Result GetTasks(String setid,Integer is_now);
 
     Result GetTask(String taskid);
+
+    Result GetTaskAll();
 }
