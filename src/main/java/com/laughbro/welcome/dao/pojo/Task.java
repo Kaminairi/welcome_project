@@ -15,5 +15,9 @@ public class Task {
     private Integer IsMainline;
     private String type;
     private String location;
-
+    private String lngLat;
+    private String name;
+    private String img;
+    private String examplePic;
+    private String isAI;
 }

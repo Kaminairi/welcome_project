@@ -13,7 +13,7 @@ public class urltest {
     @Test
     public  void download() throws Exception {
 
-        String urlString="https://newgoodwork.oss-cn-hangzhou.aliyuncs.com/items/brave.jpg?Expires=1710057988&OSSAccessKeyId=STS.NUshUZES2Sdu68fysRMU4Pg3J&Signature=RhwxC0osoyHIxc2lInUmkLO91x4%3D&security-token=CAIS7wF1q6Ft5B2yfSjIr5bGI%2B%2FuqIwT5KaeNB7XnXMHQdoYv6KYqDz2IHhMeXJpCOgZsv0ym2pZ6P4elqVoRoReREvCWpIots0PUd8AsACY6aKP9rUhpMCPOwr6UmzWvqL7Z%2BH%2BU6muGJOEYEzFkSle2KbzcS7YMXWuLZyOj%2BwMDL1VJH7aCwBLH9BLPABvhdYHPH%2FKT5aXPwXtn3DbATgD2GM%2BqxsmtfznnJXNsEKP0g2nlLNOnemrfMj4NfsLFYxkTtK40NZxcqf8yyNK43BIjvwu1PEfoGaf4Y3EXgYLskveb%2FC48dRqLR%2Bao2ah%2BH2SxhqAAaxX9xEbrjsWZUTh3i70bS7g%2BRUL32LjjhgvYaFyAlAedhmiKwC5kBsiRnZjOy9wvNYvYXJkF1Cy1nU3e3yFm6HjTD9NKxz%2B%2F7LfbrwybyUXK9RzhCkt7zMYQf%2BRMye3keNxJAX0IryX4M4BQAEnqrTG9p0tf4OTOZYlJ%2FZS8wTrIAA%3D"
+        String urlString="https://newgoodwork.oss-cn-hangzhou.aliyuncs.com/users/faceimg/faceimg_1111111111.jpg?Expires=1710152295&OSSAccessKeyId=STS.NTuo1fXTPCpdTYSHYpCvCwk1D&Signature=Ws4CHyK6rgCG7gzhjn0A7Bgg8P0%3D&security-token=CAIS7wF1q6Ft5B2yfSjIr5fAJIvStYtx9LKPVn%2FirFklT%2FlvmK6apjz2IHhMeXJpCOgZsv0ym2pZ6P4elqVoRoReREvCWpIots0POKgM4wCY6aKP9rUhpMCPOwr6UmzWvqL7Z%2BH%2BU6muGJOEYEzFkSle2KbzcS7YMXWuLZyOj%2BwMDL1VJH7aCwBLH9BLPABvhdYHPH%2FKT5aXPwXtn3DbATgD2GM%2BqxsmtfznnJXNsEKP0g2nlLNOnemrfMj4NfsLFYxkTtK40NZxcqf8yyNK43BIjvwu1PEfoGaf4Y3EXgYLskveb%2FC48dRqLR%2Bao2ah%2BH2SxhqAAbIpg%2FPFIjTdyMNAZkJRX1PlRXQJdPAgOVZoPqNUL8WuppXJ84mGeT2HFKNV7jDExcheGg5cOvDLdb1dKIp684MMdHjXrPWrqgPKvsmqSAM4%2FRiHHbvfLYvHs1RtvePwgLfgXXqTk7yUaDtVMZtRtezcRMAoVhk6XhPWr33DYTCcIAA%3D"
                 ;
         URL url = new URL(urlString);
 
@@ -35,7 +35,7 @@ public class urltest {
 
         // 输出的文件流
 
-        String filename = "G:\\桌面\\welcome\\src\\main\\resources\\items/brave.jpg";  //下载路径及下载图片名称
+        String filename = "G:\\桌面\\welcome\\src\\main\\resources\\items/1.jpg";  //下载路径及下载图片名称
 
         File file = new File(filename);
 
