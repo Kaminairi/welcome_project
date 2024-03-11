@@ -2,7 +2,6 @@ package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.TaskSet;
-import com.laughbro.welcome.dao.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -26,6 +25,6 @@ public interface TaskMapper {
     @Select("select * from tasks where id=#{taskid}")
     Task select_task_by_id(String taskid);
 
-    @Select("select * from tasks")
-    List<Task> select_task_all();
+    @Select("call sp_get_unfinish_task_by_userid(#{userid})")
+    List<Task> select_task_all(String userid);
 }

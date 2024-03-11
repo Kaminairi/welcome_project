@@ -25,7 +25,7 @@ public class TaskServiceImp implements TaskService {
         return Result.success(taskMapper.select_task_by_id(taskid));
     }
 
-    public Result GetTaskAll(){
-        return Result.success(taskMapper.select_task_all());
+    public Result GetTaskAll(String userid){
+        return Result.success(taskMapper.select_task_all(userid));
     }
 }

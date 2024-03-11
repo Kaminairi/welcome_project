@@ -10,5 +10,5 @@ public interface TaskService {
 
     Result GetTask(String taskid);
 
-    Result GetTaskAll();
+    Result GetTaskAll(String userid);
 }

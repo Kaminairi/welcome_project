@@ -29,7 +29,8 @@ public class TaskController {
     }
 
     @GetMapping("/get/task-all")
-    public Result GetTaskAll(){
-        return taskService.GetTaskAll();
+    public Result GetTaskAll(String userid){
+        return taskService.GetTaskAll(userid);
     }
+
 }
