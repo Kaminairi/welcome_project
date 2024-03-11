@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,12 +34,12 @@ public class CommentServiceImp implements CommentService {
 
 
     @Override
-    public Result comment_list(CommentListParams commentListParams) {
+    public Result comment_list(BigInteger postid, int time_order, int like_order) {
         List<Comment> commentList = null;
         //判断是否点赞排序
-        if(commentListParams.getLike_order()==1){
+        if(like_order==1){
             //判断时间排序方式
-            if(commentListParams.getTime_order()==1){
+            if(time_order==1){
 
 
             }else{
@@ -47,12 +48,12 @@ public class CommentServiceImp implements CommentService {
             }
         }else{
             //判断时间排序方式
-            if(commentListParams.getTime_order()==1){
+            if(time_order==1){
                 //时间升序，无点赞
-                   commentList= commentMapper.select_comments_all_by_postid_order_time_asc(commentListParams.getPostid());
+                   commentList= commentMapper.select_comments_all_by_postid_order_time_asc(postid);
             }else{
                 //时间降序，无点赞
-                commentList= commentMapper.select_comments_all_by_postid_order_time_desc(commentListParams.getPostid());
+                commentList= commentMapper.select_comments_all_by_postid_order_time_desc(postid);
             }
         }
 
@@ -90,14 +91,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public Result comment_list_reply(CommentUserParams commentUserParams) {
-       List<Comment> commentList=commentMapper.select_comments_by_reply(commentUserParams.getId());
+    public Result comment_list_reply(String id) {
+       List<Comment> commentList=commentMapper.select_comments_by_reply(id);
        return Result.success(commentList);
     }
 
     @Override
-    public Result comment_list_user(CommentUserParams commentUserParams) {
-        List<Comment> commentList=commentMapper.select_comments_by_user(commentUserParams.getId());
+    public Result comment_list_user(String id) {
+        List<Comment> commentList=commentMapper.select_comments_by_user(id);
         return Result.success(commentList);
     }
 

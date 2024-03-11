@@ -129,6 +129,7 @@ public interface CommentMapper {
             "   c.fa_comment, " +
             "   c.creator, " +
             "   u1.name as creatorname, " +
+            "   u1.img as creatorimg, " +
             "   c.ctime, " +
             "   c.likenum, " +
             "   c.is_facomment, " +
@@ -159,6 +160,7 @@ public interface CommentMapper {
             "   c.fa_comment, " +
             "   c.creator, " +
             "   u1.name as creatorname, " +
+            "   u1.img as creatorimg, " +
             "   c.ctime, " +
             "   c.likenum, " +
             "   c.is_facomment, " +
@@ -190,6 +192,7 @@ public interface CommentMapper {
             "   c.fa_comment, " +
             "   c.creator, " +
             "   u1.name as creatorname, " +
+            "   u1.img as creatorimg, " +
             "   c.ctime, " +
             "   c.likenum, " +
             "   c.is_facomment, " +

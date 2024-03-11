@@ -9,12 +9,12 @@ import javax.servlet.http.HttpSession;
 
 public interface LoginService {
 
-    Result login_idpwd(LoginIdpwdParams loginIdpwdParams);
+    Result login_idpwd(String id,String pwd);
 
-    Result login_sms(LoginSmsParams loginSmsParams, HttpSession session);
+    Result login_sms(String tel,String code, HttpSession session);
 
 
-    String send_msg(LoginSmsParams loginSmsParams, HttpSession session) throws Exception;
+    String send_msg(String tel, HttpSession session) throws Exception;
 
 
 

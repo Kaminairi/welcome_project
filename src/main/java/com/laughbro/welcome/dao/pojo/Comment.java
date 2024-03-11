@@ -29,6 +29,8 @@ public class Comment
 
     private String replyname;
 
+    private String replyimg;
+
     private String contain;
 
     private int replyread;

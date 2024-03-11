@@ -1,6 +1,8 @@
 package com.laughbro.welcome.service;
 
 
+import java.util.Collection;
+import java.util.Map;
 
 public interface OssService {
     /**
@@ -11,5 +13,5 @@ public interface OssService {
     Object token();
 
 
-
+    Map<String, String> getUrlBatch(Collection<String> filePathList);
 }

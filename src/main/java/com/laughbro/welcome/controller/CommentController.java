@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
+
 @RestController
 public class CommentController {
 
@@ -21,8 +23,8 @@ public class CommentController {
      * 【作用】 获得某个文章的所有评论列表
      */
     @GetMapping("/comment/list/for-post")
-    public Result comment_list(@RequestBody CommentListParams commentListParams){
-        return commentService.comment_list(commentListParams);
+    public Result comment_list(BigInteger postid,int time_order,int like_order){
+        return commentService.comment_list(postid,time_order,like_order);
     }
     /**
      * 【作用】 发表评论
@@ -42,16 +44,16 @@ public class CommentController {
      * 【作用】 获得某个用户发表的评论
      */
     @GetMapping ("/comment/list/for-user")
-    public Result comment_list_user(@RequestBody CommentUserParams commentUserParams){
-        return commentService.comment_list_user(commentUserParams);
+    public Result comment_list_user(String id){
+        return commentService.comment_list_user(id);
     }
 
     /**
      * 【作用】 获得某个用户作为被回复者的评论
      */
     @GetMapping("/comment/list/for-reply")
-    public Result comment_list_reply(@RequestBody CommentUserParams commentUserParams){
-        return commentService.comment_list_reply(commentUserParams);
+    public Result comment_list_reply(String id){
+        return commentService.comment_list_reply(id);
     }
 
     /**
