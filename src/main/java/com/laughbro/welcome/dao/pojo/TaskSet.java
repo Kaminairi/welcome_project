@@ -10,8 +10,8 @@ public class TaskSet {
     private String ClassId;
     private String name;
     private String applicant;
-    private Date ctime;
+    private String ctime;
     private String IsSetDue;
     private String IsMainline;
-    private Date etime;
+    private String etime;
 }
