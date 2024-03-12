@@ -1,6 +1,7 @@
 package com.laughbro.welcome.service;
 
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
 
 public interface TaskService {
 
@@ -11,4 +12,6 @@ public interface TaskService {
     Result GetTask(String taskid);
 
     Result GetTaskAll(String userid);
+
+    Result FinishConfirmTask(TaskConfirm taskConfirm);
 }

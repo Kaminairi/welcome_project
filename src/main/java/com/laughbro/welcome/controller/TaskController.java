@@ -2,8 +2,12 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,5 +36,8 @@ public class TaskController {
     public Result GetTaskAll(String userid){
         return taskService.GetTaskAll(userid);
     }
-
+    @PostMapping("/task/confirm")
+    public Result TaskConfirm(@RequestBody TaskConfirm taskConfirm){
+        return taskService.FinishConfirmTask(taskConfirm);
+    }
 }

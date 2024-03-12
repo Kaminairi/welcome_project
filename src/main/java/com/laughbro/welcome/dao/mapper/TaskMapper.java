@@ -2,7 +2,10 @@ package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.TaskSet;
+import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -27,4 +30,7 @@ public interface TaskMapper {
 
     @Select("call sp_get_unfinish_task_by_userid(#{userid})")
     List<Task> select_task_all(String userid);
+
+    @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{TaskConfirm.userid},#{TaskConfirm.taskid},#{TaskConfirm.time})")
+    void insert_task_fulfillment(@Param("TaskConfirm")TaskConfirm taskConfirm);
 }

@@ -3,6 +3,7 @@ package com.laughbro.welcome.service.imp;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +25,13 @@ public class TaskServiceImp implements TaskService {
     public Result GetTask(String taskid){
         return Result.success(taskMapper.select_task_by_id(taskid));
     }
-
+    @Override
     public Result GetTaskAll(String userid){
         return Result.success(taskMapper.select_task_all(userid));
+    }
+    @Override
+    public Result FinishConfirmTask(TaskConfirm taskConfirm){
+        taskMapper.insert_task_fulfillment(taskConfirm);
+        return Result.success(null);
     }
 }
