@@ -117,7 +117,26 @@ public class LoginServiceImp implements LoginService {
                     System.out.println(token);
                     //塞入head
                     response.addHeader("Authorization", token);
-                    return Result.success(user);
+
+                    //----------形成sseemitter---------------------------------------------------------------
+                    //塞入emitter
+                    SseEmitter emitter =new SseEmitter();
+                    sseService.addSseEmitter(id,emitter);
+                    //判断是否成功注入
+                    {
+                        try {
+                            if(sseService.existEmitter(id)){
+                                return Result.success(user);
+                            }else{
+                                //密码错误
+                                return Result.fail(101, "长连接失败", null);
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    //return Result.success(user);
                     //return Result.success(token);
                 } else {
                     // 密码验证失败
