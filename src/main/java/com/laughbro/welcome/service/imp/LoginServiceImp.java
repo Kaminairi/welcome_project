@@ -78,28 +78,11 @@ public class LoginServiceImp implements LoginService {
                     //塞入head
                     response.addHeader("Authorization", token);
 
-                    //----------形成sseemitter---------------------------------------------------------------
-                    //塞入emitter
-                    SseEmitter emitter =new SseEmitter();
-                    sseService.addSseEmitter(id,emitter);
-                    //判断是否成功注入
-                    {
-                        try {
-                            if(sseService.existEmitter(id)){
-                                return Result.success(user);
-                            }else{
-                                //密码错误
-                                return Result.fail(101, "长连接失败", null);
-                            }
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
 
 
                     //
 
-                    //return Result.success(user);
+                    return Result.success(user);
                 } else {
                     //密码错误
                     return Result.fail(101, "初始密码错误", null);
@@ -118,25 +101,7 @@ public class LoginServiceImp implements LoginService {
                     //塞入head
                     response.addHeader("Authorization", token);
 
-                    //----------形成sseemitter---------------------------------------------------------------
-                    //塞入emitter
-                    SseEmitter emitter =new SseEmitter();
-                    sseService.addSseEmitter(id,emitter);
-                    //判断是否成功注入
-                    {
-                        try {
-                            if(sseService.existEmitter(id)){
-                                return Result.success(user);
-                            }else{
-                                //密码错误
-                                return Result.fail(101, "长连接失败", null);
-                            }
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    //return Result.success(user);
+                    return Result.success(user);
                     //return Result.success(token);
                 } else {
                     // 密码验证失败
@@ -144,9 +109,11 @@ public class LoginServiceImp implements LoginService {
                 }
             }
         }
+
         //首次登录没有盐值，并且是固定密码，登录后获得一个盐值，然后更改密码
         //1 通过id查询获得账号,盐值和加密密码
         //2 如果返回成功，存在id 那么给输入值加密 然后比较密码
+
     }
 
     /**
