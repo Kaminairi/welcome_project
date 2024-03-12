@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Service
 public class LoginServiceImp implements LoginService {
@@ -93,6 +95,10 @@ public class LoginServiceImp implements LoginService {
                             throw new RuntimeException(e);
                         }
                     }
+
+
+                    //
+
                     //return Result.success(user);
                 } else {
                     //密码错误
@@ -140,6 +146,10 @@ public class LoginServiceImp implements LoginService {
         }else{
             //如果验证码相同
             if(verificationCode.equals(code)){
+                //移除验证码
+                if (session != null && session.getAttribute("tel") != null) {
+                    session.removeAttribute("tel");
+                }
                 //调取该用户的信息
                 User user=userMapper.select_user_all_by_tel(tel);
                 //生成token
@@ -169,12 +179,21 @@ public class LoginServiceImp implements LoginService {
         smsUtils.sendMsg(code,tel);
         // 将验证码放入Session
         session = request.getSession();
-
         session.setAttribute(tel, code);
-
+        //1分钟内删除这个session
+        Timer timer = new Timer();
+        HttpSession finalSession = session;
+        //60s后会自动销毁这个session
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (finalSession != null && finalSession.getAttribute("tel") != null) {
+                    finalSession.removeAttribute("tel");
+                }
+            }
+        }, 6000); // 60秒后执行
         return code;
     }
-
 
 }
 
