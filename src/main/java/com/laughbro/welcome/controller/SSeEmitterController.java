@@ -24,7 +24,9 @@ public class SSeEmitterController {
         //塞入emitter
         SseEmitter emitter =new SseEmitter();
         sseService.addSseEmitter(id,emitter);
+        return emitter;
         //判断是否成功注入
+        /*
         {
             try {
                 if(sseService.existEmitter(id)){
@@ -38,6 +40,8 @@ public class SSeEmitterController {
             }
         }
 
+
+         */
 
 
 
