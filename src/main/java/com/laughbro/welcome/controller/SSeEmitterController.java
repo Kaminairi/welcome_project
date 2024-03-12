@@ -2,8 +2,10 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.SSEService;
 import com.laughbro.welcome.vo.Result;
+import org.python.antlr.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -15,8 +17,8 @@ public class SSeEmitterController {
     @Autowired
     SSEService sseService;
 
-    @GetMapping ("/startsse")
-    public SseEmitter startsse(String id){
+    @GetMapping ("/startsse/{id}")
+    public SseEmitter startsse(@PathVariable("id") String id){
 
         //----------形成sseemitter---------------------------------------------------------------
         //塞入emitter
@@ -28,7 +30,7 @@ public class SSeEmitterController {
                 if(sseService.existEmitter(id)){
                     return emitter;
                 }else{
-                    //密码错误
+
                     return null;
                 }
             } catch (IOException e) {
