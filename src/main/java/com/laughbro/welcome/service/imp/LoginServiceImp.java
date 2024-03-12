@@ -3,6 +3,7 @@ package com.laughbro.welcome.service.imp;
 import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.LoginService;
+import com.laughbro.welcome.service.SSEService;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.SMSUtils;
 import com.laughbro.welcome.utils.ValidateCodeUtils;
@@ -13,15 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Service
 public class LoginServiceImp implements LoginService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private SSEService sseService;
 
     @Autowired
     private JWTUtils jwtUtils;
@@ -64,11 +70,30 @@ public class LoginServiceImp implements LoginService {
                     //写入数据库
                     userMapper.update_user_pwd_by_id(encodedPassword, user.getId());
                     //return Result.success(encodedPassword);
-                    //形成token
+
+                    //----------形成token--------------------------------------------------------------------
                     String token = jwtUtils.buildToken(user.getId(), user.getName());
                     //塞入head
                     response.addHeader("Authorization", token);
-                    return Result.success(user);
+
+                    //----------形成sseemitter---------------------------------------------------------------
+                    //塞入emitter
+                    SseEmitter emitter =new SseEmitter();
+                    sseService.addSseEmitter(id,emitter);
+                    //判断是否成功注入
+                    {
+                        try {
+                            if(sseService.existEmitter(id)){
+                                return Result.success(user);
+                            }else{
+                                //密码错误
+                                return Result.fail(101, "长连接失败", null);
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    //return Result.success(user);
                 } else {
                     //密码错误
                     return Result.fail(101, "初始密码错误", null);
