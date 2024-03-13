@@ -4,12 +4,11 @@ import com.laughbro.welcome.service.LoginService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
+import org.apache.ibatis.annotations.Delete;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpSession;
 
 @RestController
@@ -45,7 +44,6 @@ public class LoginController {
         String code=loginService.send_msg(tel,session);
         return Result.success(code);
     }
-
 
 
 

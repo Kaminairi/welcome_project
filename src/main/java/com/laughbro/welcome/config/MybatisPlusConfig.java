@@ -1,4 +1,4 @@
-package com.laughbro.welcome.interceptors;
+package com.laughbro.welcome.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
