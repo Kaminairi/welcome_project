@@ -3,23 +3,20 @@ package com.laughbro.welcome.service.imp;
 import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.LoginService;
-import com.laughbro.welcome.service.SSEService;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.SMSUtils;
 import com.laughbro.welcome.utils.ValidateCodeUtils;
+import com.laughbro.welcome.utils.WebSocket;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
-import com.laughbro.welcome.vo.params.login_params.LoginSmsParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,8 +25,8 @@ public class LoginServiceImp implements LoginService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private SSEService sseService;
+@Autowired
+private WebSocket webSocket;
 
     @Autowired
     private JWTUtils jwtUtils;
@@ -79,9 +76,6 @@ public class LoginServiceImp implements LoginService {
                     response.addHeader("Authorization", token);
 
 
-
-                    //
-
                     return Result.success(user);
                 } else {
                     //密码错误
@@ -100,6 +94,9 @@ public class LoginServiceImp implements LoginService {
                     System.out.println(token);
                     //塞入head
                     response.addHeader("Authorization", token);
+
+                    webSocket.sendMessage(user.getId() +" 登录了");
+
 
                     return Result.success(user);
                     //return Result.success(token);

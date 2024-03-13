@@ -1,5 +1,6 @@
-package com.laughbro.welcome.interceptors;
+package com.laughbro.welcome.config;
 
+import com.laughbro.welcome.interceptors.JWTInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
