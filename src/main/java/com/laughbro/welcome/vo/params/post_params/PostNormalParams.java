@@ -10,7 +10,4 @@ public class PostNormalParams {
     private String title;
     private String contain;
     private Date ctime;
-    private Integer likenum;
-    private Integer clicktnum;
-    private Integer commentnum;
 }

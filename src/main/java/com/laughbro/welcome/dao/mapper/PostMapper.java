@@ -23,13 +23,13 @@ public interface PostMapper {
      * 【调用接口】 /post/for-task
      * 【作用】 发布任务攻略贴
      */
-    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},#{PostForTaskParams.likenum},#{PostForTaskParams.clicktnum},#{PostForTaskParams.commentnum},#{PostForTaskParams.taskid})")
+    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},0,0,0,#{PostForTaskParams.taskid})")
     void insert_post_task(@Param("PostForTaskParams")PostForTaskParams postForTaskParams);
     /**
      * 【调用接口】 /post/normail
      * 【作用】 发布常规贴
      */
-    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},#{PostForTaskParams.likenum},#{PostForTaskParams.clicktnum},#{PostForTaskParams.commentnum},null)")
+    @Insert("insert into posts(creator,title,contain,ctime,likenum,clicktnum,commentnum,task_id) values (#{PostForTaskParams.creator},#{PostForTaskParams.title},#{PostForTaskParams.contain},#{PostForTaskParams.ctime},0,0,0,null)")
     void insert_post_normal(@Param("PostForTaskParams")PostNormalParams params);
     /**
      * 【调用接口】 /post/detail
@@ -50,7 +50,7 @@ public interface PostMapper {
      * 【作用】 根据id删除选中文章
      */
     @Delete("delete  from posts where id=#{id}")
-    void delete_post_by_id(String id);
+    Integer delete_post_by_id(String id);
     /**
      * 【调用接口】 /post/list/for-user
      * 【作用】 根据用户id返回自己发布的文章
@@ -73,8 +73,8 @@ public interface PostMapper {
      * 【调用接口】 /post/list/for-usercollect
      * 【作用】 根据用户id返回自己收藏的文章
      */
-    @Select("select users.name,users.img,posts.* from users,posts where posts.id in(select post_id from post_collect where user_id=#{id}) and posts.creator=users.id")
-    List<Post> select_post_collect_by_id(String id);
+    @Select("select users.name,users.img,posts.* from users,posts where posts.id in(select post_id from post_collect where user_id=#{userid}) and posts.creator=users.id;")
+    List<Post> select_post_collect_by_userid(String userid);
     /**
      * 【调用接口】 /post/like
      * 【作用】 用户给文章点赞

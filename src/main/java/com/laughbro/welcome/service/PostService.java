@@ -5,12 +5,12 @@ import com.laughbro.welcome.vo.params.post_params.*;
 
 public interface PostService {
     Result GetPost();
-    void PostForTask(PostForTaskParams params);
-    void PostNormal(PostNormalParams params);
+    Result PostForTask(PostForTaskParams params);
+    Result PostNormal(PostNormalParams params);
 
     Result PostDetail(String postid);
 
-    void PostDelete(PostDetailParams params);
+    Result PostDelete(PostDeleteParams params);
 
     Result GetPostByUserId(String userid);
 
@@ -20,7 +20,7 @@ public interface PostService {
 
     Result GetPostCollectById(String userid);
 
-    void UpdatePostById(PostDetailParams params);
+    void UpdatePostById(PostDeleteParams params);
 
     void PostCollect(PostCollectParams params);
 

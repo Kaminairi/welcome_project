@@ -24,8 +24,7 @@ public class PostController {
      */
     @PostMapping("/post/for-task")
     public Result PostForTask(@RequestBody PostForTaskParams params){
-        postService.PostForTask(params);
-        return Result.success(null);
+        return postService.PostForTask(params);
     }
 
     /**
@@ -33,8 +32,7 @@ public class PostController {
      */
     @PostMapping("/post/normal")
     public Result PostNormal(@RequestBody PostNormalParams params){
-        postService.PostNormal(params);
-        return Result.success(null);
+        return postService.PostNormal(params);
     }
 
     /**
@@ -48,9 +46,8 @@ public class PostController {
      * 【作用】用户删除帖子
      */
     @DeleteMapping("/post/delete/for-user")
-    public Result PostDelet(@RequestBody PostDetailParams params){
-        postService.PostDelete(params);
-        return Result.success("success");
+    public Result PostDelet(@RequestBody PostDeleteParams params){
+        return postService.PostDelete(params);
     }
     /**
      * 【作用】用户查询自己发布的文章
@@ -84,7 +81,7 @@ public class PostController {
      * 【作用】点赞
      */
     @PutMapping("/post/like")
-    public Result PostLike(@RequestBody PostDetailParams params){
+    public Result PostLike(@RequestBody PostDeleteParams params){
         postService.UpdatePostById(params);
         return postService.GetPostById(params.getPostid());
     }

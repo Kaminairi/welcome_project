@@ -25,7 +25,7 @@ public interface TaskMapper {
      * 【调用接口】 get/task
      * 【作用】 通过任务id任务详细信息
      */
-    @Select("select * from tasks where id=#{taskid}")
+    @Select("select * from tasks inner join location on tasks.location=location.id where tasks.id=#{taskid}")
     Task select_task_by_id(String taskid);
 
     @Select("call sp_get_unfinish_task_by_userid(#{userid})")
