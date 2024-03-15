@@ -30,7 +30,9 @@ public class TaskController {
     public Result GetTask(String taskid){
         return taskService.GetTask(taskid);
     }
-
+    /**
+     * 【作用】 通过id获取所有任务
+     */
     @GetMapping("/get/task-all")
     public Result GetTaskAll(String userid){
         return taskService.GetTaskAll(userid);
