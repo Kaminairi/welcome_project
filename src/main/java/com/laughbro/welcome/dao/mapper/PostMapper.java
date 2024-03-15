@@ -98,5 +98,5 @@ public interface PostMapper {
      * 【作用】 用户编辑发表文章
      */
     @Update("update posts set title=#{PostEditParams.title},contain=#{PostEditParams.contain} where id=#{PostEditParams.postid}")
-    void update_post_by_id(@Param("PostEditParams") PostEditParams params);
+    Integer update_post_by_id(@Param("PostEditParams") PostEditParams params);
 }

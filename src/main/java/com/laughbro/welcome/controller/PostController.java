@@ -82,31 +82,27 @@ public class PostController {
      */
     @PutMapping("/post/like")
     public Result PostLike(@RequestBody PostDeleteParams params){
-        postService.UpdatePostById(params);
-        return postService.GetPostById(params.getPostid());
+        return postService.PostLike(params.getPostid());
     }
     /**
      * 【作用】收藏文章
      */
     @PostMapping("/post/collect")
     public Result PostCollect(@RequestBody PostCollectParams params){
-        postService.PostCollect(params);
-        return Result.success(null);
+        return postService.PostCollect(params);
     }
     /**
      * 【作用】删除收藏
      */
     @DeleteMapping("/post/collect/delete")
     public Result PostCollectDelete(@RequestBody PostCollectParams params){
-        postService.PostCollectDelete(params);
-        return Result.success(null);
+        return postService.PostCollectDelete(params);
     }
     /**
      * 【作用】编辑文章
      */
     @PatchMapping ("/post/edit")
     public Result PostEdit(@RequestBody PostEditParams params){
-        postService.PostEdit(params);
-        return Result.success(null);
+        return postService.PostEdit(params);
     }
 }

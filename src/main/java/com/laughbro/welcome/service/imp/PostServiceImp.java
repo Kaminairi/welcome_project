@@ -89,7 +89,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Result GetPostByKeyWord(String keyword){
         if(postMapper.select_post_by_key_word(keyword).isEmpty()){
-            return Result.success("没有相关内容");
+            return Result.success("还没有相关内容");
         }else{
             return Result.success(postMapper.select_post_by_key_word(keyword));
         }
@@ -118,25 +118,59 @@ public class PostServiceImp implements PostService {
             return Result.success(postMapper.select_post_collect_by_userid(userid));
         }
     }
+    /**
+     * 【调用接口】 /post/collect
+     * 【作用】 用户收藏文章
+     */
     @Override
-    public void UpdatePostById(PostDeleteParams params){
-        postMapper.update_post_likenum_by_id(params.getPostid());
+    public Result PostCollect(PostCollectParams params){
+        if(postMapper.select_post_by_post_id(params.getPostid())!=null){
+            postMapper.insert_post_collect(params.getUserid(),params.getPostid());
+            return Result.success("收藏成功");
+        }else{
+            return Result.success("您想收藏的文章消失了");
+        }
     }
+    /**
+     * 【调用接口】 /post/collect/delete
+     * 【作用】 用户取消收藏文章
+     */
     @Override
-    public void PostCollect(PostCollectParams params){
-        postMapper.insert_post_collect(params.getUserid(),params.getPostid());
+    public Result PostCollectDelete(PostCollectParams params){
+        if(postMapper.select_post_collect_by_userid(params.getUserid()).contains(params.getPostid())){
+            postMapper.delete_post_collect_by_id(params);
+            return Result.success("取消收藏成功");
+        }else{
+            return Result.success("您没有收藏该文章");
+        }
     }
+    /**
+     * 【调用接口】 /post/edit
+     * 【作用】 用户编辑文章
+     */
     @Override
-    public void PostCollectDelete(PostCollectParams params){
-        postMapper.delete_post_collect_by_id(params);
+    public Result PostEdit(PostEditParams params){
+        if(params.getTitle()!=""&&params.getContain()!="") {
+            if (postMapper.update_post_by_id(params) > 0) {
+                return Result.success("修改成功");
+            } else {
+                return Result.success("修改失败");
+            }
+        }else{
+            return Result.success("没有输入标题或内容");
+        }
     }
-
+    /**
+     * 【调用接口】 /post/like
+     * 【作用】 用户点赞文章
+     */
     @Override
-    public void PostEdit(PostEditParams params){
-        postMapper.update_post_by_id(params);
-    }
-    @Override
-    public Result GetPostById(String postid){
-        return Result.success(postMapper.select_post_by_post_id(postid));
+    public Result PostLike(String postid){
+        if(postMapper.select_post_by_post_id(postid)!=null){
+            postMapper.update_post_likenum_by_id(postid);
+            return Result.success(postMapper.select_post_by_post_id(postid));
+        }else{
+            return Result.success("要点赞的帖子消失了");
+        }
     }
 }

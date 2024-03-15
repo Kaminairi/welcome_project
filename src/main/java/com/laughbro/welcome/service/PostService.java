@@ -20,13 +20,11 @@ public interface PostService {
 
     Result GetPostCollectById(String userid);
 
-    void UpdatePostById(PostDeleteParams params);
+    Result PostCollect(PostCollectParams params);
 
-    void PostCollect(PostCollectParams params);
+    Result PostCollectDelete(PostCollectParams params);
 
-    void PostCollectDelete(PostCollectParams params);
+    Result PostEdit(PostEditParams params);
 
-    void PostEdit(PostEditParams params);
-
-    Result GetPostById(String postid);
+    Result PostLike(String postid);
 }
