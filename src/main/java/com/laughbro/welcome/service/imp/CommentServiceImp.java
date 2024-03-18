@@ -127,6 +127,13 @@ public class CommentServiceImp implements CommentService {
         commentMapper.update_comments_read_by_Commentid(commentComParams.getCommentid());
         return Result.success(postMapper.select_post_by_post_id(String.valueOf(commentMapper.select_postid_by_commentid(commentComParams.getCommentid()))));
     }
-
+    @Override
+    public Result comment_list_keyword(String keyword){
+        if(commentMapper.select_comments_by_keyword(keyword)!=null){
+            return Result.success(commentMapper.select_comments_by_keyword(keyword));
+        }else{
+            return Result.success("暂无相关评论");
+        }
+    }
 
 }

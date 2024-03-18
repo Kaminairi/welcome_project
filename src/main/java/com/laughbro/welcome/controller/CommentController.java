@@ -78,4 +78,13 @@ public class CommentController {
         return commentService.comment_update_unread_one(commentComParams);
     }
 
+    @DeleteMapping("/admin/comment/delete")
+    public Result Adcomment_delete(@RequestBody CommentComParams commentComParams){
+        return commentService.comment_delete(commentComParams);
+    }
+
+    @GetMapping("admin/comment/serch")
+    public Result comment_serch(String keyword){
+        return commentService.comment_list_keyword(keyword);
+    }
 }

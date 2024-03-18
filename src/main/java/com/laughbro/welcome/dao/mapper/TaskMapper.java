@@ -1,6 +1,7 @@
 package com.laughbro.welcome.dao.mapper;
 
 import com.laughbro.welcome.dao.pojo.Task;
+import com.laughbro.welcome.dao.pojo.TaskFulFillment;
 import com.laughbro.welcome.dao.pojo.TaskSet;
 import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
 import org.apache.ibatis.annotations.Insert;
@@ -42,4 +43,7 @@ public interface TaskMapper {
      */
     @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{TaskConfirm.userid},#{TaskConfirm.taskid},#{TaskConfirm.time})")
     void insert_task_fulfillment(@Param("TaskConfirm")TaskConfirm taskConfirm);
+
+    @Select("select user_id,users.name,users.img,count(user_id) as passnum from task_fulfillment,users where user_id=users.id;")
+    List<TaskFulFillment> selse_task_fulfillment_all();
 }

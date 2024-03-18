@@ -25,4 +25,6 @@ public interface CommentService {
     Result comment_delete(CommentComParams commentComParams);
 
     Result comment_update_unread_one(CommentComParams commentComParams);
+
+    Result comment_list_keyword(String keyword);
 }

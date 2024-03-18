@@ -105,4 +105,29 @@ public class PostController {
     public Result PostEdit(@RequestBody PostEditParams params){
         return postService.PostEdit(params);
     }
+
+    @GetMapping("/admin/post")
+    public Result AdGetPost(){
+        return postService.GetPost();
+    }
+
+    @DeleteMapping("/admin/post/delete")
+    public Result AdPostDelete(@RequestBody PostDeleteParams params){
+        return postService.PostDelete(params);
+    }
+
+    @PostMapping("/admin/post/for-task")
+    public Result AdPostForTask(@RequestBody PostForTaskParams params){
+        return postService.PostForTask(params);
+    }
+
+    @PostMapping("/admin/post/normal")
+    public Result AdPostNormal(@RequestBody PostNormalParams params){
+        return postService.PostNormal(params);
+    }
+
+    @GetMapping("/admin/post/for-keyword")
+    public Result AdPostSearch(String keyword){
+        return postService.GetPostByKeyWord(keyword);
+    }
 }
