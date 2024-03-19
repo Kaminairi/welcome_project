@@ -4,10 +4,7 @@ import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -62,4 +59,15 @@ public interface UserMapper {
      */
     @Update("update users set img=#{MeChangeImg.img} where id=#{MeChangeImg.userid}")
     void update_user_img_by_id(@Param("MeChangeImg") MeChangeImgParams params);
+
+    @Insert({
+            "<script>",
+            "insert into users",
+            "values ",
+            "<foreach collection='users' item='user' index='index' separator=',' open='(' close=')' >",
+            "#{user.*}",
+            "</foreach>",
+            "</script>"
+    })
+    Integer insert_batch_by_excel(List<User> users);
 }
