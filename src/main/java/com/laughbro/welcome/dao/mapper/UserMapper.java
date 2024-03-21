@@ -4,6 +4,7 @@ import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
+import com.laughbro.welcome.vo.params.user_params.UserEditParams;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -70,4 +71,23 @@ public interface UserMapper {
             "</script>"
     })
     Integer insert_batch_by_excel(List<User> users);
+
+    @Delete("delete from users where id=#{userid}")
+    int deldete_user_by_id(String userid);
+
+    @Update("UPDATE users" +
+            " SET name=#{UserEditParams.name}," +
+            "    name=#{UserEditParams.name}," +
+            "    pwd=#{UserEditParams.pwd}," +
+            "    sex=#{UserEditParams.sex}," +
+            "    idcard=#{UserEditParams.idcard}," +
+            "    native_place=#{UserEditParams.nativePlace}," +
+            "    student_origin=#{UserEditParams.studentOrigin}," +
+            "    birthday=#{UserEditParams.birthday}," +
+            "    tel=#{UserEditParams.tel}," +
+            "    email=#{UserEditParams.email}," +
+            "    realname=#{UserEditParams.realname}," +
+            "    img=#{UserEditParams.img} " +
+            "WHERE id=#{UserEditParams.id}\n")
+    int update_user_by_id(@Param("UserEditParams") UserEditParams params);
 }

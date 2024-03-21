@@ -6,6 +6,8 @@ import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.UserService;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.user_params.UserDeleteParams;
+import com.laughbro.welcome.vo.params.user_params.UserEditParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,27 @@ public class UserServiceImp implements UserService {
         List<User> users = reader.readAll(User.class);
         // 批量新增客户
         return Result.success("新增了"+userMapper.insert_batch_by_excel(users)+"个用户");
+    }
+    @Override
+    public Result DeleteUser(UserDeleteParams params){
+        if(userMapper.deldete_user_by_id(params.getUserid())>0){
+            return Result.success("删除成功");
+        }else{
+            return Result.success("删除失败");
+        }
+    }
+
+    @Override
+    public Result GetUser(String userid){
+        return userMapper.select_user_all_by_id(userid)!=null?Result.success(userMapper.select_user_all_by_id(userid)):Result.success("用户不存在");
+    }
+    @Override
+    public Result EditUser(UserEditParams params){
+        if(userMapper.update_user_by_id(params)>0){
+            return Result.success("修改成功");
+        }else{
+            return Result.success("修改失败");
+        }
     }
 
 }

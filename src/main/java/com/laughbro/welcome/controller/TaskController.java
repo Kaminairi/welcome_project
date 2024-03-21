@@ -2,12 +2,9 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
+import com.laughbro.welcome.vo.params.task_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TaskController {
@@ -40,5 +37,40 @@ public class TaskController {
     @PostMapping("/task/confirm")
     public Result TaskConfirm(@RequestBody TaskConfirm taskConfirm){
         return taskService.FinishConfirmTask(taskConfirm);
+    }
+
+    @RequestMapping("/admin/post/taskset")
+    public Result AdPostTaskSet(@RequestBody TaskSetPostParams params){
+        return taskService.AdPostTaskSet(params);
+    }
+
+    @RequestMapping("/admin/get/taskset")
+    public Result AdPostTaskSet(){
+        return taskService.AdGetTaskSets();
+    }
+
+    @RequestMapping("/admin/post/task")
+    public Result AdPosttask(@RequestBody TaskPostParams params){
+        return taskService.AdPostTask(params);
+    }
+
+    @RequestMapping("/admin/delete/task")
+    public Result AdDeleteTask(@RequestBody TaskParams params){
+        return taskService.AdDeleteTask(params);
+    }
+
+    @RequestMapping("/admin/edit/task")
+    public Result AdEditTask(@RequestBody TaskEditParams params){
+        return taskService.AdEditTask(params);
+    }
+
+    @RequestMapping("/admin/gettask/bysetid")
+    public Result AdGetTaskBySetId(String setid){
+        return taskService.AdGetTaskBySetId(setid);
+    }
+
+    @RequestMapping("/admin/gettask/bykeyword")
+    public Result AdGetTaskByKeyword(String keyword){
+        return taskService.AdGetTaskByKeyword(keyword);
     }
 }

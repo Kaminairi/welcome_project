@@ -3,7 +3,7 @@ package com.laughbro.welcome.service.imp;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
+import com.laughbro.welcome.vo.params.task_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +51,38 @@ public class TaskServiceImp implements TaskService {
     public Result FinishConfirmTask(TaskConfirm taskConfirm){
         taskMapper.insert_task_fulfillment(taskConfirm);
         return Result.success(null);
+    }
+    @Override
+    public Result AdPostTaskSet(TaskSetPostParams params){
+        return Result.success(taskMapper.insert_taskset(params));
+    }
+
+    @Override
+    public Result AdGetTaskSets(){
+        return Result.success(taskMapper.select_tasksets_all());
+    }
+
+    @Override
+    public Result AdPostTask(TaskPostParams params){
+        return Result.success(taskMapper.insert_task(params));
+    }
+
+    @Override
+    public Result AdDeleteTask(TaskParams params){
+        return Result.success(taskMapper.delete_task_by_id(params.getId()));
+    }
+
+    @Override
+    public Result AdEditTask(TaskEditParams params){
+        return Result.success(taskMapper.update_task_by_id(params));
+    }
+    @Override
+    public Result AdGetTaskBySetId(String setid){
+        return Result.success(taskMapper.select_task_by_set_id_ad(setid));
+    }
+
+    @Override
+    public Result AdGetTaskByKeyword(String keyword){
+        return Result.success(taskMapper.select_task_by_keyword(keyword));
     }
 }

@@ -1,12 +1,9 @@
-package com.laughbro.welcome.dao.pojo;
+package com.laughbro.welcome.vo.params.task_params;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class TaskSet {
-    private String SetId;
+public class TaskSetPostParams {
     private String name;
     private String applicant;
     private String ctime;
