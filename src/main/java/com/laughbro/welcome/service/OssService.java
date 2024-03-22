@@ -1,6 +1,9 @@
 package com.laughbro.welcome.service;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -14,4 +17,7 @@ public interface OssService {
 
 
     Map<String, String> getUrlBatch(Collection<String> filePathList);
+
+
+    String uploadfile(MultipartFile file, String upload_path) throws IOException;
 }

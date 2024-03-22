@@ -95,7 +95,7 @@ private WebSocket webSocket;
                     //塞入head
                     response.addHeader("Authorization", token);
 
-                    webSocket.sendMessage(user.getId() +" 登录了");
+                    //webSocket.sendMessage(user.getId() +" 登录了");
 
 
                     return Result.success(user);

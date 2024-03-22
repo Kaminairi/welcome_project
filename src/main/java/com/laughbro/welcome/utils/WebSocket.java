@@ -1,54 +1,109 @@
 package com.laughbro.welcome.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.python.antlr.ast.Str;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@Component  //注册到容器中
-@ServerEndpoint("/webSocket")  //接收websocket请求路径
+@Component
+@ServerEndpoint("/webSocket/{id}")
 @Slf4j
 public class WebSocket {
-    //当前连接（每个websocket连入都会创建一个WebSocket实例）
-    private Session session;
-    //定义一个websocket容器存储session,即存放所有在线的socket连接
-    private static CopyOnWriteArraySet<WebSocket> webSocketSet = new CopyOnWriteArraySet<>();
+    // 用于存储WebSocket连接的Map，key为ID，value为对应的Session
+    private static Map<String,ConnectionInfo> sessionMap = new ConcurrentHashMap<>();
 
-    //处理连接建立
+    // 处理连接建立
     @OnOpen
-    public void opOpen(Session session) {
-        this.session = session;
-        log.info("【有新的客户端连接了】：{}", session.getId());
-        webSocketSet.add(this);  //将新用户加入在线组
-        log.info("【websocket消息】有新的连接，总数：{}", webSocketSet.size());
+    public void onOpen(Session session, @PathParam("id") String id) {
+        //查阅一下管理员权限
+        String type ="用户";
+        //创建用户信息
+        ConnectionInfo connectionInfo =new ConnectionInfo(session,id,type);
+        TimeUtils timeUtils=new TimeUtils();
+        log.info("[{}]------客户端连接---id:---{}---type:---{}", timeUtils.timeGetNow(),id,type );
+        sessionMap.put(id, connectionInfo);
+        log.info("                     新连接已添加到sessionMap，总数：{}", sessionMap.size());
+        log.info("====================================================================");
     }
 
-    //处理连接关闭
+    // 处理连接关闭
     @OnClose
-    public void Onclose() {
-        webSocketSet.remove(this);
-        log.info("【websocket消息】连接断开，总数：{}", webSocketSet.size());
+    public void onClose(Session session, @PathParam("id") String id) {
+        TimeUtils timeUtils=new TimeUtils();
+        sessionMap.remove(id);
+        log.info("[{}]------客户端连接断开：  {} ", id);
+        log.info("                     新连接已添加到sessionMap，总数：{}", sessionMap.size());
+        log.info("====================================================================");
     }
-        //接受消息
+
+    // 接收消息
+    //请求类型有：消息的转送
+    //
+    // 接收 JSON 消息并解析
     @OnMessage
-    public void onMessage (String message) {
-        log.info("【websocket消息】收到客户端发来的消息：{}", message);
+    public void onMessage(String message) throws DecodeException {
+
+
+        // 解析 JSON 消息
+        JSONObject json = JSONObject.parseObject(message);
+        String type = json.getString("type");//判断请求类型
+        String id = json.getString("id");
+        String mesg = json.getString("mesg");
+        sendMessageToId(id, mesg);
+
+        log.info("收到客户端消息");
     }
-            // 群发消息
-    public void sendMessage (String message){
-        for (WebSocket webSocket : webSocketSet) {
-            log.info("【websocket消息】广播群发消息,message={}", message);
+
+
+    // 发送消息给指定ID的WebSocket连接
+    public void sendMessageToId(String id, String message) {
+        Session session = sessionMap.get(id).getSession();
+        if (session != null) {
             try {
-                webSocket.session.getBasicRemote().sendText(message);
-            } catch (Exception e) {
-                e.printStackTrace();
+                session.getBasicRemote().sendText(message);
+                log.info("向ID为 {} 的WebSocket连接发送消息：{}", id, message);
+            } catch (IOException e) {
+                log.error("发送消息失败：{}", e.getMessage());
             }
+        } else {
+            log.error("ID为 {} 的WebSocket连接不存在", id);
         }
     }
-}
 
+
+
+
+    private static class ConnectionInfo {
+        private Session session;
+        private String id;
+        // 这里可以添加您需要的其他参数
+        private String type;
+
+        public ConnectionInfo(Session session, String id,String type) {
+            this.session = session;
+            this.id = id;
+            this.type =type;
+        }
+
+        public Session getSession() {
+            return session;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
+
+
+
+
+}

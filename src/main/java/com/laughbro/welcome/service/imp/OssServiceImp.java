@@ -18,7 +18,10 @@ import org.python.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
@@ -105,6 +108,21 @@ public class OssServiceImp implements OssService {
         return resultMap;
     }
 
+    @Override
+    public String uploadfile(MultipartFile file, String upload_path) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        // 重命名文件,避免文件覆盖
+        //String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +"-"+ multipartFile.getOriginalFilename();
+        //return upload(inputStream, fileName);
+        // 上传文件到 OSS
+        OSS ossClient = new OSSClientBuilder().build(ossParam.getEndpoint(), ossParam.getAccessKeyId(), ossParam.getAccessKeySecret());
+        ossClient.putObject(ossParam.getBucketName(),upload_path+file.getOriginalFilename(),inputStream);
+        // 访问路径: https://[bucketName].[endpointHost]/fileName
+        // 例如: https://zifeiyu01-oss.oss-cn-fuzhou.aliyuncs.com/20240220120000-1.jpg
+        //String url = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1] + "/" + fileName;
+        ossClient.shutdown();
+        return upload_path;
+    }
 
 
 }
