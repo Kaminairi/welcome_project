@@ -23,7 +23,7 @@ public class TimeUtils {
         Date currentDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = sdf.format(currentDate);
-        System.out.println(formattedDate);
+        //System.out.println(formattedDate);
         return formattedDate;
     }
 
