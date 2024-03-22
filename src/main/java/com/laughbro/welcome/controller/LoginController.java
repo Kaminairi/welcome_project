@@ -22,24 +22,24 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login/idpwd")
-    public Result login_idpwd(String id,String pwd){
-        return loginService.login_idpwd(id,pwd);
+    public Result login_idpwd(@RequestBody LoginIdpwdParams loginIdpwdParams){
+        return loginService.login_idpwd(loginIdpwdParams.getId(),loginIdpwdParams.getPwd());
     }
     /**
      * 登录方法2  通过手机号和验证码来登录
      * @param
      * @return
      */
-    @GetMapping("/login/sms")
-    public Result login_sms(String tel,String code,HttpSession session){
-        return loginService.login_sms(tel,code,session);
+    @PostMapping("/login/sms")
+    public Result login_sms(@RequestBody LoginSmsParams loginSmsParams,HttpSession session){
+        return loginService.login_sms(loginSmsParams.getTel(),loginSmsParams.getCode(),session);
     }
     /**
      * 登录方法2 匹配的工具接口  通过手机号申请验证码
      * @param
      * @return
      */
-    @PostMapping("/login/sendmsg")
+    @GetMapping("/login/sendmsg")
     public Result send_msg(String tel, HttpSession session) throws Exception {
         String code=loginService.send_msg(tel,session);
         return Result.success(code);
