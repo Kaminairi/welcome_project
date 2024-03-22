@@ -21,7 +21,7 @@ public class LoginController {
      * @param
      * @return
      */
-    @GetMapping("/login/idpwd")
+    @PostMapping("/login/idpwd")
     public Result login_idpwd(String id,String pwd){
         return loginService.login_idpwd(id,pwd);
     }
@@ -39,7 +39,7 @@ public class LoginController {
      * @param
      * @return
      */
-    @GetMapping("/login/sendmsg")
+    @PostMapping("/login/sendmsg")
     public Result send_msg(String tel, HttpSession session) throws Exception {
         String code=loginService.send_msg(tel,session);
         return Result.success(code);
