@@ -11,5 +11,7 @@ public class Manager {
     private String email;
     private String tel;
     private String img;
+    private String pwd;
+    private String cameratoken;
 
 }

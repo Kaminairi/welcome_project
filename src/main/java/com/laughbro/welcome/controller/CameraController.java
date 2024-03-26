@@ -1,17 +1,25 @@
 package com.laughbro.welcome.controller;
 
+import com.laughbro.welcome.dao.mapper.ManagerMapper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.Camera;
+import com.laughbro.welcome.dao.pojo.Manager;
+import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.utils.FaceComUtils;
+import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -35,9 +43,16 @@ public class CameraController {
     @Autowired
             private TaskMapper taskMapper;
     @Autowired
-            private UserMapper userMapper;
-    String face_filePath = "G:\\goodworkres\\facepic\\";
-    String temp_filePath="G:\\goodworkres\\facepic\\temp\\";
+            private ManagerMapper managerMapper;
+    @Autowired
+    private JWTUtils jwtUtils;
+    @Autowired
+    private HttpServletResponse response;
+    private static String face_filePath = "G:\\goodworkres\\facepic\\";
+    private static String temp_filePath="G:\\goodworkres\\facepic\\temp\\";
+
+    //初始密码
+    private static String INIT_PWD = "123456";
 
     //登录池子
     private static Map<String, BigInteger> faceCache = new ConcurrentHashMap<>();
@@ -70,29 +85,94 @@ public class CameraController {
 
 
 
-
+    /**
+     * 【调用接口】
+     * 【作用】 通过管理员来进行相机注册
+     *
+     * @return 相机token
+     */
     @PostMapping("/camera/loadin")
-    public Result camera_loadin(String userid,String pwd){
+    public Result camera_loadin(@RequestBody LoginIdpwdParams loginIdpwdParams) {
+        String id=loginIdpwdParams.getId();
+        String pwd=loginIdpwdParams.getPwd();
         //判断登录
+        //User user = userMapper.select_user_all_by_id(id);
+        Manager manager = managerMapper.select_manager_all_by_id(id);
+        //没有此用户
+        if (manager == null) {
+            return Result.fail(101, "登录请求失败：没有当前管理员", null);
+        } else {
+            //第一次登录,没有加密
+            if (manager.getPwd().equals(INIT_PWD)) {
+                //判断一下是不是输入的初始密码
+                if (pwd.equals(manager.getPwd())) {
+                    //生成加密
+                    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    String encodedPassword = passwordEncoder.encode("123456");
+                    //写入数据库
+                    //userMapper.update_user_pwd_by_id(encodedPassword, user.getId());
+                    managerMapper.update_manager_pwd_by_id(encodedPassword, manager.getId());
+                    //return Result.success(encodedPassword);
 
-        //获得临时的cameratoken
-        String combinedInfo = userid + timeUtils.timeGetNow();
-        String shortToken = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = md.digest(combinedInfo.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
+                    //----------形成token--------------------------------------------------------------------
+                    String token = jwtUtils.buildToken(manager.getId(), manager.getName());
+                    //塞入head
+                    response.addHeader("Authorization", token);
+
+
+                    //return Result.success(manager);
+                } else {
+                    //密码错误
+                    return Result.fail(101, "初始密码错误", null);
+                }
+            } else {
+                //不是第一次登录
+                //给输入值加密
+                PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                String rawPassword = pwd;
+                String encodedPasswordFromDb = manager.getPwd();
+                if (passwordEncoder.matches(rawPassword, encodedPasswordFromDb)) {
+                    // 密码验证通过
+                    //生成token
+                    String token = jwtUtils.buildToken(manager.getId(), manager.getName());
+                    System.out.println(token);
+                    //塞入head
+                    response.addHeader("Authorization", token);
+
+                    //webSocket.sendMessage(user.getId() +" 登录了");
+
+
+                    //return Result.success(manager);
+                    //return Result.success(token);
+                } else {
+                    // 密码验证失败
+                    return Result.fail(101, "密码错误", null);
+                }
             }
-            shortToken = sb.toString().substring(0, 12); // 取前12位作为较短的token
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+
+
+            //获得临时的cameratoken
+            String combinedInfo = id + timeUtils.timeGetNow();
+            String shortToken = null;
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                byte[] hashBytes = md.digest(combinedInfo.getBytes(StandardCharsets.UTF_8));
+                StringBuilder sb = new StringBuilder();
+                for (byte b : hashBytes) {
+                    sb.append(String.format("%02x", b));
+                }
+                shortToken = sb.toString().substring(0, 12); // 取前12位作为较短的token
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            //注入空壳的camera对象
+            Camera camera = new Camera(id);
+            cameraCache.put(shortToken, camera);
+            manager.setCameratoken(shortToken);
+            //消除密码信息
+            manager.setPwd(null);
+            return Result.success(manager);//返回特殊值
         }
-        //注入空壳的camera对象
-        Camera camera=new Camera(userid);
-        cameraCache.put(shortToken,camera);
-        return Result.success(shortToken);//返回特殊值
     }
 
 

@@ -75,7 +75,8 @@ private WebSocket webSocket;
                     //塞入head
                     response.addHeader("Authorization", token);
 
-
+                    //消除密码
+                    user.setPwd(null);
                     return Result.success(user);
                 } else {
                     //密码错误
@@ -96,8 +97,8 @@ private WebSocket webSocket;
                     response.addHeader("Authorization", token);
 
                     //webSocket.sendMessage(user.getId() +" 登录了");
-
-
+                    //消除密码
+                    user.setPwd(null);
                     return Result.success(user);
                     //return Result.success(token);
                 } else {
@@ -140,6 +141,8 @@ private WebSocket webSocket;
                 System.out.println(token);
                 //塞入head
                 response.addHeader("Authorization", token);
+                //消除密码
+                user.setPwd(null);
                 return Result.success(user);
             }else {
                 return Result.fail(111, "验证码不正确", null);
