@@ -58,9 +58,9 @@ public class FaceComUtils {
             // 读取 Python 脚本的输出
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
-            String resultline = null;//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx
+            String resultline = "#";//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx
             while ((line = reader.readLine()) != null) {
-                resultline=resultline+"#"+line;
+                resultline=resultline+line+"#";
                 //System.out.println(line);
                 //return line;
             }

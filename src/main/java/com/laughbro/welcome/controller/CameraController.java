@@ -1,5 +1,7 @@
 package com.laughbro.welcome.controller;
 
+import com.laughbro.welcome.dao.mapper.TaskMapper;
+import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.Camera;
 import com.laughbro.welcome.utils.FaceComUtils;
 import com.laughbro.welcome.utils.TimeUtils;
@@ -7,10 +9,7 @@ import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +18,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,10 @@ public class CameraController {
     private FaceComUtils faceComUtils;
     @Autowired
     private TimeUtils timeUtils;
-
+    @Autowired
+            private TaskMapper taskMapper;
+    @Autowired
+            private UserMapper userMapper;
     String face_filePath = "G:\\goodworkres\\facepic\\";
     String temp_filePath="G:\\goodworkres\\facepic\\temp\\";
 
@@ -41,6 +44,32 @@ public class CameraController {
 
     //相机池子
     private static Map<String, Camera> cameraCache =new ConcurrentHashMap<>();
+
+    //根据管理员的账号获得其拥有权限的任务集合
+    @GetMapping("camera/getset")
+    public Result camera_getset(String adminid){
+
+
+
+
+        return Result.success(null);
+    }
+
+
+
+
+    //根据任务集合获得在执行期间且type为人脸识别的任务
+    @GetMapping("camera/gettask")
+    public Result camera_gettask(String setid){
+
+
+
+
+        return Result.success(null);
+    }
+
+
+
 
     @PostMapping("/camera/loadin")
     public Result camera_loadin(String userid,String pwd){
@@ -200,7 +229,7 @@ public class CameraController {
         // 获取以及处理文件名
         String fileName = file.getOriginalFilename();//xxx_yyy.jpg
         int underscoreIndex = fileName.indexOf("_"); // 获取下划线的位置
-        String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分
+        String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分 为相机token
         // 指定文件保存目录
         String uploadDir = temp_filePath;;
         // 如果目录不存在，则创建目录
@@ -214,24 +243,44 @@ public class CameraController {
             File dest = new File(filePath);
             // 将文件保存到指定路径
             file.transferTo(dest);
+            long startTime = System.currentTimeMillis();
             System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+xxxPart+" 】任务相机端发送文件，保存路径为: " + filePath);
-            //预处理
-            String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
-            //解析答案//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx获得@开头的
-            String[] words = pyreturn.split("#"); // 使用 # 号分割字符串
-            // 逐行打印数组中的元素
-            for (String word : words) {
-                System.out.println("                                                                                                   : py脚本的返回结果 :  # "+word);
-            }
-            for (String word : words) {
-                if (word.startsWith("@")) { // 找出以 @ 开头的单词
-                    return Result.success(word);
+            //比较
+            List<String> tasklist=cameraCache.get(xxxPart).getTasklist();
+            List<String> resultlist = new ArrayList<>();
+            for (String task : tasklist) {
+                System.out.println("                                                                                                   : 查询任务相关 【 "+task+" 】");
+                String pyreturn = faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_" + task);
+                // 这里可以对pyreturn进行处理，比如打印或者其他操作
+                //System.out.println("pyreturn: " + pyreturn);
+                //解析答案//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx获得@开头的
+                String[] words = pyreturn.split("#"); // 使用 # 号分割字符串
+                // 逐行打印数组中的元素
+                for (String word : words) {
+                    System.out.println("                                                                                                   : py脚本的返回结果 :  # "+word);
                 }
+                System.out.println(" ");
+                for (String word : words) {
+                    if (word.startsWith("@")) { // 找出以 @ 开头的单词
+                        resultlist.add(word);
+                        //return Result.success(word);
+                    }
+                 }
+
+            //String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
             }
+            // 记录结束时间
+            long endTime = System.currentTimeMillis();
+
+            // 计算时间差
+            long duration = endTime - startTime;
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 比对人脸耗时【 "+duration+"ms 】");
+            //比较
+            return Result.success(resultlist);
             //faceComUtils.Facecom();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        //return null;
     }
 }
