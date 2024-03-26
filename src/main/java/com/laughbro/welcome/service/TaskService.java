@@ -2,6 +2,7 @@ package com.laughbro.welcome.service;
 
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
+import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 
 public interface TaskService {
 
@@ -28,4 +29,10 @@ public interface TaskService {
     Result AdGetTaskBySetId(String setid);
 
     Result AdGetTaskByKeyword(String keyword);
+
+    Result GetTaskPic();
+
+    Result PassTaskPic(TaskPicParams params);
+
+    Result GetTaskFulfillment();
 }

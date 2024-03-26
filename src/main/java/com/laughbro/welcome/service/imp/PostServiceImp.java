@@ -1,11 +1,16 @@
 package com.laughbro.welcome.service.imp;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.PostMapper;
+import com.laughbro.welcome.dao.pojo.Post;
 import com.laughbro.welcome.service.PostService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PostServiceImp implements PostService {
@@ -17,7 +22,7 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result GetPost(){
-        return Result.success(postMapper.select_post_all());
+        return Result.success(postMapper.select_post_all("desc"));
     }
     /**
      * 【调用接口】 /post/for-task
@@ -173,4 +178,18 @@ public class PostServiceImp implements PostService {
             return Result.success("要点赞的帖子消失了");
         }
     }
+    @Override
+    public Result AdGetPost(int page,int pagesize,int order){
+        if(order==0) {
+            PageHelper.startPage(page, pagesize);
+            Page<Post> p = (Page<Post>) postMapper.select_post_all("desc");
+            return Result.success(p.getResult());
+        }else{
+            PageHelper.startPage(page, pagesize);
+            Page<Post> p = (Page<Post>) postMapper.select_post_all("asc");
+            return Result.success(p.getResult());
+        }
+
+    }
+
 }

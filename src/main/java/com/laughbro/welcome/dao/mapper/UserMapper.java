@@ -90,4 +90,13 @@ public interface UserMapper {
             "    img=#{UserEditParams.img} " +
             "WHERE id=#{UserEditParams.id}\n")
     int update_user_by_id(@Param("UserEditParams") UserEditParams params);
+
+    @Select("<script>"
+            + "select * from users "
+            + "order by id "
+            + "<if test='order != null'>"
+            + "${order}"
+            + "</if>"
+            + "</script>")
+    List<User> select_user_all(@Param("order")String order);
 }

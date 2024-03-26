@@ -3,6 +3,7 @@ package com.laughbro.welcome.controller;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
+import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,5 +73,20 @@ public class TaskController {
     @RequestMapping("/admin/gettask/bykeyword")
     public Result AdGetTaskByKeyword(String keyword){
         return taskService.AdGetTaskByKeyword(keyword);
+    }
+
+    @RequestMapping("/admin/check/tasksubmit")
+    public Result AdGetTaskPic(){
+        return taskService.GetTaskPic();
+    }
+
+    @RequestMapping("/admin/pass/tasksubmit")
+    public Result AdPassTaskPic(@RequestBody TaskPicParams params){
+        return taskService.PassTaskPic(params);
+    }
+
+    @RequestMapping("/admin/get/taskfulfillment")
+    public Result AdGetTaskFulfillment(){
+        return taskService.GetTaskFulfillment();
     }
 }

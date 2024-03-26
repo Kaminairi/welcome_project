@@ -27,4 +27,6 @@ public interface PostService {
     Result PostEdit(PostEditParams params);
 
     Result PostLike(String postid);
+
+    Result AdGetPost(int page,int pagesize,int order);
 }

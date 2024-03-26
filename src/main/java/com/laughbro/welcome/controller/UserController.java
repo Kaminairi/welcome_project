@@ -1,6 +1,7 @@
 package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.UserService;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.user_params.UserDeleteParams;
 import com.laughbro.welcome.vo.params.user_params.UserEditParams;
@@ -33,4 +34,8 @@ public class UserController {
         return userService.EditUser(params);
     }
 
+    @RequestMapping("/admin/get/userall")
+    public PageResult GetUserAll(int page, int pagesize,int order){
+        return userService.GetUserAll(page,pagesize,order);
+    }
 }
