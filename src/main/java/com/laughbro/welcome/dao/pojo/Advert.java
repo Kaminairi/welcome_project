@@ -1,0 +1,11 @@
+package com.laughbro.welcome.dao.pojo;
+
+import lombok.Data;
+
+@Data
+public class Advert {
+    private String id;
+    private String name;
+    private String img;
+    private String url;
+}

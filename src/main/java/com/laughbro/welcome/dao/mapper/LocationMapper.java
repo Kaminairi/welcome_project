@@ -1,10 +1,13 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.laughbro.welcome.dao.pojo.Location;
 import com.laughbro.welcome.vo.params.location_params.LocationAddParams;
 import com.laughbro.welcome.vo.params.location_params.LocationEditParams;
 import jnr.ffi.annotations.In;
 import org.apache.ibatis.annotations.*;
 import org.springframework.security.core.parameters.P;
+
+import java.util.List;
 
 @Mapper
 public interface LocationMapper {
@@ -14,4 +17,7 @@ public interface LocationMapper {
     Integer delete_location_by_id(String id);
     @Update("update location set name=#{LocationEditParams.name},img=#{LocationEditParams.img} where id=#{LocationEditParams.id}")
     Integer update_location_by_id(@Param("LocationEditParams") LocationEditParams params);
+
+    @Select("select * from location")
+    List<Location> select_location_all();
 }

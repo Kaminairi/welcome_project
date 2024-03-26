@@ -4,8 +4,12 @@ import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
+import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class TaskServiceImp implements TaskService {
@@ -84,5 +88,26 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result AdGetTaskByKeyword(String keyword){
         return Result.success(taskMapper.select_task_by_keyword(keyword));
+    }
+    @Override
+    public Result GetTaskPic(){
+        return Result.success(taskMapper.select_taskpic_all());
+    }
+    @Override
+    public Result PassTaskPic(TaskPicParams params){
+        taskMapper.update_taskpic(params);
+        TaskConfirm taskConfirm=new TaskConfirm();
+        taskConfirm.setUserid(params.getUserid());
+        taskConfirm.setTaskid(params.getTaskid());
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatDateTime = now.format(formatter);
+        taskConfirm.setTime(formatDateTime);
+        taskMapper.insert_task_fulfillment(taskConfirm);
+        return Result.success(null);
+    }
+    @Override
+    public Result GetTaskFulfillment(){
+        return Result.success(taskMapper.select_task_fulfillment_all());
     }
 }

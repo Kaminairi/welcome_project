@@ -1,6 +1,7 @@
 package com.laughbro.welcome.service;
 
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.params.user_params.UserDeleteParams;
 import com.laughbro.welcome.vo.params.user_params.UserEditParams;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,4 +16,6 @@ public interface UserService {
     Result GetUser(String userid);
 
     Result EditUser(UserEditParams params);
+
+    PageResult GetUserAll(int page, int pagesize,int order);
 }

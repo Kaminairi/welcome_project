@@ -1,13 +1,8 @@
 package com.laughbro.welcome.dao.mapper;
 
-import com.laughbro.welcome.dao.pojo.Task;
-import com.laughbro.welcome.dao.pojo.TaskFulFillment;
-import com.laughbro.welcome.dao.pojo.TaskSet;
-import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.task_params.TaskConfirm;
-import com.laughbro.welcome.vo.params.task_params.TaskEditParams;
-import com.laughbro.welcome.vo.params.task_params.TaskPostParams;
-import com.laughbro.welcome.vo.params.task_params.TaskSetPostParams;
+import com.laughbro.welcome.dao.pojo.*;
+import com.laughbro.welcome.vo.params.task_params.*;
+import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -45,8 +40,8 @@ public interface TaskMapper {
     @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{TaskConfirm.userid},#{TaskConfirm.taskid},#{TaskConfirm.time})")
     void insert_task_fulfillment(@Param("TaskConfirm")TaskConfirm taskConfirm);
 
-    @Select("select user_id,users.name,users.img,count(user_id) as passnum from task_fulfillment,users where user_id=users.id order by passnum;")
-    List<TaskFulFillment> selse_task_fulfillment_all();
+    @Select("select user_id,users.name,users.img,count(user_id) as passnum from task_fulfillment,users where user_id=users.id order by passnum desc")
+    List<TaskSort> selse_task_fulfillment_all();
     @Insert("insert into task_sets(name,applicant,ctime,is_set_due,is_mainline,etime) values(#{TaskSetPostParams.name},#{TaskSetPostParams.applicant},#{TaskSetPostParams.ctime},#{TaskSetPostParams.IsSetDue},#{TaskSetPostParams.IsMainline},#{TaskSetPostParams.etime})")
     Integer insert_taskset(@Param("TaskSetPostParams")TaskSetPostParams params);
 
@@ -63,4 +58,12 @@ public interface TaskMapper {
     List<Task> select_task_by_set_id_ad(String setid);
     @Select("select * from tasks where title like concat('%',#{keyWord},'%')")
     List<Task> select_task_by_keyword(@Param("keyWord") String keyWord);
+
+    @Select("select * from taskpic")
+    List<TaskPic> select_taskpic_all();
+    @Update("update taskpic set is_pass=1 where user_id=#{TaskPicParams.userid} and task_id=#{TaskPicParams.taskid}")
+    Integer update_taskpic(@Param("TaskPicParams") TaskPicParams params);
+
+    @Select("select * from task_fulfillment order by comp_time desc")
+    List<TaskFulfillment> select_task_fulfillment_all();
 }

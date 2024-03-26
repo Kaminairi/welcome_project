@@ -11,4 +11,6 @@ public interface LocationService {
     Result DeleteLocation(LocationDeleteParams params);
 
     Result EditLocation(LocationEditParams params);
+
+    Result GetLocationAll();
 }

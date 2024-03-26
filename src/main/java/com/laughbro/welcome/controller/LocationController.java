@@ -30,4 +30,8 @@ public class LocationController {
         return locationService.EditLocation(params);
     }
 
+    @RequestMapping("/admin/get/locationall")
+    public Result GetLocationAll(){
+        return locationService.GetLocationAll();
+    }
 }

@@ -29,4 +29,10 @@ public class LocationServiceImp implements LocationService {
         return Result.success(locationMapper.update_location_by_id(params));
     }
 
+    @Override
+    public Result GetLocationAll(){
+        return Result.success(locationMapper.select_location_all());
+    }
+
+
 }

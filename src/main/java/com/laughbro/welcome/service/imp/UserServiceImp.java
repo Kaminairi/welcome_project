@@ -2,9 +2,12 @@ package com.laughbro.welcome.service.imp;
 
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.UserService;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.user_params.UserDeleteParams;
 import com.laughbro.welcome.vo.params.user_params.UserEditParams;
@@ -48,6 +51,18 @@ public class UserServiceImp implements UserService {
         }else{
             return Result.success("修改失败");
         }
+    }
+    @Override
+    public PageResult GetUserAll(int page,int pagesize,int order){
+        PageHelper.startPage(page,pagesize);
+        Page<User> p=new Page<>();
+        if(order==0){
+            p=(Page<User>) userMapper.select_user_all("desc");
+        }else{
+            p=(Page<User>) userMapper.select_user_all("asc");
+        }
+        long totalpages=p.getTotal()/pagesize+1;
+        return PageResult.success(p.getResult(),totalpages);
     }
 
 }

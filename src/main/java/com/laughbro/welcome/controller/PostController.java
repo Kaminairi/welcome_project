@@ -107,8 +107,8 @@ public class PostController {
     }
 
     @GetMapping("/admin/post")
-    public Result AdGetPost(){
-        return postService.GetPost();
+    public Result AdGetPost(int page,int pagesize,int order){
+        return postService.AdGetPost(page,pagesize,order);
     }
 
     @DeleteMapping("/admin/post/delete")

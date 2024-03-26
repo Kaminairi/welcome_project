@@ -17,8 +17,15 @@ public interface PostMapper {
      * @return 存在返回所有文章信息
      *         不存在返回  null
      */
-    @Select("select users.name,users.img,posts.* from users,posts where posts.creator=users.id;")
-    List<Post> select_post_all();
+    @Select("<script>"
+            + "select users.name,users.img,posts.* from users,posts "
+            + "where posts.creator=users.id "
+            + "order by posts.ctime "
+            + "<if test='order != null'>"
+            + "${order}"
+            + "</if>"
+            + "</script>")
+    List<Post> select_post_all(@Param("order") String order);
     /**
      * 【调用接口】 /post/for-task
      * 【作用】 发布任务攻略贴
