@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -67,6 +68,39 @@ public class FaceComUtils {
             int exitCode = process.waitFor();
             System.out.println("                                                                                                   : Python 脚本执行完毕，退出码为: " + exitCode);
             return resultline;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String faceCompare(String input, List<String> folderPaths) {
+        String pythonScriptPath = "G:\\mycodetest\\opencv\\trainer\\success\\comparenew.py";  // 设置 Python 脚本路径
+
+        try {
+            System.out.println("调用Python脚本：" + pythonScriptPath);
+
+            // 构建参数列表
+            StringBuilder command = new StringBuilder("D:/Anaconda3/envs/opencv-py38/python");
+            command.append(" ").append(pythonScriptPath).append(" ").append(input);
+            for (String folderPath : folderPaths) {
+                command.append(" ").append(folderPath);
+            }
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command.toString().split(" "));
+            Process process = processBuilder.start();
+
+            // 读取 Python 脚本的输出
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line).append("#");
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("Python脚本执行完毕，退出码为: " + exitCode);
+            return result.toString();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

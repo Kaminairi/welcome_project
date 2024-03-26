@@ -11,6 +11,7 @@ import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -357,11 +361,25 @@ public class CameraController {
             file.transferTo(dest);
             long startTime = System.currentTimeMillis();
             System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+xxxPart+" 】任务相机端发送文件，保存路径为: " + filePath);
-            //比较
+            //获得相文件夹
             List<String> tasklist=cameraCache.get(xxxPart).getTasklist();
+            //优化流程
+            Iterator<String> iterator = tasklist.iterator();
+            while (iterator.hasNext()) {
+                String taskid = iterator.next();
+                Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + taskid);
+                if (!Files.list(path).findAny().isPresent()) {
+                    iterator.remove(); // 删除没有文件的文件夹
+                }
+            }
+            //
             List<String> resultlist = new ArrayList<>();
             for (String task : tasklist) {
                 System.out.println("                                                                                                   : 查询任务相关 【 "+task+" 】");
+                //优化判断
+                Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + task);
+                //如果文件夹内不存在用户就不用启动脚本
+                if(Files.list(path).findAny().isPresent()){
                 String pyreturn = faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_" + task);
                 // 这里可以对pyreturn进行处理，比如打印或者其他操作
                 //System.out.println("pyreturn: " + pyreturn);
@@ -379,7 +397,7 @@ public class CameraController {
                         //return Result.success(word);
                     }
                  }
-
+                }
             //String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
             }
             // 记录结束时间
@@ -396,4 +414,117 @@ public class CameraController {
         }
         //return null;
     }
+
+
+    @PostMapping("/uploadImagenew")
+    public Result uploadImagenew(@RequestParam("file") MultipartFile file) {
+        //判断是否为空
+        if (file.isEmpty()) {
+            return Result.fail(111,"上传的文件为空",null);
+        }
+        // 获取以及处理文件名
+        String fileName = file.getOriginalFilename();//xxx_yyy.jpg
+        int underscoreIndex = fileName.indexOf("_"); // 获取下划线的位置
+        String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分 为相机token
+        Camera camera=cameraCache.get(xxxPart);
+        if(camera==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
+        // 指定文件保存目录
+        String uploadDir = temp_filePath;;
+        // 如果目录不存在，则创建目录
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        try {
+            // 构建文件路径
+            String filePath = uploadDir + fileName;
+            File dest = new File(filePath);
+            // 将文件保存到指定路径
+            file.transferTo(dest);
+            long startTime = System.currentTimeMillis();
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+xxxPart+" 】任务相机端发送文件，保存路径为: " + filePath);
+            //获得相文件夹
+            List<String> tasklist=cameraCache.get(xxxPart).getTasklist();
+            List<String> taskfilelist=new ArrayList<>();
+            //优化流程
+            Iterator<String> iterator = tasklist.iterator();
+            while (iterator.hasNext()) {
+                String taskid = iterator.next();
+                Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + taskid);
+                if (!Files.list(path).findAny().isPresent()) {
+                    iterator.remove(); // 删除没有文件的文件夹
+                }else {
+                    taskfilelist.add("G:\\goodworkres\\facepic\\taskid_" + taskid);
+                }
+            }
+            //
+            List<String> resultlist = new ArrayList<>();
+
+                //System.out.println("                                                                                                   : 查询任务相关 【 "+task+" 】");
+                //优化判断
+                //Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + task);
+                //如果文件夹内不存在用户就不用启动脚本
+
+                    String pyreturn = faceComUtils.faceCompare(filePath, taskfilelist);
+                    // 这里可以对pyreturn进行处理，比如打印或者其他操作
+                    //System.out.println("pyreturn: " + pyreturn);
+                    //解析答案//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx获得@开头的
+                    String[] words = pyreturn.split("#"); // 使用 # 号分割字符串
+                    // 逐行打印数组中的元素
+                    for (String word : words) {
+                        System.out.println("                                                                                                   : py脚本的返回结果 :  # "+word);
+                    }
+                    System.out.println(" ");
+                    for (String word : words) {
+                        if (word.startsWith("@")) { // 找出以 @ 开头的单词
+                            String processedWord = word.substring(1); // 去掉单词中以 "@" 开头的字符
+                            resultlist.add(processedWord);
+                            //return Result.success(word);
+                        }
+                    }
+
+                //String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
+
+            // 记录结束时间
+            long endTime = System.currentTimeMillis();
+
+            // 计算时间差
+            long duration = endTime - startTime;
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 比对人脸耗时【 "+duration+"ms 】");
+            //处理比较结果
+
+
+            //上传人脸记录，修改数据库1.错判2没有结果
+
+
+            //删除本地缓存图片
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //比较
+            return Result.success(resultlist);
+            //faceComUtils.Facecom();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //return null;
+    }
 }
+
+
+
+
+
