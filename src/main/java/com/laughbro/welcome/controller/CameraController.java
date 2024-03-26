@@ -1,11 +1,9 @@
 package com.laughbro.welcome.controller;
 
+import com.laughbro.welcome.dao.mapper.LocationMapper;
 import com.laughbro.welcome.dao.mapper.ManagerMapper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
-import com.laughbro.welcome.dao.mapper.UserMapper;
-import com.laughbro.welcome.dao.pojo.Camera;
-import com.laughbro.welcome.dao.pojo.Manager;
-import com.laughbro.welcome.dao.pojo.User;
+import com.laughbro.welcome.dao.pojo.*;
 import com.laughbro.welcome.utils.FaceComUtils;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
@@ -13,7 +11,6 @@ import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +23,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -44,6 +38,8 @@ public class CameraController {
             private TaskMapper taskMapper;
     @Autowired
             private ManagerMapper managerMapper;
+    @Autowired
+    private LocationMapper locationMapper;
     @Autowired
     private JWTUtils jwtUtils;
     @Autowired
@@ -60,28 +56,6 @@ public class CameraController {
     //相机池子
     private static Map<String, Camera> cameraCache =new ConcurrentHashMap<>();
 
-    //根据管理员的账号获得其拥有权限的任务集合
-    @GetMapping("camera/getset")
-    public Result camera_getset(String adminid){
-
-
-
-
-        return Result.success(null);
-    }
-
-
-
-
-    //根据任务集合获得在执行期间且type为人脸识别的任务
-    @GetMapping("camera/gettask")
-    public Result camera_gettask(String setid){
-
-
-
-
-        return Result.success(null);
-    }
 
 
 
@@ -149,8 +123,6 @@ public class CameraController {
                     return Result.fail(101, "密码错误", null);
                 }
             }
-
-
             //获得临时的cameratoken
             String combinedInfo = id + timeUtils.timeGetNow();
             String shortToken = null;
@@ -171,35 +143,66 @@ public class CameraController {
             manager.setCameratoken(shortToken);
             //消除密码信息
             manager.setPwd(null);
+            //注入locationlist
+            List<Location> locationList= locationMapper.select_location_all();
+            manager.setLocationList(locationList);
             return Result.success(manager);//返回特殊值
         }
     }
 
-
-    @DeleteMapping("camera/leave")
-    public Result camera_leave(String cameratoken){
-
-        cameraCache.remove(cameratoken);
-        return Result.success(null);
-    }
-
     @PostMapping("/camera/bindingloc")
     public Result camera_binding_loc(BigInteger locid,String cameratoken){
-
+        Camera camera=cameraCache.get(cameratoken);
+        if(camera==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
         cameraCache.get(cameratoken).setLocid(locid);
         return Result.success(null);
     }
 
 
+    //根据管理员的账号获得其拥有权限的任务集合
+    @GetMapping("camera/getset")
+    public Result camera_getset(String adminid,String locid){
+        List<TaskSet> listset=taskMapper.get_set_by_managerid_locid_camera(adminid,locid);
+        if(listset.get(0)==null)
+            return Result.fail(111,"没有记录",null);
+        return Result.success(listset);
+    }
 
-/**
-    *绑定了任务，并且创建了任务的文件夹
- */
+
+
+
+    //根据任务集合获得在执行期间且type为人脸识别的任务
+    @GetMapping("camera/gettask")
+    public Result camera_gettask(BigInteger setid){
+        List<Task> taskList =taskMapper.get_task_by_setid_camera(setid,0);
+        if(taskList.get(0)==null)
+            return Result.fail(101,"没有查询结果",null);
+        Iterator<Task> iterator = taskList.iterator();
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if ("人脸打卡".equals(task.getType())) {
+                iterator.remove(); // 删除类型为“人脸识别”的任务
+            }
+        }
+
+        return Result.success(taskList);
+    }
+
+
+    /**
+     *绑定了任务，并且创建了任务的文件夹
+     */
     @PostMapping("/camera/bindingtask")
     public Result camera_binding_task(@RequestParam("taskArray") String[] taskArray, String cameratoken){
+        Camera camera1=cameraCache.get(cameratoken);
+        if(camera1==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
         //temp模拟已经登陆导入
-        Camera camera=new Camera("admin_1", new BigInteger(String.valueOf(1234)));
-        cameraCache.put("camera1",camera);
+        //Camera camera=new Camera("admin_1", new BigInteger(String.valueOf(1234)));
+        //cameraCache.put("camera1",camera);
         //
 
         // 将 String 数组转换为 List
@@ -234,6 +237,31 @@ public class CameraController {
 
         return null;
     }
+
+
+    /**
+     *关闭相机，移除相机
+     */
+    @DeleteMapping("camera/delete")
+    public Result camera_leave(String adminid, String cameratoken){
+        Camera camera=cameraCache.get(cameratoken);
+        if(camera==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
+        if(camera.getManagerid().equals(adminid)){
+            cameraCache.remove(cameratoken);
+            return Result.success("移除成功");
+        }else {
+            return Result.fail(101,"存在相机但是你没有权限（不是你的相机",null);
+        }
+
+
+    }
+
+
+
+
+
 
 
     /**
@@ -310,6 +338,10 @@ public class CameraController {
         String fileName = file.getOriginalFilename();//xxx_yyy.jpg
         int underscoreIndex = fileName.indexOf("_"); // 获取下划线的位置
         String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分 为相机token
+        Camera camera=cameraCache.get(xxxPart);
+        if(camera==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
         // 指定文件保存目录
         String uploadDir = temp_filePath;;
         // 如果目录不存在，则创建目录
@@ -342,7 +374,8 @@ public class CameraController {
                 System.out.println(" ");
                 for (String word : words) {
                     if (word.startsWith("@")) { // 找出以 @ 开头的单词
-                        resultlist.add(word);
+                        String processedWord = word.substring(1); // 去掉单词中以 "@" 开头的字符
+                        resultlist.add(processedWord);
                         //return Result.success(word);
                     }
                  }

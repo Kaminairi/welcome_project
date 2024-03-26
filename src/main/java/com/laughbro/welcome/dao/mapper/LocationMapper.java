@@ -20,4 +20,6 @@ public interface LocationMapper {
 
     @Select("select * from location")
     List<Location> select_location_all();
+
+
 }

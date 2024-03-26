@@ -5,6 +5,7 @@ import com.laughbro.welcome.vo.params.task_params.*;
 import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mapper
@@ -66,4 +67,21 @@ public interface TaskMapper {
 
     @Select("select * from task_fulfillment order by comp_time desc")
     List<TaskFulfillment> select_task_fulfillment_all();
+
+
+    ////根据管理员的账号获得其拥有权限的任务集合
+    @Select("SELECT DISTINCT s.* " +
+            "FROM task_sets s " +
+            "JOIN tasks t ON s.set_id = t.set_id " +
+            "WHERE s.applicant = #{id} " +
+            "AND t.location = #{locid} " +
+            "AND t.type LIKE '人脸打卡' " +
+            "AND t.btime<NOW() " +
+            "AND t.dtime>NOW()"
+            )
+    List<TaskSet> get_set_by_managerid_locid_camera(String id, String locid);
+
+    //根据管理员给的setid获得任务，要没有过期，要有摄像头
+    @Select("call sp_get_tasks_by_setid(#{id},#{is_now}) ")
+    List<Task> get_task_by_setid_camera(BigInteger id, int is_now);
 }
