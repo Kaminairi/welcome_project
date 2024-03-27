@@ -52,8 +52,8 @@ public class CameraController {
     private JWTUtils jwtUtils;
     @Autowired
     private HttpServletResponse response;
-    private static String face_filePath = "G:\\goodworkres\\facepic\\";
-    private static String temp_filePath="G:\\goodworkres\\facepic\\temp\\";
+    private static String face_filePath = "D:\\goodworkres\\facepic\\";
+    private static String temp_filePath="D:\\goodworkres\\facepic\\temp\\";
 
     //初始密码
     private static String INIT_PWD = "123456";
@@ -241,10 +241,18 @@ public class CameraController {
                 }
             }
         }
+        //获得绑定后的结果，进行校验
+        List<String> templist=cameraCache.get(cameratoken).getTasklist();
+        if(areListsEqual(templist,dataList)){
+            return Result.success(templist);
+        }else{
+            //移除已经邦迪的内容
+            cameraCache.get(cameratoken).setTasklist(null);
+            return Result.fail(201,"注入失败",templist);
 
-
-        return null;
+        }
     }
+
 
 
     /**
@@ -669,6 +677,23 @@ public class CameraController {
         } catch (Exception e) {
             System.out.println("Error saving base64 string to file: " + e.getMessage());
         }
+    }
+
+    public static boolean areListsEqual(List<String> list1, List<String> list2) {
+        // 检查列表长度是否相等
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        // 逐个比较列表中的元素
+        for (int i = 0; i < list1.size(); i++) {
+            if (!Objects.equals(list1.get(i), list2.get(i))) {
+                return false;
+            }
+        }
+
+        // 如果所有元素都相同，则返回true
+        return true;
     }
 }
 
