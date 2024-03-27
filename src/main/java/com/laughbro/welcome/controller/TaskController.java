@@ -20,7 +20,7 @@ public class TaskController {
      * 【作用】 通过任务组id获取未完成的任务组任务
      */
     @GetMapping("/get/tasks")
-    public Result GetTasks(String setid,Integer is_now){return taskService.GetTasks(setid,is_now);}
+    public Result GetTasks(String setid,String userid,Integer is_now){return taskService.GetTasks(setid,userid,is_now);}
     /**
      * 【作用】 通过id获取任务详细信息
      */

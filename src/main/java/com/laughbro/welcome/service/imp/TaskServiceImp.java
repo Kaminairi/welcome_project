@@ -28,8 +28,8 @@ public class TaskServiceImp implements TaskService {
      * 【作用】 获取任务集合中的具体任务
      */
     @Override
-    public Result GetTasks(String setid,Integer is_now){
-        return Result.success(taskMapper.select_task_by_set_id(setid,is_now));
+    public Result GetTasks(String setid,String userid,Integer is_now){
+        return Result.success(taskMapper.select_task_by_set_id(setid,userid,is_now));
     }
     /**
      * 【调用接口】 /get/task
