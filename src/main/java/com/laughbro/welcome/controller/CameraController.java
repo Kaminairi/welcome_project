@@ -10,6 +10,7 @@ import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.CameraUploadParams;
+import com.laughbro.welcome.vo.params.CameratasksParams;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @RestController
@@ -203,7 +206,9 @@ public class CameraController {
      *绑定了任务，并且创建了任务的文件夹
      */
     @PostMapping("/camera/bindingtask")
-    public Result camera_binding_task(@RequestParam("taskArray") String[] taskArray, String cameratoken){
+    public Result camera_binding_task(@RequestBody CameratasksParams cameratasksParams){
+        String taskArray =cameratasksParams.getTaskArray();
+        String cameratoken =cameratasksParams.getCameratoken();
         Camera camera1=cameraCache.get(cameratoken);
         if(camera1==null){
             return Result.fail(101,"不存在这个相机",null);
@@ -212,9 +217,13 @@ public class CameraController {
         //Camera camera=new Camera("admin_1", new BigInteger(String.valueOf(1234)));
         //cameraCache.put("camera1",camera);
         //
-
+        //解析输入值[x,x,x]
         // 将 String 数组转换为 List
-        List<String> dataList = Arrays.asList(taskArray);
+        List<String> dataList = parseCommaSeparatedValues(taskArray);
+        if(dataList.isEmpty()){
+            return Result.fail(201,"传入的任务集合错误",null);
+        }
+
         //注入绑定任务相机
         cameraCache.get(cameratoken).setTasklist(dataList);
         System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+cameratoken+" 】相机加入相机池");
@@ -694,6 +703,32 @@ public class CameraController {
 
         // 如果所有元素都相同，则返回true
         return true;
+    }
+
+    public static List<String> parseCommaSeparatedValues(String input) {
+        List<String> output = new ArrayList<>();
+
+        if (input.startsWith("[") && input.endsWith("]")) {
+            // 去除首尾的方括号后，按逗号分割字符串
+            String[] parts = input.substring(1, input.length() - 1).split(",");
+
+            Set<String> seen = new HashSet<>();
+
+            for (String part : parts) {
+                String trimmedPart = part.trim();
+
+                if (!seen.contains(trimmedPart)) {
+                    seen.add(trimmedPart);
+                    output.add(trimmedPart);
+                } else {
+                    return null; // 数字重复，返回null表示错误
+                }
+            }
+
+            return output;
+        } else {
+            return null; // 字符串未以方括号包围，返回null表示格式错误
+        }
     }
 }
 
