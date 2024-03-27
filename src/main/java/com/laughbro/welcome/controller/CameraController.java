@@ -9,17 +9,17 @@ import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.CameraUploadParams;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,6 +29,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+
 
 @RestController
 public class CameraController {
@@ -169,7 +173,7 @@ public class CameraController {
     @GetMapping("camera/getset")
     public Result camera_getset(String adminid,String locid){
         List<TaskSet> listset=taskMapper.get_set_by_managerid_locid_camera(adminid,locid);
-        if(listset.get(0)==null)
+        if(listset.isEmpty())
             return Result.fail(111,"没有记录",null);
         return Result.success(listset);
     }
@@ -181,7 +185,7 @@ public class CameraController {
     @GetMapping("camera/gettask")
     public Result camera_gettask(BigInteger setid){
         List<Task> taskList =taskMapper.get_task_by_setid_camera(setid,0);
-        if(taskList.get(0)==null)
+        if(taskList.isEmpty())
             return Result.fail(101,"没有查询结果",null);
         Iterator<Task> iterator = taskList.iterator();
         while (iterator.hasNext()) {
@@ -416,6 +420,11 @@ public class CameraController {
     }
 
 
+
+
+
+
+
     @PostMapping("/uploadImagenew")
     public Result uploadImagenew(@RequestParam("file") MultipartFile file) {
         //判断是否为空
@@ -521,6 +530,145 @@ public class CameraController {
             throw new RuntimeException(e);
         }
         //return null;
+    }
+
+
+
+
+    @PostMapping("/uploadImage2")
+    public Result uploadImage(@RequestBody CameraUploadParams cameraUploadParams) {
+        String base64Content = null;
+        String fileName=null;
+        try {
+            // 提取 base64 编码的图片数据
+            String[] data = cameraUploadParams.getBase64Image().split(",");
+            base64Content = data[1];
+            base64Content = base64Content.replace(" ", "+").replace("\r", "").replace("\n", "").trim();
+            if (base64Content.length() >= 2) {
+                base64Content = base64Content.substring(0, base64Content.length() - 2);
+            }
+            // 解码成字节数组
+            byte[] imageBytes = Base64.getDecoder().decode(base64Content);
+
+            // 生成一个唯一的文件名
+            fileName = cameraUploadParams.getCameratoken()+"_"+UUID.randomUUID().toString() + ".jpg";
+
+            // 将图片数据写入到文件
+            try (OutputStream stream = new FileOutputStream(temp_filePath + fileName)) {
+                stream.write(imageBytes);
+            }
+
+            //return Result.success(fileName);
+        } catch (Exception e) {
+            // 保存处理后待解码的字符串到文件
+            saveBase64StringToFile(base64Content);
+            return Result.fail(201,"Error uploading image: " + e.getMessage(),null);
+        }
+
+
+
+        // 获取以及处理文件名
+
+        int underscoreIndex = fileName.indexOf("_"); // 获取下划线的位置
+        String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分 为相机token
+        Camera camera=cameraCache.get(xxxPart);
+        if(camera==null){
+            return Result.fail(101,"不存在这个相机",null);
+        }
+
+        try {
+            long startTime = System.currentTimeMillis();
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+xxxPart+" 】任务相机端发送文件，保存路径为: " + temp_filePath + fileName);
+            //获得相文件夹
+            List<String> tasklist=cameraCache.get(xxxPart).getTasklist();
+            List<String> taskfilelist=new ArrayList<>();
+            //优化流程
+            Iterator<String> iterator = tasklist.iterator();
+            while (iterator.hasNext()) {
+                String taskid = iterator.next();
+                Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + taskid);
+                if (!Files.list(path).findAny().isPresent()) {
+                    iterator.remove(); // 删除没有文件的文件夹
+                }else {
+                    taskfilelist.add("G:\\goodworkres\\facepic\\taskid_" + taskid);
+                }
+            }
+            //
+            List<String> resultlist = new ArrayList<>();
+
+            //System.out.println("                                                                                                   : 查询任务相关 【 "+task+" 】");
+            //优化判断
+            //Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + task);
+            //如果文件夹内不存在用户就不用启动脚本
+
+            String pyreturn = faceComUtils.faceCompare(temp_filePath + fileName, taskfilelist);
+            // 这里可以对pyreturn进行处理，比如打印或者其他操作
+            //System.out.println("pyreturn: " + pyreturn);
+            //解析答案//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx获得@开头的
+            String[] words = pyreturn.split("#"); // 使用 # 号分割字符串
+            // 逐行打印数组中的元素
+            for (String word : words) {
+                System.out.println("                                                                                                   : py脚本的返回结果 :  # "+word);
+            }
+            System.out.println(" ");
+            for (String word : words) {
+                if (word.startsWith("@")) { // 找出以 @ 开头的单词
+                    String processedWord = word.substring(1); // 去掉单词中以 "@" 开头的字符
+                    resultlist.add(processedWord);
+                    //return Result.success(word);
+                }
+            }
+
+            //String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
+
+            // 记录结束时间
+            long endTime = System.currentTimeMillis();
+
+            // 计算时间差
+            long duration = endTime - startTime;
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 比对人脸耗时【 "+duration+"ms 】");
+            //处理比较结果
+
+
+            //上传人脸记录，修改数据库1.错判2没有结果
+
+
+            //删除本地缓存图片
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //比较
+            return Result.success(resultlist);
+            //faceComUtils.Facecom();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //return null;
+
+
+
+
+
+
+    }
+    //报错处理
+    private void saveBase64StringToFile(String base64Content) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("base64Content.txt"))) {
+            writer.println(base64Content);
+        } catch (Exception e) {
+            System.out.println("Error saving base64 string to file: " + e.getMessage());
+        }
     }
 }
 
