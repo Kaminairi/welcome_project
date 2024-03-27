@@ -20,4 +20,6 @@ public class Task {
     private String img;
     private String examplePic;
     private String isAI;
+
+    private String isfinish;
 }
