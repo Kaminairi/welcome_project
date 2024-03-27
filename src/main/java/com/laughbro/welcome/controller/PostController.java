@@ -106,26 +106,39 @@ public class PostController {
         return postService.PostEdit(params);
     }
 
+    /**
+     * 【作用】管理员论坛首页
+     */
     @GetMapping("/admin/post")
     public Result AdGetPost(int page,int pagesize,int order){
         return postService.AdGetPost(page,pagesize,order);
     }
 
+    /**
+     * 【作用】管理员删除帖子
+     */
     @DeleteMapping("/admin/post/delete")
     public Result AdPostDelete(@RequestBody PostDeleteParams params){
         return postService.PostDelete(params);
     }
-
+    /**
+     * 【作用】管理员发任务贴
+     */
     @PostMapping("/admin/post/for-task")
     public Result AdPostForTask(@RequestBody PostForTaskParams params){
         return postService.PostForTask(params);
     }
 
+    /**
+     * 【作用】管理员发常规贴
+     */
     @PostMapping("/admin/post/normal")
     public Result AdPostNormal(@RequestBody PostNormalParams params){
         return postService.PostNormal(params);
     }
-
+    /**
+     * 【作用】管理员搜索帖子
+     */
     @GetMapping("/admin/post/for-keyword")
     public Result AdPostSearch(String keyword){
         return postService.GetPostByKeyWord(keyword);

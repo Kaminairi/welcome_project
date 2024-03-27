@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.PostMapper;
 import com.laughbro.welcome.dao.pojo.Post;
 import com.laughbro.welcome.service.PostService;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result PostForTask(PostForTaskParams params){
-        if(params.getTitle()!=""&&params.getContain()!=""){
+        if(params.getTitle().replaceAll(" ","")!=""&&params.getContain().replaceAll(" ","")!=""){
             postMapper.insert_post_task(params);
             return Result.success("发帖成功！");
         }else{
@@ -43,7 +44,7 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result PostNormal(PostNormalParams params){
-        if(params.getTitle()!=""&&params.getContain()!=""){
+        if(params.getTitle().replaceAll(" ","")!=""&&params.getContain().replaceAll(" ","")!=""){
             postMapper.insert_post_normal(params);
             return Result.success("发帖成功！");
         }else{
@@ -93,10 +94,11 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result GetPostByKeyWord(String keyword){
-        if(postMapper.select_post_by_key_word(keyword).isEmpty()){
+        List<Post> list=postMapper.select_post_by_key_word(keyword);
+        if(list.isEmpty()){
             return Result.success("还没有相关内容");
         }else{
-            return Result.success(postMapper.select_post_by_key_word(keyword));
+            return Result.success(list);
         }
     }
     /**
@@ -178,18 +180,20 @@ public class PostServiceImp implements PostService {
             return Result.success("要点赞的帖子消失了");
         }
     }
+    /**
+     * 【调用接口】 /admin/post
+     * 【作用】 管理员论坛首页
+     */
     @Override
-    public Result AdGetPost(int page,int pagesize,int order){
+    public PageResult AdGetPost(int page, int pagesize, int order){
+        PageHelper.startPage(page, pagesize);
+        Page<Post> p;
         if(order==0) {
-            PageHelper.startPage(page, pagesize);
-            Page<Post> p = (Page<Post>) postMapper.select_post_all("desc");
-            return Result.success(p.getResult());
+            p = (Page<Post>) postMapper.select_post_all("desc");
         }else{
-            PageHelper.startPage(page, pagesize);
-            Page<Post> p = (Page<Post>) postMapper.select_post_all("asc");
-            return Result.success(p.getResult());
+            p = (Page<Post>) postMapper.select_post_all("asc");
         }
-
+        return p.isEmpty()?PageResult.success("暂时没有内容",0):PageResult.success(p.getResult(),p.getTotal()/pagesize+1);
     }
 
 }

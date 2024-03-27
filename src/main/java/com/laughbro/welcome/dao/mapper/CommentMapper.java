@@ -284,6 +284,13 @@ public interface CommentMapper {
             "where " +
             "fa_post = #{postid}")
     public int delete_comments_sons_by_fa_post(BigInteger postid);
+    /**
+     * 【调用接口】 /admin/comment/search
+     * 【作用】 管理员搜索评论
+     * ‘
+     * @param
+     * @return
+     */
     @Select("select users.name as creatername,users.img as createrimg,comments.* from users,comments where contain like concat('%',#{keyWord},'%') and comments.creator=users.id")
     List<Comment> select_comments_by_keyword(String keyword);
 }

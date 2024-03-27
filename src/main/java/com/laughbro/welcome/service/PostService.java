@@ -1,5 +1,6 @@
 package com.laughbro.welcome.service;
 
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.*;
 
@@ -28,5 +29,5 @@ public interface PostService {
 
     Result PostLike(String postid);
 
-    Result AdGetPost(int page,int pagesize,int order);
+    PageResult AdGetPost(int page, int pagesize, int order);
 }

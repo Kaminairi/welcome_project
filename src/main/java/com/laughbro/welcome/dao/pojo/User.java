@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class User {
     private String id;
-    private String class_id;
+    private String classId;
     private String name;
     private String pwd;
     private String sex;

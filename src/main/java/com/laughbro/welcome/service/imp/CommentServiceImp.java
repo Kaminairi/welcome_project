@@ -129,7 +129,7 @@ public class CommentServiceImp implements CommentService {
     }
     @Override
     public Result comment_list_keyword(String keyword){
-        if(commentMapper.select_comments_by_keyword(keyword)!=null){
+        if(!commentMapper.select_comments_by_keyword(keyword).isEmpty()){
             return Result.success(commentMapper.select_comments_by_keyword(keyword));
         }else{
             return Result.success("暂无相关评论");

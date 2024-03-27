@@ -77,12 +77,16 @@ public class CommentController {
     public Result comment_update_unread_one(@RequestBody CommentComParams commentComParams){
         return commentService.comment_update_unread_one(commentComParams);
     }
-
+    /**
+     * 【作用】 管理员删除评论
+     */
     @DeleteMapping("/admin/comment/delete")
     public Result Adcomment_delete(@RequestBody CommentComParams commentComParams){
         return commentService.comment_delete(commentComParams);
     }
-
+    /**
+     * 【作用】 管理员搜索评论
+     */
     @GetMapping("admin/comment/serch")
     public Result comment_serch(String keyword){
         return commentService.comment_list_keyword(keyword);

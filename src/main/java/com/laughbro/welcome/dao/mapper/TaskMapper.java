@@ -41,7 +41,13 @@ public interface TaskMapper {
     @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{TaskConfirm.userid},#{TaskConfirm.taskid},#{TaskConfirm.time})")
     void insert_task_fulfillment(@Param("TaskConfirm")TaskConfirm taskConfirm);
 
-    @Select("select user_id,users.name,users.img,count(user_id) as passnum from task_fulfillment,users where user_id=users.id order by passnum desc")
+    @Select("SELECT * FROM (" +
+            "                  SELECT user_id,users.img,users.name,COUNT(task_fulfillment.user_id) AS passnum" +
+            "                  FROM task_fulfillment,users " +
+            "                  where user_id=users.id " +
+            "                  GROUP BY user_id" +
+            "              ) AS subquery" +
+            " order by passnum DESC")
     List<TaskSort> selse_task_fulfillment_all();
     @Insert("insert into task_sets(name,applicant,ctime,is_set_due,is_mainline,etime) values(#{TaskSetPostParams.name},#{TaskSetPostParams.applicant},#{TaskSetPostParams.ctime},#{TaskSetPostParams.IsSetDue},#{TaskSetPostParams.IsMainline},#{TaskSetPostParams.etime})")
     Integer insert_taskset(@Param("TaskSetPostParams")TaskSetPostParams params);
