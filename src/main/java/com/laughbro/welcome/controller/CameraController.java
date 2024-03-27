@@ -12,6 +12,7 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.CameraUploadParams;
 import com.laughbro.welcome.vo.params.CameratasksParams;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,21 +41,21 @@ import java.util.regex.Pattern;
 @RestController
 public class CameraController {
     @Autowired
-    private OSSUtils OSSUtils;//用于下载与上传
+            private OSSUtils OSSUtils;  //用于下载与上传
     @Autowired
-    private FaceComUtils faceComUtils;
+            private FaceComUtils faceComUtils;  //用于调用脚本
     @Autowired
-    private TimeUtils timeUtils;
+            private TimeUtils timeUtils;  //用于获得最新的时间
     @Autowired
             private TaskMapper taskMapper;
     @Autowired
             private ManagerMapper managerMapper;
     @Autowired
-    private LocationMapper locationMapper;
+            private LocationMapper locationMapper;
     @Autowired
-    private JWTUtils jwtUtils;
+            private JWTUtils jwtUtils;  //token生成
     @Autowired
-    private HttpServletResponse response;
+            private HttpServletResponse response;
     private static String face_filePath = "D:\\goodworkres\\facepic\\";
     private static String temp_filePath="D:\\goodworkres\\facepic\\temp\\";
 
@@ -67,7 +68,9 @@ public class CameraController {
     //相机池子
     private static Map<String, Camera> cameraCache =new ConcurrentHashMap<>();
 
-
+    /**
+     *
+     */
 
 
     /**
@@ -160,6 +163,9 @@ public class CameraController {
             return Result.success(manager);//返回特殊值
         }
     }
+    /**
+     *相机绑定地点
+     */
 
     @PostMapping("/camera/bindingloc")
     public Result camera_binding_loc(BigInteger locid,String cameratoken){
@@ -219,8 +225,10 @@ public class CameraController {
         //
         //解析输入值[x,x,x]
         // 将 String 数组转换为 List
-        List<String> dataList = parseCommaSeparatedValues(taskArray);
-        if(dataList.isEmpty()){
+
+        List<String> dataList =new ArrayList<>();
+        dataList=parseCommaSeparatedValues(taskArray);
+        if(dataList==null||dataList.isEmpty()){
             return Result.fail(201,"传入的任务集合错误",null);
         }
 
@@ -687,6 +695,9 @@ public class CameraController {
             System.out.println("Error saving base64 string to file: " + e.getMessage());
         }
     }
+    /**
+     *判断两个list是否相等
+     */
 
     public static boolean areListsEqual(List<String> list1, List<String> list2) {
         // 检查列表长度是否相等
@@ -704,6 +715,9 @@ public class CameraController {
         // 如果所有元素都相同，则返回true
         return true;
     }
+    /**
+     *解析绑定任务的接口的字符串[xx,x,x,x]转化为list<string>
+     */
 
     public static List<String> parseCommaSeparatedValues(String input) {
         List<String> output = new ArrayList<>();
@@ -721,15 +735,60 @@ public class CameraController {
                     seen.add(trimmedPart);
                     output.add(trimmedPart);
                 } else {
+                    System.out.println("数字重复，返回null表示错误"); //
                     return null; // 数字重复，返回null表示错误
                 }
             }
 
-            return output;
+            // 判断生成的内容是否都是数字
+            if (output.stream().allMatch(s -> s.matches("\\d+"))) {
+                return output;
+            } else {
+                System.out.println("生成内容不全为数字，返回null表示错误"); //
+                return null; // 生成内容不全为数字，返回null表示错误
+            }
         } else {
+            System.out.println("字符串未以方括号包围，返回null表示格式错误"); //
             return null; // 字符串未以方括号包围，返回null表示格式错误
         }
     }
+
+
+@Test
+    public  void parseCommaSeparatedValues2() {
+       String input="[1,3,9,2x]";
+        List<String> output = new ArrayList<>();
+
+        if (input.startsWith("[") && input.endsWith("]")) {
+            // 去除首尾的方括号后，按逗号分割字符串
+            String[] parts = input.substring(1, input.length() - 1).split(",");
+
+            Set<String> seen = new HashSet<>();
+
+            for (String part : parts) {
+                String trimmedPart = part.trim();
+
+                if (!seen.contains(trimmedPart)) {
+                    seen.add(trimmedPart);
+                    output.add(trimmedPart);
+                } else {
+                    System.out.println("数字重复，返回null表示错误"); //
+                }
+            }
+
+            // 判断生成的内容是否都是数字
+            if (output.stream().allMatch(s -> s.matches("\\d+"))) {
+                System.out.println(output);
+            } else {
+                System.out.println("生成内容不全为数字，返回null表示错误"); //
+            }
+        } else {
+            System.out.println("字符串未以方括号包围，返回null表示格式错误"); //
+        }
+    }
+
+
+
 }
 
 
