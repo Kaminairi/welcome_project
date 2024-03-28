@@ -21,8 +21,8 @@ public interface BagMapper {
             "FROM item_possession ,items " +
             "WHERE item_possession.user_id LIKE #{id} " +
             "AND item_possession.item_id=items.id")
-    public List<Item> select_itemown_all_by_id(Page<Item> page, String id);
-
+    //public List<Item> select_itemown_all_by_id(Page<Item> page, String id);
+    public List<Item> select_itemown_all_by_id( String id);
 
     /**
      * 【调用接口】

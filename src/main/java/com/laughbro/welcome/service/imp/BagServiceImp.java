@@ -20,7 +20,7 @@ public class BagServiceImp implements BagService{
     @Override
     public Result bag_viewall(String userid){
         Page<Item> page = new Page<>(1, 4);
-        List<Item> userbag = bagMapper.select_itemown_all_by_id(page,userid);
+        List<Item> userbag = bagMapper.select_itemown_all_by_id(userid);
 
 
         return Result.success(userbag);
