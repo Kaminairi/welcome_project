@@ -2,12 +2,15 @@ package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.service.OssService;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.OssUpLoadParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
 
 @RestController
@@ -43,6 +46,25 @@ public class OssController {
     public Result ossUpload_task(@RequestParam("file") MultipartFile file) throws IOException {
         String upload_path="task/";
         return Result.success(ossService.uploadfile(file,upload_path));
+    }
+
+
+    @PostMapping("uploadfile/base64")
+    public Result ossUpload_base64(@RequestBody OssUpLoadParams ossUpLoadParams) throws IOException {
+
+        String upload_path="testbase64/";
+        String base64Content = null;
+        //解码
+        String[] data = ossUpLoadParams.getBase64().split(",");
+        base64Content = data[1];
+        base64Content = base64Content.replace(" ", "+").replace("\r", "").replace("\n", "").trim();
+        if (base64Content.length() >= 2) {
+            base64Content = base64Content.substring(0, base64Content.length() - 2);
+        }
+        // 解码成字节数组
+        byte[] fileBytes = Base64.getDecoder().decode(base64Content);
+        MultipartFile multipartFile = new MockMultipartFile("file", ossUpLoadParams.getFilename()+".jpg", "image/jpeg", fileBytes);
+        return Result.success(ossService.uploadfile(multipartFile,upload_path));
     }
 
 }
