@@ -14,6 +14,7 @@ import com.laughbro.welcome.service.OssService;
 
 import com.laughbro.welcome.vo.params.Ossparam;
 
+import org.junit.Test;
 import org.python.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,6 +123,27 @@ public class OssServiceImp implements OssService {
         //String url = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1] + "/" + fileName;
         ossClient.shutdown();
         return upload_path;
+    }
+    @Override
+    public boolean isFileUploaded(String filePath) {
+        OSS ossClient = new OSSClientBuilder().build(ossParam.getEndpoint(), ossParam.getAccessKeyId(), ossParam.getAccessKeySecret());
+        boolean exists = ossClient.doesObjectExist(ossParam.getBucketName(), filePath);
+        ossClient.shutdown();
+
+        return exists;
+    }
+
+
+
+@Test
+    public void isFileUploaded2( ) {
+
+        String filePath="task/D:\\goodworkres\\facepic\\temp\\38bbd51a6a97_8f769fba-6191-40c7-8dbc-3f7be40dd15c.jpg";
+
+        boolean exists = isFileUploaded(filePath);
+        if(exists)
+            System.out.println("yes");
+       //return exists;
     }
 
 

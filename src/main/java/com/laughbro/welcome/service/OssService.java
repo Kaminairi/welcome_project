@@ -20,4 +20,6 @@ public interface OssService {
 
 
     String uploadfile(MultipartFile file, String upload_path) throws IOException;
+
+    boolean isFileUploaded(String filePath);
 }

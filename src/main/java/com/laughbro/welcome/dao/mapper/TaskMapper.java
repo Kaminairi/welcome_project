@@ -128,8 +128,16 @@ public interface TaskMapper {
     List<TaskSet> get_set_by_managerid_locid_camera(String id, String locid);
 
     //根据管理员给的setid获得任务，要没有过期，要有摄像头
-    @Select("call sp_get_tasks_by_setid(#{id},#{is_now}) ")
-    List<Task> get_task_by_setid_camera(BigInteger id, int is_now);
+    @Select(" SELECT t.*  " +
+            "    FROM `tasks` t " +
+            "    WHERE  " +
+            "        t.`set_id` = #{id} " +
+            "        AND t.`btime` < NOW() " +
+            "        AND t.`dtime` > NOW() ")
+    List<Task> get_task_by_setid_camera(BigInteger id);
+    @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{userid},#{askid},#{time})")
+    void insert_task_fulfillment_camera(String userid,BigInteger taskid,String time);
     @Delete("delete from task_fulfillment where task_id=#{id}")
     Integer delete_task_fulfillment_by_taskid(String id);
+
 }

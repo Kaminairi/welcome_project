@@ -40,7 +40,7 @@ public class OSSUtils {
 
     public  void download_pkl(String filepath, String userid) throws Exception {
         //newgoodwork/users/facecompare/facepkl/
-        String urlString="https://newgoodwork.oss-cn-hangzhou.aliyuncs.com/users/facecompare/facepkl/"+userid+"_feature.pkl"
+        String urlString="https://newgoodwork.oss-cn-hangzhou.aliyuncs.com/users/facecompare/facepkl/"+userid+".pkl"
                 ;
         URL url = new URL(urlString);
         // 打开连接
@@ -52,7 +52,7 @@ public class OSSUtils {
         // 读取到的数据长度
         int len;
         // 输出的文件流
-        String filename = filepath+"/"+userid+"_feature.pkl";  //下载路径及下载图片名称
+        String filename = filepath+"/"+userid+".pkl";  //下载路径及下载图片名称
         File file = new File(filename);
         FileOutputStream os = new FileOutputStream(file, true);
         // 开始读取

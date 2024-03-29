@@ -1,9 +1,8 @@
 package com.laughbro.welcome.controller;
 
-import com.laughbro.welcome.dao.mapper.LocationMapper;
-import com.laughbro.welcome.dao.mapper.ManagerMapper;
-import com.laughbro.welcome.dao.mapper.TaskMapper;
+import com.laughbro.welcome.dao.mapper.*;
 import com.laughbro.welcome.dao.pojo.*;
+import com.laughbro.welcome.service.OssService;
 import com.laughbro.welcome.utils.FaceComUtils;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
@@ -16,10 +15,12 @@ import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -53,9 +54,17 @@ public class CameraController {
     @Autowired
             private LocationMapper locationMapper;
     @Autowired
+    private CameraLogMapper cameraLogMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
             private JWTUtils jwtUtils;  //token生成
     @Autowired
             private HttpServletResponse response;
+    @Autowired
+    private OSSUtils ossUtilsl;
+    @Autowired
+    private OssService ossService;
     private static String face_filePath = "D:\\goodworkres\\facepic\\";
     private static String temp_filePath="D:\\goodworkres\\facepic\\temp\\";
 
@@ -193,13 +202,13 @@ public class CameraController {
     //根据任务集合获得在执行期间且type为人脸识别的任务
     @GetMapping("camera/gettask")
     public Result camera_gettask(BigInteger setid){
-        List<Task> taskList =taskMapper.get_task_by_setid_camera(setid,0);
+        List<Task> taskList =taskMapper.get_task_by_setid_camera(setid);
         if(taskList.isEmpty())
             return Result.fail(101,"没有查询结果",null);
         Iterator<Task> iterator = taskList.iterator();
         while (iterator.hasNext()) {
             Task task = iterator.next();
-            if ("人脸打卡".equals(task.getType())) {
+            if (!"人脸打卡".equals(task.getType())) {
                 iterator.remove(); // 删除类型为“人脸识别”的任务
             }
         }
@@ -340,10 +349,9 @@ public class CameraController {
         String userid=cameraFaceParams.getUserid();
         BigInteger taskid =cameraFaceParams.getTaskid();
         faceCache.remove(userid);
-        System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          :【 "+userid+" 】用户离开任务【 "+taskid+" 】临时池");
 
         // 指定要删除的文件路径
-        String folderPath = this.face_filePath + "taskid_" + taskid + "\\" + userid + "_feature.pkl";
+        String folderPath = this.face_filePath + "taskid_" + taskid + "\\" + userid + ".pkl";
         // 创建 File 对象
         File file = new File(folderPath);
         // 尝试删除文件
@@ -352,6 +360,7 @@ public class CameraController {
             // 文件存在，尝试删除
             if (file.delete()) {
                 System.out.println("                                                                                                   : 文件删除成功！" + folderPath);
+                System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          :【 "+userid+" 】用户离开任务【 "+taskid+" 】临时池");
 
             } else {
                 System.out.println("                                                                                                   : 文件删除失败！" + folderPath);
@@ -446,11 +455,6 @@ public class CameraController {
         }
         //return null;
     }
-
-
-
-
-
 
 
     @PostMapping("/uploadImagenew")
@@ -560,13 +564,12 @@ public class CameraController {
         //return null;
     }
 
-
-
-
     @PostMapping("/uploadImage2")
     public Result uploadImage(@RequestBody CameraUploadParams cameraUploadParams) {
         String base64Content = null;
-        String fileName=null;
+        String fileName;
+
+        //对base64的信息进行处理----------------------------------------------------------------------------------------------------------------------------------
         try {
             // 提取 base64 编码的图片数据
             String[] data = cameraUploadParams.getBase64Image().split(",");
@@ -577,62 +580,42 @@ public class CameraController {
             }
             // 解码成字节数组
             byte[] imageBytes = Base64.getDecoder().decode(base64Content);
-
             // 生成一个唯一的文件名
             fileName = cameraUploadParams.getCameratoken()+"_"+UUID.randomUUID().toString() + ".jpg";
-
             // 将图片数据写入到文件
             try (OutputStream stream = new FileOutputStream(temp_filePath + fileName)) {
                 stream.write(imageBytes);
             }
-
-            //return Result.success(fileName);
         } catch (Exception e) {
-            // 保存处理后待解码的字符串到文件
+            // 如果失败保存处理后待解码的字符串到文件
             saveBase64StringToFile(base64Content);
             return Result.fail(201,"Error uploading image: " + e.getMessage(),null);
         }
 
-
-
-        // 获取以及处理文件名
-
-        int underscoreIndex = fileName.indexOf("_"); // 获取下划线的位置
-        String xxxPart = fileName.substring(0, underscoreIndex); // 使用 substring 方法获取 xxx 部分 为相机token
-        Camera camera=cameraCache.get(xxxPart);
+        // 获取以及处理文件---------------------------------------------------------------------------------------------------------------------------------------------
+        String cameratoken=cameraUploadParams.getCameratoken();
+        Camera camera=cameraCache.get(cameratoken);//获得对应的相机对象
         if(camera==null){
             return Result.fail(101,"不存在这个相机",null);
         }
 
         try {
             long startTime = System.currentTimeMillis();
-            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+xxxPart+" 】任务相机端发送文件，保存路径为: " + temp_filePath + fileName);
+            System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          : 【 "+cameratoken+" 】任务相机端发送文件，保存路径为: " + temp_filePath + fileName);
             //获得相文件夹
-            List<String> tasklist=cameraCache.get(xxxPart).getTasklist();
+            List<String> tasklist=cameraCache.get(cameratoken).getTasklist();
             List<String> taskfilelist=new ArrayList<>();
-            //优化流程
             Iterator<String> iterator = tasklist.iterator();
             while (iterator.hasNext()) {
                 String taskid = iterator.next();
-                Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + taskid);
-                if (!Files.list(path).findAny().isPresent()) {
-                    iterator.remove(); // 删除没有文件的文件夹
-                }else {
-                    taskfilelist.add("G:\\goodworkres\\facepic\\taskid_" + taskid);
-                }
+                taskfilelist.add("D:\\goodworkres\\facepic\\taskid_" + taskid);
+
             }
-            //
+            //调用脚本得到结果------------------------------------------------------------------------------------------------------------------------------------------
             List<String> resultlist = new ArrayList<>();
-
-            //System.out.println("                                                                                                   : 查询任务相关 【 "+task+" 】");
-            //优化判断
-            //Path path = Paths.get("G:\\goodworkres\\facepic\\taskid_" + task);
-            //如果文件夹内不存在用户就不用启动脚本
-
+            //调用脚本
             String pyreturn = faceComUtils.faceCompare(temp_filePath + fileName, taskfilelist);
-            // 这里可以对pyreturn进行处理，比如打印或者其他操作
-            //System.out.println("pyreturn: " + pyreturn);
-            //解析答案//xxxxxx#xxxxxxxx#xxxxxxxx#xxxxxxx#@XXXXXXXXXX#xxxxxxxx获得@开头的
+            //处理返回结果
             String[] words = pyreturn.split("#"); // 使用 # 号分割字符串
             // 逐行打印数组中的元素
             for (String word : words) {
@@ -647,8 +630,6 @@ public class CameraController {
                 }
             }
 
-            //String pyreturn=faceComUtils.Facecompare(filePath, "G:\\goodworkres\\facepic\\taskid_"+xxxPart);
-
             // 记录结束时间
             long endTime = System.currentTimeMillis();
 
@@ -658,25 +639,48 @@ public class CameraController {
             //处理比较结果
 
 
-            //上传人脸记录，修改数据库1.错判2没有结果
+            //上传人脸记录,保存数据库-------------------------------------------------------------------------------------------------------------------------------------------
+            String upload_path="tasks/facecomparetasks/";
+            /// 读取本地文件内容为字节数组
+            byte[] fileContent = Files.readAllBytes(new File(temp_filePath + fileName).toPath());
+            // 创建StandardMultipartFile对象
+            MultipartFile multipartFile = new MockMultipartFile("file", fileName, "image/jpeg", fileContent);
+            ossService.uploadfile(multipartFile,upload_path+cameraUploadParams.getCameratoken()+"/");
+            if(ossService.isFileUploaded(upload_path+ fileName)){
+                //上传成功就删除本地
+                delatetempfile(temp_filePath + fileName);
+                //导入数据库,并且完成任务
+
+                int size = Math.min(tasklist.size(), resultlist.size());
+                for (int i = 0; i < size; i++) {
+                    BigInteger taskid = new BigInteger(tasklist.get(i));
+                    String nextResult = resultlist.get(i);
+                    int addnum = cameraLogMapper.insert_cameralog_add(camera.getManagerid(), camera.getLocid(), taskid, upload_path + fileName, timeUtils.timeGetNow(), nextResult, 0);
+                    System.out.println(addnum + "    111");
+                    if(!nextResult.equals("nofind")){
+                        User user=userMapper.select_user_all_by_id(nextResult.replaceAll("\\s+", ""));
+                        if(user!=null){
+                            //注入完成记录表
+                            taskMapper.insert_task_fulfillment_camera(nextResult.replaceAll("\\s+", ""),taskid,timeUtils.timeGetNow());
+                        }
+
+                    }else{
+                        System.out.println("记录为onfind,没有注入");
+                    }
 
 
-            //删除本地缓存图片
+                }
+                //进行任务完成的判定
+
+                System.out.println("oss上有该文件");
+            }else{
+                //上传失败则删除本地
+                delatetempfile(temp_filePath + fileName);
+                return Result.fail(201,"人脸识别oss传输失败，已经删除本地文件，请再次识别",null);
+            }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-            //比较
             return Result.success(resultlist);
             //faceComUtils.Facecom();
         } catch (IOException e) {
@@ -692,7 +696,8 @@ public class CameraController {
     }
     //报错处理
     private void saveBase64StringToFile(String base64Content) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter("base64Content.txt"))) {
+        String time = timeUtils.timeGetNow();
+        try (PrintWriter writer = new PrintWriter(new FileWriter(time+"failbase64Content.txt"))) {
             writer.println(base64Content);
         } catch (Exception e) {
             System.out.println("Error saving base64 string to file: " + e.getMessage());
@@ -756,37 +761,21 @@ public class CameraController {
         }
     }
 
-
-@Test
-    public  void parseCommaSeparatedValues2() {
-       String input="[1,3,9,2x]";
-        List<String> output = new ArrayList<>();
-
-        if (input.startsWith("[") && input.endsWith("]")) {
-            // 去除首尾的方括号后，按逗号分割字符串
-            String[] parts = input.substring(1, input.length() - 1).split(",");
-
-            Set<String> seen = new HashSet<>();
-
-            for (String part : parts) {
-                String trimmedPart = part.trim();
-
-                if (!seen.contains(trimmedPart)) {
-                    seen.add(trimmedPart);
-                    output.add(trimmedPart);
-                } else {
-                    System.out.println("数字重复，返回null表示错误"); //
-                }
-            }
-
-            // 判断生成的内容是否都是数字
-            if (output.stream().allMatch(s -> s.matches("\\d+"))) {
-                System.out.println(output);
+    public static boolean delatetempfile(String filepath){
+        File file = new File(filepath);
+        // 检查文件是否存在
+        if (file.exists()) {
+            // 尝试删除文件
+            if (file.delete()) {
+                System.out.println("文件删除成功"+temp_filePath + filepath);
+                return true;
             } else {
-                System.out.println("生成内容不全为数字，返回null表示错误"); //
+                System.out.println("无法删除文件");
+                return false;
             }
         } else {
-            System.out.println("字符串未以方括号包围，返回null表示格式错误"); //
+            System.out.println("文件不存在");
+            return false;
         }
     }
 
