@@ -9,6 +9,7 @@ import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
+import com.laughbro.welcome.vo.params.CameraFaceParams;
 import com.laughbro.welcome.vo.params.CameraUploadParams;
 import com.laughbro.welcome.vo.params.CameratasksParams;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
@@ -304,7 +305,9 @@ public class CameraController {
      */
     //当人的定位进入这个任务范围，就把他塞入存储
     @PostMapping("faceIn")
-    public Result faceIn(String userid, BigInteger taskid) throws Exception {
+    public Result faceIn(@RequestBody CameraFaceParams cameraFaceParams) throws Exception {
+        String userid=cameraFaceParams.getUserid();
+        BigInteger taskid =cameraFaceParams.getTaskid();
         //录入这个人物
         faceCache.put(userid, taskid);
         System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          :【 "+userid+" 】用户加入任务【 "+taskid+" 】临时池");
@@ -334,8 +337,9 @@ public class CameraController {
 
     //移除这个人物
     @DeleteMapping("/faceOut")
-    public Result faceOut(String userid, BigInteger taskid) {
-
+    public Result faceOut(@RequestBody CameraFaceParams cameraFaceParams) {
+        String userid=cameraFaceParams.getUserid();
+        BigInteger taskid =cameraFaceParams.getTaskid();
         faceCache.remove(userid);
         System.out.println(timeUtils.timeGetNow()+"      "+"ABAB 14415 --- [               ]                                          :【 "+userid+" 】用户离开任务【 "+taskid+" 】临时池");
 
