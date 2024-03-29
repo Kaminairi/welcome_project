@@ -35,56 +35,79 @@ public class TaskController {
     public Result GetTaskAll(String userid){
         return taskService.GetTaskAll(userid);
     }
+    /**
+     * 【作用】 公告任务确认键
+     */
     @PostMapping("/task/confirm")
     public Result TaskConfirm(@RequestBody TaskConfirm taskConfirm){
         return taskService.FinishConfirmTask(taskConfirm);
     }
-
+    /**
+     * 【作用】 管理员发布任务集合
+     */
     @RequestMapping("/admin/post/taskset")
     public Result AdPostTaskSet(@RequestBody TaskSetPostParams params){
         return taskService.AdPostTaskSet(params);
     }
-
+    /**
+     * 【作用】 管理员获取任务集合
+     */
     @RequestMapping("/admin/get/taskset")
     public Result AdPostTaskSet(){
         return taskService.AdGetTaskSets();
     }
-
+    /**
+     * 【作用】 管理员发布任务
+     */
     @RequestMapping("/admin/post/task")
     public Result AdPosttask(@RequestBody TaskPostParams params){
         return taskService.AdPostTask(params);
     }
-
+    /**
+     * 【作用】 管理员删除任务
+     */
     @RequestMapping("/admin/delete/task")
     public Result AdDeleteTask(@RequestBody TaskParams params){
         return taskService.AdDeleteTask(params);
     }
-
+    /**
+     * 【作用】 管理员编辑任务
+     */
     @RequestMapping("/admin/edit/task")
     public Result AdEditTask(@RequestBody TaskEditParams params){
         return taskService.AdEditTask(params);
     }
-
+    /**
+     * 【作用】 管理员获取集合中的任务
+     */
     @RequestMapping("/admin/gettask/bysetid")
     public Result AdGetTaskBySetId(String setid){
         return taskService.AdGetTaskBySetId(setid);
     }
-
+    /**
+     * 【作用】 管理员搜索任务
+     */
     @RequestMapping("/admin/gettask/bykeyword")
     public Result AdGetTaskByKeyword(String keyword){
         return taskService.AdGetTaskByKeyword(keyword);
     }
-
+    /**
+     * 【作用】 管理员查看提交
+     */
     @RequestMapping("/admin/check/tasksubmit")
     public Result AdGetTaskPic(){
         return taskService.GetTaskPic();
     }
-
+    /**
+     * 【作用】 管理员审核通过任务提交
+     */
     @RequestMapping("/admin/pass/tasksubmit")
     public Result AdPassTaskPic(@RequestBody TaskPicParams params){
         return taskService.PassTaskPic(params);
     }
-
+    /**
+     * 【作用】 管理员获取完成记录
+     */
     @RequestMapping("/admin/get/taskfulfillment")
     public Result AdGetTaskFulfillment(){
         return taskService.GetTaskFulfillment();

@@ -1,6 +1,10 @@
 package com.laughbro.welcome.service.imp;
 
 import com.laughbro.welcome.dao.mapper.TaskMapper;
+import com.laughbro.welcome.dao.pojo.Task;
+import com.laughbro.welcome.dao.pojo.TaskFulfillment;
+import com.laughbro.welcome.dao.pojo.TaskPic;
+import com.laughbro.welcome.dao.pojo.TaskSet;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class TaskServiceImp implements TaskService {
@@ -54,45 +59,119 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result FinishConfirmTask(TaskConfirm taskConfirm){
         taskMapper.insert_task_fulfillment(taskConfirm);
-        return Result.success(null);
+        return Result.success("任务完成!");
     }
+    /**
+     * 【作用】 管理员发布任务集合
+     */
     @Override
     public Result AdPostTaskSet(TaskSetPostParams params){
-        return Result.success(taskMapper.insert_taskset(params));
-    }
+        try {
+            if(taskMapper.insert_taskset(params)==1){
+                return Result.success("发布成功");
+            }else{
+                return Result.fail(100,"fail","发布失败");
+            }
+        }catch (Exception e){
+            return Result.fail(100,"fail","发布失败");
+        }
 
+    }
+    /**
+     * 【作用】 管理员获取任务集合
+     */
     @Override
     public Result AdGetTaskSets(){
-        return Result.success(taskMapper.select_tasksets_all());
+        List<TaskSet> list=taskMapper.select_tasksets_all();
+        if(list.isEmpty()){
+            return Result.success("暂时还没有任务集合");
+        }else{
+            return Result.success(list);
+        }
     }
-
+    /**
+     * 【作用】 管理员发布任务
+     */
     @Override
     public Result AdPostTask(TaskPostParams params){
-        return Result.success(taskMapper.insert_task(params));
-    }
+        try{
+            if(taskMapper.insert_task(params)==1){
+                return Result.success("发布成功");
+            }else{
+                return Result.fail(100,"fail","发布失败");
+            }
+        }catch (Exception e){
+            return Result.fail(100,"fail","发布失败");
+        }
 
+    }
+    /**
+     * 【作用】 管理员删除任务
+     */
     @Override
     public Result AdDeleteTask(TaskParams params){
-        return Result.success(taskMapper.delete_task_by_id(params.getId()));
+        if(taskMapper.delete_task_by_id(params.getId())==1){
+            taskMapper.delete_task_fulfillment_by_taskid(params.getId());
+            return Result.success("删除成功");
+        }else{
+            return Result.fail(100,"fail","删除失败");
+        }
     }
-
+    /**
+     * 【作用】 管理员编辑任务
+     */
     @Override
     public Result AdEditTask(TaskEditParams params){
-        return Result.success(taskMapper.update_task_by_id(params));
+        try {
+            if(taskMapper.update_task_by_id(params)==1){
+                return Result.success("修改成功");
+            }else{
+                return Result.fail(100,"fail","修改失败");
+            }
+        }catch (Exception e){
+            return Result.fail(100,"fail","修改失败");
+        }
+
     }
+    /**
+     * 【作用】 管理员获取集合中的任务
+     */
     @Override
     public Result AdGetTaskBySetId(String setid){
-        return Result.success(taskMapper.select_task_by_set_id_ad(setid));
+        List<Task> list=taskMapper.select_task_by_set_id_ad(setid);
+        if(list.isEmpty()){
+            return Result.success("暂时还没有任务");
+        }else{
+            return Result.success(list);
+        }
     }
-
+    /**
+     * 【作用】 管理员搜索任务
+     */
     @Override
     public Result AdGetTaskByKeyword(String keyword){
-        return Result.success(taskMapper.select_task_by_keyword(keyword));
+        List<Task> list=taskMapper.select_task_by_keyword(keyword);
+        if(list.isEmpty()){
+            return Result.success("没有相关任务");
+        }else{
+            return Result.success(list);
+        }
     }
+    /**
+     * 【作用】 管理员查看提交
+     */
     @Override
     public Result GetTaskPic(){
-        return Result.success(taskMapper.select_taskpic_all());
+        List<TaskPic> list=taskMapper.select_taskpic_all();
+        if(list.isEmpty()){
+            return Result.success("还没有提交记录");
+        }else{
+            return Result.success(list);
+        }
     }
+    /**
+     * 【作用】 管理员审核通过任务提交
+     */
     @Override
     public Result PassTaskPic(TaskPicParams params){
         taskMapper.update_taskpic(params);
@@ -104,10 +183,18 @@ public class TaskServiceImp implements TaskService {
         String formatDateTime = now.format(formatter);
         taskConfirm.setTime(formatDateTime);
         taskMapper.insert_task_fulfillment(taskConfirm);
-        return Result.success(null);
+        return Result.success("审核通过");
     }
+    /**
+     * 【作用】 管理员获取完成记录
+     */
     @Override
     public Result GetTaskFulfillment(){
-        return Result.success(taskMapper.select_task_fulfillment_all());
+        List<TaskFulfillment> list=taskMapper.select_task_fulfillment_all();
+        if(list.isEmpty()){
+            return Result.success("没有完成记录");
+        }else{
+            return Result.success(list);
+        }
     }
 }
