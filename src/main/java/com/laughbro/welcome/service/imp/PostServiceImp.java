@@ -30,7 +30,7 @@ public class PostServiceImp implements PostService {
         }else{
             p = (Page<Post>) postMapper.select_post_all("asc");
         }
-        return p.isEmpty()?PageResult.success("暂时没有内容",0):PageResult.success(p.getResult(),p.getTotal()/pagesize+1);
+        return p.isEmpty()?PageResult.success("暂时没有内容",p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1):PageResult.success(p.getResult(),p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
     }
     /**
      * 【调用接口】 /post/for-task
@@ -205,7 +205,7 @@ public class PostServiceImp implements PostService {
         }else{
             p = (Page<Post>) postMapper.select_post_all("asc");
         }
-        return p.isEmpty()?PageResult.success("暂时没有内容",0):PageResult.success(p.getResult(),p.getTotal()/pagesize+1);
+        return p.isEmpty()?PageResult.success("暂时没有内容",p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1):PageResult.success(p.getResult(),p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
     }
 
 }

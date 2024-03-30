@@ -88,8 +88,7 @@ public class UserServiceImp implements UserService {
         }else{
             p=(Page<User>) userMapper.select_user_all("asc");
         }
-        long totalpages=p.getTotal()/pagesize+1;
-        return p.isEmpty()?PageResult.success("暂无用户",0):PageResult.success(p.getResult(),totalpages);
+        return p.isEmpty()?PageResult.success("暂时没有用户",p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1):PageResult.success(p.getResult(),p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
     }
 
 }
