@@ -22,19 +22,23 @@ public class MeServiceImp implements MeService {
 
     @Override
     public Result ChangeName(MeChangeNameParams params){
-        userMapper.update_user_name_by_id(params);
-        return Result.success(null);
+        if(params.getName()!=null) {
+            userMapper.update_user_name_by_id(params);
+            return Result.success("修改成功");
+        }else{
+            return Result.fail(100,"fail","输入不能为空");
+        }
     }
     @Override
     public Result ChangeImg(MeChangeImgParams params){
         userMapper.update_user_img_by_id(params);
-        return Result.success(null);
+        return Result.success("修改成功");
     }
     @Override
     public Result ChangePwd(MeChangePwdParams params){
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("123456");
+        String encodedPassword = passwordEncoder.encode(params.getPwd());
         userMapper.update_user_pwd_by_id(encodedPassword, params.getUserid());
-        return Result.success(null);
+        return Result.success("修改成功");
     }
 }

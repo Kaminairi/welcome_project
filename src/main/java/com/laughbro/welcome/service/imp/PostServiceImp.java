@@ -22,8 +22,15 @@ public class PostServiceImp implements PostService {
      * 【作用】 展示所有帖子
      */
     @Override
-    public Result GetPost(){
-        return Result.success(postMapper.select_post_all("desc"));
+    public Result GetPost(int page,int pagesize,int order){
+        PageHelper.startPage(page, pagesize);
+        Page<Post> p;
+        if(order==0) {
+            p = (Page<Post>) postMapper.select_post_all("desc");
+        }else{
+            p = (Page<Post>) postMapper.select_post_all("asc");
+        }
+        return p.isEmpty()?PageResult.success("暂时没有内容",0):PageResult.success(p.getResult(),p.getTotal()/pagesize+1);
     }
     /**
      * 【调用接口】 /post/for-task
@@ -57,9 +64,10 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result PostDetail(String postid){
-        if(postMapper.select_post_by_post_id(postid)!=null){
+        Post p=postMapper.select_post_by_post_id(postid);
+        if(p!=null){
             postMapper.update_post_clicktnum_by_id(postid);
-            return Result.success(postMapper.select_post_by_post_id(postid));
+            return Result.success(p);
         }else {
             return Result.success("您想看的帖子消失了");
         }
@@ -71,6 +79,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Result PostDelete(PostDeleteParams params){
         if(postMapper.delete_post_by_id(params.getPostid())>0){
+            postMapper.delete_post_collect_by_postid(params.getPostid());
             return Result.success("删除成功");
         }else{
             return Result.success("想删除的帖子不存在");
@@ -82,10 +91,11 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result GetPostByUserId(String userid){
-        if(postMapper.select_post_by_user_id(userid).isEmpty()){
+        List<Post> list=postMapper.select_post_by_user_id(userid);
+        if(list.isEmpty()){
             return Result.success("您还没有发布过文章");
         }else{
-            return Result.success(postMapper.select_post_by_user_id(userid));
+            return Result.success(list);
         }
     }
     /**
@@ -107,10 +117,11 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result GetPostByTaskId(){
-        if(postMapper.select_post_by_task_id().isEmpty()){
+        List<Post> list=postMapper.select_post_by_task_id();
+        if(list.isEmpty()){
             return Result.success("还没有相关内容");
         }else{
-            return Result.success(postMapper.select_post_by_task_id());
+            return Result.success(list);
         }
     }
     /**
@@ -119,10 +130,11 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result GetPostCollectById(String userid){
-        if(postMapper.select_post_collect_by_userid(userid).isEmpty()){
+        List<Post> list=postMapper.select_post_collect_by_userid(userid);
+        if(list.isEmpty()){
             return Result.success("你还没有收藏，心动不如行动哦");
         }else{
-            return Result.success(postMapper.select_post_collect_by_userid(userid));
+            return Result.success(list);
         }
     }
     /**
@@ -157,7 +169,7 @@ public class PostServiceImp implements PostService {
      */
     @Override
     public Result PostEdit(PostEditParams params){
-        if(params.getTitle()!=""&&params.getContain()!="") {
+        if(params.getTitle().replaceAll(" ","")!=""&&params.getContain().replaceAll(" ","")!="") {
             if (postMapper.update_post_by_id(params) > 0) {
                 return Result.success("修改成功");
             } else {

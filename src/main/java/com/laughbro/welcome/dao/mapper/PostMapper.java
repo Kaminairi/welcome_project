@@ -106,4 +106,6 @@ public interface PostMapper {
      */
     @Update("update posts set title=#{PostEditParams.title},contain=#{PostEditParams.contain} where id=#{PostEditParams.postid}")
     Integer update_post_by_id(@Param("PostEditParams") PostEditParams params);
+    @Delete("delete from post_collect where post_id=#{postid}")
+    Integer delete_post_collect_by_postid(String postid);
 }

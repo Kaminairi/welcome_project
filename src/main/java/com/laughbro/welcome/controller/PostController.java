@@ -15,8 +15,8 @@ public class PostController {
      * 【作用】进入论坛主页显示全部文章（未排序）
      */
     @GetMapping("/post")
-    public Result GetPost(){
-        return postService.GetPost();
+    public Result GetPost(int page,int pagesize,int order){
+        return postService.GetPost(page,pagesize,order);
     }
 
     /**

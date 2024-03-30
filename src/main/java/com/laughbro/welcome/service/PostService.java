@@ -5,7 +5,7 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.*;
 
 public interface PostService {
-    Result GetPost();
+    Result GetPost(int page,int pagesize,int order);
     Result PostForTask(PostForTaskParams params);
     Result PostNormal(PostNormalParams params);
 
