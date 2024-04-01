@@ -1,4 +1,4 @@
-package com.laughbro.welcome.vo.params;
+package com.laughbro.welcome.vo.params.camera_params;
 
 import lombok.Data;
 

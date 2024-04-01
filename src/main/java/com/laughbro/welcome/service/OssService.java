@@ -21,5 +21,7 @@ public interface OssService {
 
     String uploadfile(MultipartFile file, String upload_path) throws IOException;
 
+    int deletefile(String path);
+
     boolean isFileUploaded(String filePath);
 }

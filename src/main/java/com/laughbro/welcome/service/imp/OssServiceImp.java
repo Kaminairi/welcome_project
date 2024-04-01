@@ -12,7 +12,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.laughbro.welcome.service.OssService;
 
-import com.laughbro.welcome.vo.params.Ossparam;
+import com.laughbro.welcome.vo.params.oss_params.Ossparam;
 
 import org.junit.Test;
 import org.python.google.common.collect.Maps;
@@ -124,6 +124,47 @@ public class OssServiceImp implements OssService {
         ossClient.shutdown();
         return upload_path;
     }
+
+
+    @Override
+    public int deletefile(String path){
+
+        OSS ossClient = new OSSClientBuilder().build(ossParam.getEndpoint(), ossParam.getAccessKeyId(), ossParam.getAccessKeySecret());
+        try {
+            // 删除文件
+            ossClient.deleteObject(ossParam.getBucketName(), path);
+            System.out.println("文件删除成功");
+        } catch (Exception e) {
+            System.out.println("文件删除失败：" + e.getMessage());
+        } finally {
+            // 关闭OSSClient
+            ossClient.shutdown();
+        }
+
+        return 0;
+    }
+
+
+@Test
+    public void deletefile(){
+        String path="items/23_2024-04-01 22:20:13.jpg";
+        OSS ossClient = new OSSClientBuilder().build(ossParam.getEndpoint(), ossParam.getAccessKeyId(), ossParam.getAccessKeySecret());
+        try {
+            // 删除文件
+            ossClient.deleteObject(ossParam.getBucketName(), path);
+            System.out.println("文件删除成功");
+        } catch (Exception e) {
+            System.out.println("文件删除失败：" + e.getMessage());
+        } finally {
+            // 关闭OSSClient
+            ossClient.shutdown();
+        }
+
+
+    }
+
+
+
     @Override
     public boolean isFileUploaded(String filePath) {
         OSS ossClient = new OSSClientBuilder().build(ossParam.getEndpoint(), ossParam.getAccessKeyId(), ossParam.getAccessKeySecret());

@@ -1,18 +1,13 @@
-package com.laughbro.welcome.dao.pojo;
+package com.laughbro.welcome.vo.params.oss_params;
 
 import lombok.Data;
-import org.joda.time.DateTime;
-
 
 import java.math.BigInteger;
-import java.sql.Date;
-
-
 @Data
-public class Item {
 
+public class OssitemParams {
     //item基础信息
-    private BigInteger id;
+    private String id;
     private String name;
     private String desc;
     private String creator;
@@ -21,10 +16,4 @@ public class Item {
     private int stackLimit;
     private String img;
     private String base64;
-
-    //item_prossession信息，用户持有信息
-    private BigInteger PossPk;
-    private String UserId;
-    private int OwnNum;
-
 }

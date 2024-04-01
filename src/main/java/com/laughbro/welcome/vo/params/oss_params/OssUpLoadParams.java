@@ -1,4 +1,4 @@
-package com.laughbro.welcome.vo.params;
+package com.laughbro.welcome.vo.params.oss_params;
 
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.laughbro.welcome.dao.mapper.BagMapper;

@@ -3,8 +3,11 @@ package com.laughbro.welcome.dao.mapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.laughbro.welcome.dao.pojo.Item;
 import com.laughbro.welcome.dao.pojo.ScoreSort;
+import jnr.ffi.annotations.In;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -36,4 +39,25 @@ public interface BagMapper {
 
     @Select("select user_id,users.img,users.name,sum(own_num) as score from users,item_possession where item_id=(select id from items where name='积分') and user_id=users.id group by user_id order by score desc;")
     List<ScoreSort> select_score_all();
+
+    @Insert("insert into items " +
+            "(name,`desc`,creator,ctime,dtime,img) " +
+            "values " +
+            "(#{name},#{desc},#{creator},#{ctime},#{dtime},#{img})")
+    public int insert_item(String name,String desc,String creator,String ctime,String dtime,String img);
+
+    @Update("update items " +
+            "set name =#{name}, " +
+            "`desc` =#{desc}, " +
+            "dtime=#{dtime}, " +
+            "img=#{img} " +
+            "where id=#{id}")
+    public int update_item(String id,String name,String desc,String dtime,String img);
+
+    @Select("SELECT img " +
+            "from items " +
+            "where id =#{id}")
+    public String select_img_items_by_id(String id);
+
+
 }

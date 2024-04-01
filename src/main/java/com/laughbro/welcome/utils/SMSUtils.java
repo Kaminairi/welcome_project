@@ -2,7 +2,7 @@ package com.laughbro.welcome.utils;
 
 
 import com.aliyun.tea.TeaException;
-import com.laughbro.welcome.vo.params.Ossparam;
+import com.laughbro.welcome.vo.params.oss_params.Ossparam;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

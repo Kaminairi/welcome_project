@@ -8,11 +8,10 @@ import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.utils.OSSUtils;
 import com.laughbro.welcome.vo.Result;
-import com.laughbro.welcome.vo.params.CameraFaceParams;
-import com.laughbro.welcome.vo.params.CameraUploadParams;
-import com.laughbro.welcome.vo.params.CameratasksParams;
+import com.laughbro.welcome.vo.params.camera_params.CameraFaceParams;
+import com.laughbro.welcome.vo.params.camera_params.CameraUploadParams;
+import com.laughbro.welcome.vo.params.camera_params.CameratasksParams;
 import com.laughbro.welcome.vo.params.login_params.LoginIdpwdParams;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.mock.web.MockMultipartFile;
@@ -20,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;

@@ -1,4 +1,4 @@
-package com.laughbro.welcome.vo.params;
+package com.laughbro.welcome.vo.params.oss_params;
 
 import lombok.Data;
 import lombok.Value;
