@@ -135,9 +135,20 @@ public interface TaskMapper {
             "        AND t.`btime` < NOW() " +
             "        AND t.`dtime` > NOW() ")
     List<Task> get_task_by_setid_camera(BigInteger id);
-    @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{userid},#{askid},#{time})")
+    @Insert("insert into task_fulfillment(user_id,task_id,comp_time) values(#{userid},#{taskid},#{time})")
     void insert_task_fulfillment_camera(String userid,BigInteger taskid,String time);
     @Delete("delete from task_fulfillment where task_id=#{id}")
     Integer delete_task_fulfillment_by_taskid(String id);
 
+    /**
+     * 查询是否存在完成记录，用于避免重复完成
+     * @param userid
+     * @param taskid
+     * @return int 查询结果数量
+     */
+    @Select("Select count(*) " +
+            "from task_fulfillment " +
+            "where user_id=#{userid} " +
+            "and task_id =#{taskid}")
+    public int select_countfill_with_id(String userid,BigInteger taskid);
 }

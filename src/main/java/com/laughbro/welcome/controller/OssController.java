@@ -45,6 +45,7 @@ public class OssController {
     @PostMapping("/uploadfile/task")
     public Result ossUpload_task(@RequestParam("file") MultipartFile file) throws IOException {
         String upload_path="task/";
+
         return Result.success(ossService.uploadfile(file,upload_path));
     }
 
@@ -66,5 +67,26 @@ public class OssController {
         MultipartFile multipartFile = new MockMultipartFile("file", ossUpLoadParams.getFilename()+".jpg", "image/jpeg", fileBytes);
         return Result.success(ossService.uploadfile(multipartFile,upload_path));
     }
+
+
+
+    @PostMapping("uploadfile/taskbase64")
+    public Result ossUpload_taskbase64(@RequestBody OssUpLoadParams ossUpLoadParams) throws IOException {
+
+        String upload_path="testbase64/";
+        String base64Content = null;
+        //解码
+        String[] data = ossUpLoadParams.getBase64().split(",");
+        base64Content = data[1];
+        base64Content = base64Content.replace(" ", "+").replace("\r", "").replace("\n", "").trim();
+        if (base64Content.length() >= 2) {
+            base64Content = base64Content.substring(0, base64Content.length() - 2);
+        }
+        // 解码成字节数组
+        byte[] fileBytes = Base64.getDecoder().decode(base64Content);
+        MultipartFile multipartFile = new MockMultipartFile("file", ossUpLoadParams.getFilename()+".jpg", "image/jpeg", fileBytes);
+        return Result.success(ossService.uploadfile(multipartFile,upload_path));
+    }
+
 
 }
