@@ -53,8 +53,8 @@ public class TaskController {
      * 【作用】 管理员获取任务集合
      */
     @RequestMapping("/admin/get/taskset")
-    public Result AdPostTaskSet(){
-        return taskService.AdGetTaskSets();
+    public Result AdPostTaskSet(int page,int pagesize){
+        return taskService.AdGetTaskSets(page,pagesize);
     }
     /**
      * 【作用】 管理员发布任务
@@ -81,8 +81,8 @@ public class TaskController {
      * 【作用】 管理员获取集合中的任务
      */
     @RequestMapping("/admin/gettask/bysetid")
-    public Result AdGetTaskBySetId(String setid){
-        return taskService.AdGetTaskBySetId(setid);
+    public Result AdGetTaskBySetId(int page,int pagesize,String setid){
+        return taskService.AdGetTaskBySetId(page,pagesize,setid);
     }
     /**
      * 【作用】 管理员搜索任务

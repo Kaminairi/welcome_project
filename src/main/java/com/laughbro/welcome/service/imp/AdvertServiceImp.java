@@ -83,4 +83,16 @@ public class AdvertServiceImp implements AdvertService {
             return Result.success(list);
         }
     }
+
+    @Override
+    public Result GetAdvert(String id){
+        Advert advert=advertMapper.select_advert_by_id(id);
+        if(advert==null){
+            return Result.success("想看的广告消失了");
+        }else{
+            advertMapper.update_advert_clicknum_by_id(id);
+            return Result.success(advert);
+        }
+    }
+
 }

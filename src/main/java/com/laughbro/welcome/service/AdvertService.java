@@ -15,4 +15,6 @@ public interface AdvertService {
     Result GetAdvertByKeyword(String keyword);
 
     Result GetAdvertAll();
+
+    Result GetAdvert(String id);
 }

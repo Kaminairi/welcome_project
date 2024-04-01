@@ -39,4 +39,10 @@ public interface AdvertMapper {
      */
     @Select("select * from ad")
     List<Advert> select_advert_all();
+
+    @Select("select * from ad where id=#{id}")
+    Advert select_advert_by_id(String id);
+
+    @Update("update ad set click_num=click_num+1 where id=#{id}")
+    void update_advert_clicknum_by_id(String id);
 }

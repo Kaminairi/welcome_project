@@ -4,4 +4,6 @@ import com.laughbro.welcome.vo.Result;
 
 public interface SortService {
     Result GetTaskFInish();
+
+    Result GetScore();
 }

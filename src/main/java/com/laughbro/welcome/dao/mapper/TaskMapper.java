@@ -52,7 +52,7 @@ public interface TaskMapper {
             "                  GROUP BY user_id" +
             "              ) AS subquery" +
             " order by passnum DESC")
-    List<TaskSort> selse_task_fulfillment_all();
+    List<TaskFinishSort> selse_task_fulfillment_all();
     /**
      * 【调用接口】 /admin/post/taskset
      * 【作用】 管理员发布任务集合

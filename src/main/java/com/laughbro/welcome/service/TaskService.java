@@ -18,7 +18,7 @@ public interface TaskService {
 
     Result AdPostTaskSet(TaskSetPostParams params);
 
-    Result AdGetTaskSets();
+    Result AdGetTaskSets(int page,int pagesize);
 
     Result AdPostTask(TaskPostParams params);
 
@@ -26,7 +26,7 @@ public interface TaskService {
 
     Result AdEditTask(TaskEditParams params);
 
-    Result AdGetTaskBySetId(String setid);
+    Result AdGetTaskBySetId(int page,int pagesize,String setid);
 
     Result AdGetTaskByKeyword(String keyword);
 

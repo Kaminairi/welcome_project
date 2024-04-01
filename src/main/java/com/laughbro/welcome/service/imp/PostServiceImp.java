@@ -63,9 +63,14 @@ public class PostServiceImp implements PostService {
      * 【作用】 展示选中文章详情，更新点击数
      */
     @Override
-    public Result PostDetail(String postid){
+    public Result PostDetail(String userid,String postid){
         Post p=postMapper.select_post_by_post_id(postid);
         if(p!=null){
+            if (postMapper.select_post_collect_by_userid_postid(userid, postid)!=null) {
+                p.setIscollect("1");
+            } else {
+                p.setIscollect("0");
+            }
             postMapper.update_post_clicktnum_by_id(postid);
             return Result.success(p);
         }else {

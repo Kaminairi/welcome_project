@@ -1,11 +1,14 @@
 package com.laughbro.welcome.service.imp;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.dao.pojo.Task;
 import com.laughbro.welcome.dao.pojo.TaskFulfillment;
 import com.laughbro.welcome.dao.pojo.TaskPic;
 import com.laughbro.welcome.dao.pojo.TaskSet;
 import com.laughbro.welcome.service.TaskService;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
 import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
@@ -26,7 +29,12 @@ public class TaskServiceImp implements TaskService {
      */
     @Override
     public Result GetTaskSets(String userid,Integer is_mainline,Integer is_now){
-        return Result.success(taskMapper.select_tasksets(userid,is_mainline,is_now));
+        List<TaskSet> list=taskMapper.select_tasksets(userid,is_mainline,is_now);
+        if(list.isEmpty()){
+            return Result.success("还没有任务");
+        }else{
+            return Result.success(list);
+        }
     }
     /**
      * 【调用接口】 /get/tasks
@@ -34,7 +42,12 @@ public class TaskServiceImp implements TaskService {
      */
     @Override
     public Result GetTasks(String setid,String userid,Integer is_now){
-        return Result.success(taskMapper.select_task_by_set_id(setid,userid,is_now));
+        List<Task> list=taskMapper.select_task_by_set_id(setid,userid,is_now);
+        if(list.isEmpty()){
+            return Result.success("还没有任务");
+        }else{
+            return Result.success(list);
+        }
     }
     /**
      * 【调用接口】 /get/task
@@ -81,12 +94,13 @@ public class TaskServiceImp implements TaskService {
      * 【作用】 管理员获取任务集合
      */
     @Override
-    public Result AdGetTaskSets(){
-        List<TaskSet> list=taskMapper.select_tasksets_all();
-        if(list.isEmpty()){
-            return Result.success("暂时还没有任务集合");
+    public Result AdGetTaskSets(int page,int pagesize){
+        PageHelper.startPage(page,pagesize);
+        Page<TaskSet> p=(Page<TaskSet>) taskMapper.select_tasksets_all();
+        if(p.isEmpty()){
+            return PageResult.success("暂时还没有任务集合");
         }else{
-            return Result.success(list);
+            return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
         }
     }
     /**
@@ -137,12 +151,13 @@ public class TaskServiceImp implements TaskService {
      * 【作用】 管理员获取集合中的任务
      */
     @Override
-    public Result AdGetTaskBySetId(String setid){
-        List<Task> list=taskMapper.select_task_by_set_id_ad(setid);
-        if(list.isEmpty()){
-            return Result.success("暂时还没有任务");
+    public Result AdGetTaskBySetId(int page,int pagesize,String setid){
+        PageHelper.startPage(page,pagesize);
+        Page<Task> p=(Page<Task>) taskMapper.select_task_by_set_id_ad(setid);
+        if(p.isEmpty()){
+            return PageResult.success("暂时还没有任务");
         }else{
-            return Result.success(list);
+            return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
         }
     }
     /**
