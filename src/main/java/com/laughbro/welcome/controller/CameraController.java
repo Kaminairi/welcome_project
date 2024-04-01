@@ -56,6 +56,8 @@ public class CameraController {
     @Autowired
     private CameraLogMapper cameraLogMapper;
     @Autowired
+    private CameraRecordMapper cameraRecordMapper;
+    @Autowired
     private UserMapper userMapper;
     @Autowired
             private JWTUtils jwtUtils;  //token生成
@@ -209,7 +211,7 @@ public class CameraController {
         while (iterator.hasNext()) {
             Task task = iterator.next();
             if (!"人脸打卡".equals(task.getType())) {
-                iterator.remove(); // 删除类型为“人脸识别”的任务
+                iterator.remove(); // 删除类型不为“人脸识别”的任务
             }
         }
 
@@ -270,6 +272,8 @@ public class CameraController {
         //获得绑定后的结果，进行校验
         List<String> templist=cameraCache.get(cameratoken).getTasklist();
         if(areListsEqual(templist,dataList)){
+            Camera camera2=cameraCache.get(cameratoken);
+            cameraRecordMapper.insert_camrearecord(cameratoken,camera2.getManagerid(),taskArray,timeUtils.timeGetNow(),camera2.getLocid());
             return Result.success(templist);
         }else{
             //移除已经邦迪的内容
@@ -646,7 +650,7 @@ public class CameraController {
             // 创建StandardMultipartFile对象
             MultipartFile multipartFile = new MockMultipartFile("file", fileName, "image/jpeg", fileContent);
             ossService.uploadfile(multipartFile,upload_path+cameraUploadParams.getCameratoken()+"/");
-            if(ossService.isFileUploaded(upload_path+ fileName)){
+            if(ossService.isFileUploaded(upload_path+ cameraUploadParams.getCameratoken()+"/"+fileName)){
                 //上传成功就删除本地
                 delatetempfile(temp_filePath + fileName);
                 //导入数据库,并且完成任务
@@ -654,25 +658,35 @@ public class CameraController {
                 int size = Math.min(tasklist.size(), resultlist.size());
                 for (int i = 0; i < size; i++) {
                     BigInteger taskid = new BigInteger(tasklist.get(i));
-                    String nextResult = resultlist.get(i);
+                    //删去空格
+                    String nextResult = resultlist.get(i).replaceAll("\\s+", "");
+                    //增加log记录
                     int addnum = cameraLogMapper.insert_cameralog_add(camera.getManagerid(), camera.getLocid(), taskid, upload_path + fileName, timeUtils.timeGetNow(), nextResult, 0);
-                    System.out.println(addnum + "    111");
-                    if(!nextResult.equals("nofind")){
-                        User user=userMapper.select_user_all_by_id(nextResult.replaceAll("\\s+", ""));
-                        if(user!=null){
-                            //注入完成记录表
-                            taskMapper.insert_task_fulfillment_camera(nextResult.replaceAll("\\s+", ""),taskid,timeUtils.timeGetNow());
-                        }
 
+                    if(!nextResult.equals("nofind")){
+                        User user=userMapper.select_user_all_by_id(nextResult);
+                        if(user!=null){
+                            //判断是否已经存在完成记录
+                            if(taskMapper.select_countfill_with_id(user.getId(),taskid)==0){
+                                //注入完成记录表
+                                taskMapper.insert_task_fulfillment_camera(nextResult,taskid,timeUtils.timeGetNow());
+                                //修改log记录success为1
+                                cameraLogMapper.update_cameralog_success(camera.getManagerid(), camera.getLocid(), taskid, upload_path + fileName, 1);
+                            }else{
+                                //已经存在记录
+                                //return Result.fail(201,"已经存在记录，不可以重复完成",null);
+                                System.out.println("                                                                                                   : 任务"+ taskid +"  用户"+user.getId()+"任务已经完成过，不可重复完成");
+                            }
+
+                        }else {
+
+                            return Result.fail(201,"人脸识别结果无人，异常",null);
+                        }
                     }else{
                         System.out.println("记录为onfind,没有注入");
                     }
 
-
                 }
-                //进行任务完成的判定
-
-                System.out.println("oss上有该文件");
             }else{
                 //上传失败则删除本地
                 delatetempfile(temp_filePath + fileName);
