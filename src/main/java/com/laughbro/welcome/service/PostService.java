@@ -9,7 +9,7 @@ public interface PostService {
     Result PostForTask(PostForTaskParams params);
     Result PostNormal(PostNormalParams params);
 
-    Result PostDetail(String postid);
+    Result PostDetail(String userid,String postid);
 
     Result PostDelete(PostDeleteParams params);
 

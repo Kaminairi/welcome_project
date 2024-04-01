@@ -2,6 +2,7 @@ package com.laughbro.welcome.dao.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.laughbro.welcome.dao.pojo.Item;
+import com.laughbro.welcome.dao.pojo.ScoreSort;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -33,5 +34,6 @@ public interface BagMapper {
     @Select("CALL sp_update_bag_items_by_userid_itemid_num(#{user_id},#{item_id},#{num});")
     public List<Item> update_itemown_by_userid_itemd_num(String user_id, BigInteger item_id,int num);
 
-
+    @Select("select user_id,users.img,users.name,sum(own_num) as score from users,item_possession where item_id=(select id from items where name='积分') and user_id=users.id group by user_id order by score desc;")
+    List<ScoreSort> select_score_all();
 }

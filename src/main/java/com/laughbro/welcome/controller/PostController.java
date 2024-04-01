@@ -39,8 +39,8 @@ public class PostController {
      * 【作用】点击文章显示文章详情
      */
     @GetMapping("/post/detail")
-    public Result PostDetail(String postid){
-        return postService.PostDetail(postid);
+    public Result PostDetail(String userid,String postid){
+        return postService.PostDetail(userid,postid);
     }
     /**
      * 【作用】用户删除帖子

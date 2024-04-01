@@ -16,4 +16,5 @@ public class Post {
     private Integer likenum;
     private Integer clicktnum;
     private String TaskId;
+    private String iscollect;
 }

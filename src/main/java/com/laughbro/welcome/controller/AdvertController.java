@@ -49,4 +49,9 @@ public class AdvertController {
     public Result GetAdvertAll(){
         return advertService.GetAdvertAll();
     }
+
+    @RequestMapping("/get/advert")
+    public Result GetAdvert(String id){
+        return advertService.GetAdvert(id);
+    }
 }

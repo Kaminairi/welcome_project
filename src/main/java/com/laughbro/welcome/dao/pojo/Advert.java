@@ -8,4 +8,5 @@ public class Advert {
     private String name;
     private String img;
     private String url;
+    private String clickNum;
 }
