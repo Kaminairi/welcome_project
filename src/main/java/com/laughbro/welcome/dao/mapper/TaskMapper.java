@@ -151,4 +151,8 @@ public interface TaskMapper {
             "where user_id=#{userid} " +
             "and task_id =#{taskid}")
     public int select_countfill_with_id(String userid,BigInteger taskid);
+
+
+    @Insert("insert into taskpic(user_id,task_id,url) values(#{userid},#{taskid},#{url})")
+    public int insert_taskpic(String userid,BigInteger taskid ,String url);
 }

@@ -1,6 +1,8 @@
 package com.laughbro.welcome.controller;
 
+import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.service.OssService;
+import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.OssUpLoadParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,10 @@ import java.util.Collections;
 public class OssController {
     @Autowired
     private OssService ossService;
+    @Autowired
+    private TaskMapper taskMapper;
+    @Autowired
+    private TimeUtils timeUtils;
 
     @GetMapping(value = "/oss/token")
     //这里的R是我自己封装的统一返回对象 你也可以直接返回JSON啥的
@@ -73,7 +79,7 @@ public class OssController {
     @PostMapping("uploadfile/taskbase64")
     public Result ossUpload_taskbase64(@RequestBody OssUpLoadParams ossUpLoadParams) throws IOException {
 
-        String upload_path="testbase64/";
+        String upload_path="tasks/uploadpictasks/"+ossUpLoadParams.getTaskid().toString()+"/";
         String base64Content = null;
         //解码
         String[] data = ossUpLoadParams.getBase64().split(",");
@@ -84,9 +90,27 @@ public class OssController {
         }
         // 解码成字节数组
         byte[] fileBytes = Base64.getDecoder().decode(base64Content);
-        MultipartFile multipartFile = new MockMultipartFile("file", ossUpLoadParams.getFilename()+".jpg", "image/jpeg", fileBytes);
-        return Result.success(ossService.uploadfile(multipartFile,upload_path));
+        String filename=ossUpLoadParams.getUserid()+"_"+timeUtils.timeGetNow()+".jpg";
+        MultipartFile multipartFile = new MockMultipartFile("file", filename, "image/jpeg", fileBytes);
+        //上传
+        ossService.uploadfile(multipartFile,upload_path);
+        //判断上传是否成功
+        if(ossService.isFileUploaded(upload_path+filename)){
+            //进行改表,上传记录
+            if(taskMapper.insert_taskpic(ossUpLoadParams.getUserid(),ossUpLoadParams.getTaskid(),upload_path+filename)==1){
+                return Result.success(null);
+            }else {
+                return Result.fail(201,"更新上传记录失败",null);
+            }
+            //
+        }else {
+            return Result.fail(201,"上传失败",null);
+        }
+
     }
+
+
+
 
 
 }
