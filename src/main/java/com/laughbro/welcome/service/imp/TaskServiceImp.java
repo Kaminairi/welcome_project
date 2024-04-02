@@ -13,6 +13,7 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
 import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -176,12 +177,13 @@ public class TaskServiceImp implements TaskService {
      * 【作用】 管理员查看提交
      */
     @Override
-    public Result GetTaskPic(){
-        List<TaskPic> list=taskMapper.select_taskpic_all();
-        if(list.isEmpty()){
+    public Result GetTaskPic(int page,int pagesize){
+        PageHelper.startPage(page,pagesize);
+        Page<TaskPic> p=(Page<TaskPic>) taskMapper.select_taskpic_all();
+        if(p.isEmpty()){
             return Result.success("还没有提交记录");
         }else{
-            return Result.success(list);
+            return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
         }
     }
     /**
@@ -189,7 +191,7 @@ public class TaskServiceImp implements TaskService {
      */
     @Override
     public Result PassTaskPic(TaskPicParams params){
-        taskMapper.update_taskpic(params);
+        taskMapper.update_taskpic(params,"1");
         TaskConfirm taskConfirm=new TaskConfirm();
         taskConfirm.setUserid(params.getUserid());
         taskConfirm.setTaskid(params.getTaskid());
@@ -200,16 +202,26 @@ public class TaskServiceImp implements TaskService {
         taskMapper.insert_task_fulfillment(taskConfirm);
         return Result.success("审核通过");
     }
+    @Override
+    public  Result RefuseTaskPic(TaskPicParams params){
+        if(taskMapper.update_taskpic(params,"2")==1){
+            return Result.success("审核未通过");
+        }else{
+            return Result.success("没有记录");
+        }
+
+    }
     /**
      * 【作用】 管理员获取完成记录
      */
     @Override
-    public Result GetTaskFulfillment(){
-        List<TaskFulfillment> list=taskMapper.select_task_fulfillment_all();
-        if(list.isEmpty()){
+    public Result GetTaskFulfillment(int page,int pagesize){
+        PageHelper.startPage(page,pagesize);
+        Page<TaskFulfillment> p=(Page<TaskFulfillment>) taskMapper.select_task_fulfillment_all();
+        if(p.isEmpty()){
             return Result.success("没有完成记录");
         }else{
-            return Result.success(list);
+            return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
         }
     }
 }

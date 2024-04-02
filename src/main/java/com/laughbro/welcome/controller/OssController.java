@@ -100,7 +100,7 @@ public class OssController {
         if (ossService.isFileUploaded(upload_path + filename)) {
             //进行改表,上传记录
             if (taskMapper.insert_taskpic(ossUpLoadParams.getUserid(), ossUpLoadParams.getTaskid(), upload_path + filename) == 1) {
-                return Result.success(null);
+                return Result.success("提交成功，待管理员审核");
             } else {
                 return Result.fail(201, "更新上传记录失败", null);
             }

@@ -30,9 +30,11 @@ public interface TaskService {
 
     Result AdGetTaskByKeyword(String keyword);
 
-    Result GetTaskPic();
+    Result GetTaskPic(int page,int pagesize);
 
     Result PassTaskPic(TaskPicParams params);
 
-    Result GetTaskFulfillment();
+    Result GetTaskFulfillment(int page,int pagesize);
+
+    Result RefuseTaskPic(TaskPicParams params);
 }

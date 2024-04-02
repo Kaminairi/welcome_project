@@ -95,8 +95,8 @@ public class TaskController {
      * 【作用】 管理员查看提交
      */
     @RequestMapping("/admin/check/tasksubmit")
-    public Result AdGetTaskPic(){
-        return taskService.GetTaskPic();
+    public Result AdGetTaskPic(int page ,int pagesize){
+        return taskService.GetTaskPic(page,pagesize);
     }
     /**
      * 【作用】 管理员审核通过任务提交
@@ -105,11 +105,15 @@ public class TaskController {
     public Result AdPassTaskPic(@RequestBody TaskPicParams params){
         return taskService.PassTaskPic(params);
     }
+    @RequestMapping("/admin/refuse/tasksubmit")
+    public Result AdRefuseTaskPic(@RequestBody TaskPicParams params){
+        return taskService.RefuseTaskPic(params);
+    }
     /**
      * 【作用】 管理员获取完成记录
      */
     @RequestMapping("/admin/get/taskfulfillment")
-    public Result AdGetTaskFulfillment(){
-        return taskService.GetTaskFulfillment();
+    public Result AdGetTaskFulfillment(int page,int pagesize){
+        return taskService.GetTaskFulfillment(page,pagesize);
     }
 }

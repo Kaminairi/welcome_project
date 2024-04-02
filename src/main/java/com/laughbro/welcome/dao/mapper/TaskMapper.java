@@ -105,8 +105,8 @@ public interface TaskMapper {
      * 【调用接口】 /admin/pass/tasksubmit
      * 【作用】 管理员审核通过任务提交
      */
-    @Update("update taskpic set is_pass=1 where user_id=#{TaskPicParams.userid} and task_id=#{TaskPicParams.taskid}")
-    Integer update_taskpic(@Param("TaskPicParams") TaskPicParams params);
+    @Update("update taskpic set is_pass=#{pass} where user_id=#{TaskPicParams.userid} and task_id=#{TaskPicParams.taskid}")
+    Integer update_taskpic(@Param("TaskPicParams") TaskPicParams params,String pass);
     /**
      * 【调用接口】 /admin/get/taskfulfillment
      * 【作用】 管理员查看完成记录
