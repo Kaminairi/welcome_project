@@ -10,4 +10,5 @@ public class TaskSetPostParams {
     private String IsSetDue;
     private String IsMainline;
     private String etime;
+    private String classid;
 }

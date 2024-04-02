@@ -81,7 +81,7 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result AdPostTaskSet(TaskSetPostParams params){
         try {
-            if(taskMapper.insert_taskset(params)==1){
+            if(taskMapper.insert_taskset(params)==1&&taskMapper.insert_tasksettoclass(taskMapper.select_last_id(),params.getClassid())==1){
                 return Result.success("发布成功");
             }else{
                 return Result.fail(100,"fail","发布失败");

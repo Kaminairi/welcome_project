@@ -155,4 +155,10 @@ public interface TaskMapper {
 
     @Insert("insert into taskpic(user_id,task_id,url) values(#{userid},#{taskid},#{url})")
     public int insert_taskpic(String userid,BigInteger taskid ,String url);
+
+    @Select("select LAST_INSERT_ID();")
+    String select_last_id();
+
+    @Insert("insert into taskset_to_class(set_id,class_id) values (#{setid},#{classid})")
+    int insert_tasksettoclass(String setid, String classid);
 }
