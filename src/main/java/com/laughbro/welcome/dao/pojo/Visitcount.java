@@ -8,4 +8,7 @@ import java.math.BigInteger;
 public class Visitcount {
     private  String id;
    private  BigInteger count;
+    private String lnglat;
+    private String name;
+    private String img;
 }
