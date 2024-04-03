@@ -3,10 +3,7 @@ package com.laughbro.welcome.service.imp;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
-import com.laughbro.welcome.dao.pojo.Task;
-import com.laughbro.welcome.dao.pojo.TaskFulfillment;
-import com.laughbro.welcome.dao.pojo.TaskPic;
-import com.laughbro.welcome.dao.pojo.TaskSet;
+import com.laughbro.welcome.dao.pojo.*;
 import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
@@ -19,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static com.laughbro.welcome.controller.CameraController.parseCommaSeparatedValues;
 
 @Service
 public class TaskServiceImp implements TaskService {
@@ -73,6 +72,10 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result FinishConfirmTask(TaskConfirm taskConfirm){
         taskMapper.insert_task_fulfillment(taskConfirm);
+        List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskConfirm.getTaskid());
+        for(TaskReward t:taskRewards) {
+            taskMapper.insert_itempossession(taskConfirm.getUserid(), t.getItemid(), t.getRewardNum());
+        }
         return Result.success("任务完成!");
     }
     /**
@@ -81,7 +84,11 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result AdPostTaskSet(TaskSetPostParams params){
         try {
-            if(taskMapper.insert_taskset(params)==1&&taskMapper.insert_tasksettoclass(taskMapper.select_last_id(),params.getClassid())==1){
+            if(taskMapper.insert_taskset(params)==1){
+                List<String> list=parseCommaSeparatedValues(params.getClassid());
+                for(String classid:list){
+                    taskMapper.insert_tasksettoclass(taskMapper.select_last_id(), classid);
+                }
                 return Result.success("发布成功");
             }else{
                 return Result.fail(100,"fail","发布失败");
@@ -110,7 +117,14 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result AdPostTask(TaskPostParams params){
         try{
+            TaskSet taskSet=taskMapper.select_taskset_by_id(params.getSetId());
+            params.setIsMainline(taskSet.getIsMainline());
             if(taskMapper.insert_task(params)==1){
+                String taskid=taskMapper.select_task_last_id();
+                for (TaskReward t: params.getReward()){
+                    System.out.println(t.toString());
+                    taskMapper.insert_taskreward(taskid,t.getItemid(),t.getRewardNum());
+                }
                 return Result.success("发布成功");
             }else{
                 return Result.fail(100,"fail","发布失败");
@@ -138,13 +152,15 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result AdEditTask(TaskEditParams params){
         try {
-            if(taskMapper.update_task_by_id(params)==1){
+            TaskSet taskSet=taskMapper.select_taskset_by_id(params.getSetId());
+            params.setIsMainline(taskSet.getIsMainline());
+            if(taskMapper.update_task_by_id(params)!=null){
                 return Result.success("修改成功");
             }else{
                 return Result.fail(100,"fail","修改失败");
             }
         }catch (Exception e){
-            return Result.fail(100,"fail","修改失败");
+            return Result.fail(100,"fail","抛出异常");
         }
 
     }

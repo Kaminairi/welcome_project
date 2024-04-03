@@ -3,6 +3,7 @@ package com.laughbro.welcome.dao.mapper;
 import com.laughbro.welcome.dao.pojo.*;
 import com.laughbro.welcome.vo.params.task_params.*;
 import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
+import jnr.ffi.annotations.In;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigInteger;
@@ -156,9 +157,24 @@ public interface TaskMapper {
     @Insert("insert into taskpic(user_id,task_id,url) values(#{userid},#{taskid},#{url})")
     public int insert_taskpic(String userid,BigInteger taskid ,String url);
 
-    @Select("select LAST_INSERT_ID();")
+    @Select("select max(set_id) from task_sets;")
     String select_last_id();
 
     @Insert("insert into taskset_to_class(set_id,class_id) values (#{setid},#{classid})")
     int insert_tasksettoclass(String setid, String classid);
+
+    @Select("select * from task_sets where set_id=#{setId}")
+    TaskSet select_taskset_by_id(String setId);
+
+    @Select("select max(id) from tasks")
+    String select_task_last_id();
+
+    @Insert("insert into task_reward(task_id,item_id,reward_num) values (#{taskid},#{itemid},#{num})")
+    void insert_taskreward(String taskid, String itemid, String num);
+
+    @Select("select * from task_reward where task_id=#{taskid}")
+    List<TaskReward> select_taskreward_by_taskid(String taskid);
+
+    @Insert("insert into item_possession(user_id,item_id,own_num) values (#{userid},#{itemid},#{count})")
+    Integer insert_itempossession(String userid,String itemid,String count);
 }
