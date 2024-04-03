@@ -27,9 +27,9 @@ public class VisitController {
 
 
     //所有记录 日
-    @GetMapping("/data/visit/getweek")
-    public Result visitgetweek(){
-        List<Visitcount> week=visitMapper.select_count_by_week();
+    @GetMapping("/data/visit/get_n_days")
+    public Result visitgetweek(int day){
+        List<Visitcount> week=visitMapper.select_count_by_days(day);
         return Result.success(week);
     }
 

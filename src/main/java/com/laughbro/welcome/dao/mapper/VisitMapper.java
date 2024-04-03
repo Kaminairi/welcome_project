@@ -19,11 +19,11 @@ public interface VisitMapper {
 
 
 
-    @Select("SELECT l.id, COUNT(lv.loc_id) AS count " +
+    @Select("SELECT l.*, COUNT(lv.loc_id) AS count " +
             "FROM location l " +
-            "LEFT JOIN loc_visit lv ON l.id = lv.loc_id AND lv.vtime >= DATE_SUB(NOW(), INTERVAL 1 WEEK) " +
+            "LEFT JOIN loc_visit lv ON l.id = lv.loc_id AND lv.vtime >= DATE_SUB(NOW(), INTERVAL #{day} DAY) " +
             "GROUP BY l.id;")
-    public List<Visitcount> select_count_by_week();
+    public List<Visitcount> select_count_by_days( int day);
 
 
 
