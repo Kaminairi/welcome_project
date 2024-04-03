@@ -72,10 +72,10 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result FinishConfirmTask(TaskConfirm taskConfirm){
         taskMapper.insert_task_fulfillment(taskConfirm);
-        List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskConfirm.getTaskid());
-        for(TaskReward t:taskRewards) {
-            taskMapper.insert_itempossession(taskConfirm.getUserid(), t.getItemid(), t.getRewardNum());
-        }
+        //List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskConfirm.getTaskid());
+       // for(TaskReward t:taskRewards) {
+         //   taskMapper.insert_itempossession(taskConfirm.getUserid(), t.getItemid(), t.getRewardNum());
+       // }
         return Result.success("任务完成!");
     }
     /**
@@ -120,10 +120,10 @@ public class TaskServiceImp implements TaskService {
             TaskSet taskSet=taskMapper.select_taskset_by_id(params.getSetId());
             params.setIsMainline(taskSet.getIsMainline());
             if(taskMapper.insert_task(params)==1){
-                String taskid=taskMapper.select_task_last_id();
+              //  String taskid=taskMapper.select_task_last_id();
                 for (TaskReward t: params.getReward()){
                     System.out.println(t.toString());
-                    taskMapper.insert_taskreward(taskid,t.getItemid(),t.getRewardNum());
+              //      taskMapper.insert_taskreward(taskid,t.getItemid(),t.getRewardNum());
                 }
                 return Result.success("发布成功");
             }else{
