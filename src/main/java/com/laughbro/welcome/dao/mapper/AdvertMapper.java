@@ -50,5 +50,15 @@ public interface AdvertMapper {
     List<Advert> select_ad_limit2_rand(int num);
 
 
+    //新增广告
+    @Insert("insert into ad(name,url,img,content) values (#{name},#{url},#{img},#{content})")
+    int inset_ad(String name,String url,String content,String img);
+    //更新图片网址
+    @Update("update ad set img=#{img} where id=#{id}")
+    int update_advert_img(String id,String img);
+
+    //修改广告
+
+
 
 }
