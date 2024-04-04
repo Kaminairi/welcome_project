@@ -75,18 +75,7 @@ public class TaskServiceImp implements TaskService {
     @Override
     public Result FinishConfirmTask(TaskConfirm taskConfirm){
         taskMapper.insert_task_fulfillment(taskConfirm);
-        List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskConfirm.getTaskid());
-        for(TaskReward t:taskRewards) {
-            TaskRewardLog taskRewardLog=new TaskRewardLog();
-            taskRewardLog.setItemid(t.getItemid());
-            taskRewardLog.setNum(t.getRewardNum());
-            taskRewardLog.setTaskid(taskConfirm.getTaskid());
-            taskRewardLog.setTime(LocalDateTime.now().toString());
-            taskRewardLog.setUserid(taskConfirm.getUserid());
-            taskMapper.insert_taskrewardlog(taskRewardLog);
-            bagMapper.insert_itempossession(taskConfirm.getUserid(),t.getItemid(),t.getRewardNum());
-
-        }
+        GetReward(taskConfirm.getUserid(),taskConfirm.getTaskid());
         return Result.success("任务完成!");
     }
     /**
@@ -227,6 +216,7 @@ public class TaskServiceImp implements TaskService {
         String formatDateTime = now.format(formatter);
         taskConfirm.setTime(formatDateTime);
         taskMapper.insert_task_fulfillment(taskConfirm);
+        GetReward(params.getUserid(), params.getTaskid());
         return Result.success("审核通过");
     }
     @Override
@@ -249,6 +239,19 @@ public class TaskServiceImp implements TaskService {
             return Result.success("没有完成记录");
         }else{
             return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
+        }
+    }
+    public void GetReward(String userid,String taskid){
+        List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskid);//获得该任务的奖励集合
+        for(TaskReward t:taskRewards) {//遍历奖励集合
+            TaskRewardLog taskRewardLog=new TaskRewardLog();//新建留痕记录
+            taskRewardLog.setItemid(t.getItemid());
+            taskRewardLog.setNum(t.getRewardNum());
+            taskRewardLog.setTaskid(taskid);
+            taskRewardLog.setTime(LocalDateTime.now().toString());
+            taskRewardLog.setUserid(userid);
+            taskMapper.insert_taskrewardlog(taskRewardLog);//留痕
+            bagMapper.insert_itempossession(userid,t.getItemid(),t.getRewardNum());//加入背包
         }
     }
 }
