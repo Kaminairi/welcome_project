@@ -1,14 +1,15 @@
 package com.laughbro.welcome.controller;
 
 import com.laughbro.welcome.dao.mapper.VisitMapper;
+import com.laughbro.welcome.dao.pojo.Datevistcount;
 import com.laughbro.welcome.dao.pojo.Visitcount;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.VisitParams;
-import com.laughbro.welcome.vo.params.user_params.UserDeleteParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,9 +29,16 @@ public class VisitController {
 
     //所有记录 日
     @GetMapping("/data/visit/get_n_days")
-    public Result visitgetweek(int day){
-        List<Visitcount> week=visitMapper.select_count_by_days(day);
-        return Result.success(week);
+    public Result visitgetweek(int bday, int eday){
+        //获得日期
+        List<String> datelist=timeUtils.getDateRange(bday,eday);
+        List<Datevistcount> datevistcounts=new ArrayList<>();
+        for (String date : datelist) {
+            List<Visitcount> daycount=visitMapper.select_count_by_date(date);
+            datevistcounts.add(new Datevistcount(date,daycount));
+        }
+
+        return Result.success(datevistcounts);
     }
 
     //所有记录 周

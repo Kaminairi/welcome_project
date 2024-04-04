@@ -5,7 +5,11 @@ import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用于时间的处理
@@ -38,6 +42,23 @@ public class TimeUtils {
         return 0;
     }
 
+
+    public  List<String> getDateRange(int day1, int day2) {
+        List<String> dateList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // 获取当前日期
+        LocalDate currentDate = LocalDate.now();
+
+        // 计算日期范围
+        for (int i = day1; i <= day2; i++) {
+            LocalDate date = currentDate.minusDays(i);
+            String formattedDate = date.format(formatter);
+            dateList.add(formattedDate);
+        }
+
+        return dateList;
+    }
 
 
 }

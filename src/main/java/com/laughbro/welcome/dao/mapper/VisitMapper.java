@@ -21,9 +21,9 @@ public interface VisitMapper {
 
     @Select("SELECT l.*, COUNT(lv.loc_id) AS count " +
             "FROM location l " +
-            "LEFT JOIN loc_visit lv ON l.id = lv.loc_id AND lv.vtime >= DATE_SUB(NOW(), INTERVAL #{day} DAY) " +
+            "LEFT JOIN loc_visit lv ON l.id = lv.loc_id AND DATE(lv.vtime) = #{date} " +
             "GROUP BY l.id;")
-    public List<Visitcount> select_count_by_days( int day);
+    public List<Visitcount> select_count_by_date(String date);
 
 
 

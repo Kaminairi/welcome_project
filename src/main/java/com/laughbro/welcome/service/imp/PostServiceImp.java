@@ -156,7 +156,8 @@ public class PostServiceImp implements PostService {
         post2.setExtime(extime);
         //修改点击记录
         adExprosureRecordMapper.update_adex_cl(userid,timeUtils.timeGetNow(),extime,ad_id);
-
+        //增加广告点击
+        advertMapper.update_advert_clicknum_by_id(ad_id);
         return Result.success(post2);
     }
 
