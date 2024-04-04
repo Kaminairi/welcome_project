@@ -54,4 +54,12 @@ public class AdvertController {
     public Result GetAdvert(String id){
         return advertService.GetAdvert(id);
     }
+
+
+
+
+
+
+
+
 }

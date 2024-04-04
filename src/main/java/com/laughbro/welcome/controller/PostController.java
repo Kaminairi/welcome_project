@@ -13,10 +13,11 @@ public class PostController {
 
     /**
      * 【作用】进入论坛主页显示全部文章（未排序）
+     * //崔修改
      */
     @GetMapping("/post")
-    public Result GetPost(int page,int pagesize,int order){
-        return postService.GetPost(page,pagesize,order);
+    public Result GetPost(String userid,int page,int pagesize,int order){
+        return postService.GetPost(userid,page,pagesize,order);
     }
 
     /**
@@ -37,11 +38,24 @@ public class PostController {
 
     /**
      * 【作用】点击文章显示文章详情
+     *
      */
     @GetMapping("/post/detail")
     public Result PostDetail(String userid,String postid){
         return postService.PostDetail(userid,postid);
     }
+
+    /**
+     * 【作用】点击   ad伪装的   文章显示文章详情/
+     * 崔++
+     */
+
+    @GetMapping("/post/addetail")
+    public Result PostadDetail(String userid,String extime,String ad_id){
+        return postService.PostadDetail(userid,extime,ad_id);
+    }
+
+
     /**
      * 【作用】用户删除帖子
      */

@@ -9,4 +9,7 @@ public class Advert {
     private String img;
     private String url;
     private String clickNum;
+    private String content;
+    private  int weight;
+
 }

@@ -5,11 +5,13 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.post_params.*;
 
 public interface PostService {
-    Result GetPost(int page,int pagesize,int order);
+    Result GetPost(String userid,int page,int pagesize,int order);
     Result PostForTask(PostForTaskParams params);
     Result PostNormal(PostNormalParams params);
 
     Result PostDetail(String userid,String postid);
+
+    Result PostadDetail(String userid,String extime,String ad_id);
 
     Result PostDelete(PostDeleteParams params);
 
