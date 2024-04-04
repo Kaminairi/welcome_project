@@ -1,8 +1,10 @@
 package com.laughbro.welcome.service.imp;
 
+import com.laughbro.welcome.dao.mapper.AdExprosureRecordMapper;
 import com.laughbro.welcome.dao.mapper.AdvertMapper;
 import com.laughbro.welcome.dao.pojo.Advert;
 import com.laughbro.welcome.service.AdvertService;
+import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.advert_params.AddAdvertParams;
 import com.laughbro.welcome.vo.params.advert_params.DeleteAdvertParams;
@@ -16,6 +18,10 @@ import java.util.List;
 public class AdvertServiceImp implements AdvertService {
     @Autowired
     private AdvertMapper advertMapper;
+    @Autowired
+    private AdExprosureRecordMapper adExprosureRecordMapper;
+    @Autowired
+    private TimeUtils timeUtils;
     /**
      * 【作用】 管理员发布广告
      */
@@ -85,14 +91,19 @@ public class AdvertServiceImp implements AdvertService {
     }
 
     @Override
-    public Result GetAdvert(String id){
-        Advert advert=advertMapper.select_advert_by_id(id);
-        if(advert==null){
+    public Result GetAdvert(String userid){
+        List<Advert> ads5=advertMapper.select_ad_limit2_rand(5);
+        if(ads5.size()==0)
             return Result.success("想看的广告消失了");
-        }else{
-            advertMapper.update_advert_clicknum_by_id(id);
-            return Result.success(advert);
+        //曝光导入
+        String extime=timeUtils.timeGetNow();
+        for (Advert advert : ads5) {
+            advert.setExtime(extime);
+            adExprosureRecordMapper.insert_adex(userid, advert.getId(),extime);
         }
+        //Advert advert=advertMapper.select_advert_by_id(id);
+
+        return Result.success(ads5);
     }
 
 }

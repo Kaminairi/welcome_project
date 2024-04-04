@@ -11,5 +11,7 @@ public class Advert {
     private String clickNum;
     private String content;
     private  int weight;
+    //曝光
+    private String extime;
 
 }

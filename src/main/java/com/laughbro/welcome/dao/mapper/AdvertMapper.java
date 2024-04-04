@@ -46,6 +46,9 @@ public interface AdvertMapper {
     @Update("update ad set click_num=click_num+1 where id=#{id}")
     void update_advert_clicknum_by_id(String id);
 
-    @Select("SELECT * FROM ad ORDER BY RAND() LIMIT 2")
-    List<Advert> select_ad_limit2_rand();
+    @Select("SELECT * FROM ad ORDER BY RAND() LIMIT #{num}")
+    List<Advert> select_ad_limit2_rand(int num);
+
+
+
 }

@@ -50,9 +50,10 @@ public class AdvertController {
         return advertService.GetAdvertAll();
     }
 
+    //崔改 改成传输列表 5个随机任务参加曝光
     @RequestMapping("/get/advert")
-    public Result GetAdvert(String id){
-        return advertService.GetAdvert(id);
+    public Result GetAdvert(String userid){
+        return advertService.GetAdvert(userid);
     }
 
 

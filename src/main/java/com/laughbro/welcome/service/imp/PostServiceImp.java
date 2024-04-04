@@ -52,7 +52,7 @@ public class PostServiceImp implements PostService {
             return Result.fail(201,"没有结果了",null);
         List<Post> add_ad_postlist=p.getResult();
         //加载广告
-        List<Advert> ads=advertMapper.select_ad_limit2_rand();
+        List<Advert> ads=advertMapper.select_ad_limit2_rand(2);
         String extime=timeUtils.timeGetNow();
         Random random = new Random();
         if(ads.size()>=1){
