@@ -3,6 +3,7 @@ package com.laughbro.welcome.controller;
 import com.laughbro.welcome.dao.mapper.*;
 import com.laughbro.welcome.dao.pojo.*;
 import com.laughbro.welcome.service.OssService;
+import com.laughbro.welcome.service.TaskService;
 import com.laughbro.welcome.utils.FaceComUtils;
 import com.laughbro.welcome.utils.JWTUtils;
 import com.laughbro.welcome.utils.TimeUtils;
@@ -47,6 +48,8 @@ public class CameraController {
             private TimeUtils timeUtils;  //用于获得最新的时间
     @Autowired
             private TaskMapper taskMapper;
+    @Autowired
+    private TaskService taskService;
     @Autowired
             private ManagerMapper managerMapper;
     @Autowired
@@ -668,6 +671,10 @@ public class CameraController {
                             if(taskMapper.select_countfill_with_id(user.getId(),taskid)==0){
                                 //注入完成记录表
                                 taskMapper.insert_task_fulfillment_camera(nextResult,taskid,timeUtils.timeGetNow());
+
+                                //获得奖励、
+                                taskService.GetReward(user.getId(), String.valueOf(taskid));
+
                                 //修改log记录success为1
                                 cameraLogMapper.update_cameralog_success(camera.getManagerid(), camera.getLocid(), taskid, upload_path + fileName, 1);
                             }else{

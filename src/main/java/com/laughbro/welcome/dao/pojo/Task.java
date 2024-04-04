@@ -3,6 +3,8 @@ package com.laughbro.welcome.dao.pojo;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.List;
+
 @Data
 public class Task {
     private Integer id;
@@ -22,4 +24,5 @@ public class Task {
     private String isAI;
 
     private String isfinish;
+    private List<Item> reward;
 }

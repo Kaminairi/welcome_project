@@ -53,37 +53,42 @@ public class PostServiceImp implements PostService {
         List<Post> add_ad_postlist=p.getResult();
         //加载广告
         List<Advert> ads=advertMapper.select_ad_limit2_rand();
-        //分装到post里
         String extime=timeUtils.timeGetNow();
-        Advert ad1=ads.get(0);
-        Advert ad2=ads.get(1);
-        Post post1=new Post();
-        post1.setName(ad1.getName()+"【广告】");
-        post1.setAdid(ad1.getId());
-        post1.setContain(ad1.getContent());
-        post1.setImg(ad1.getImg());
-        post1.setIs_adpost(1);
-        post1.setUrl(ad1.getUrl());
-        post1.setTitle(ad1.getName()+"【广告】");
-        post1.setExtime(extime);
-        Post post2=new Post();
-        post2.setName(ad2.getName()+"【广告】");
-        post2.setAdid(ad2.getId());
-        post2.setContain(ad2.getContent());
-        post2.setImg(ad2.getImg());
-        post2.setIs_adpost(1);
-        post2.setUrl(ad2.getUrl());
-        post2.setTitle(ad2.getName()+"【广告】");
-        post2.setExtime(extime);
-        //塞入列表
         Random random = new Random();
-        int randomNumber1 = random.nextInt(pagesize-1);
-        int randomNumber2 = random.nextInt(pagesize-1);
-        add_ad_postlist.add(randomNumber1,post1);
-        add_ad_postlist.add(randomNumber2,post2);
-        //曝光
-        adExprosureRecordMapper.insert_adex(userid,ad1.getId(),extime);
-        adExprosureRecordMapper.insert_adex(userid,ad2.getId(),extime);
+        if(ads.size()>=1){
+
+            //分装到post里
+            Advert ad1=ads.get(0);
+
+            Post post1=new Post();
+            post1.setName(ad1.getName()+"【广告】");
+            post1.setAdid(ad1.getId());
+            post1.setContain(ad1.getContent());
+            post1.setImg(ad1.getImg());
+            post1.setIs_adpost(1);
+            post1.setUrl(ad1.getUrl());
+            post1.setTitle(ad1.getName()+"【广告】");
+            post1.setExtime(extime);
+            int randomNumber1 = random.nextInt(ads.size()-1);
+            add_ad_postlist.add(randomNumber1,post1);
+            adExprosureRecordMapper.insert_adex(userid,ad1.getId(),extime);
+        }
+        if (ads.size()>=2){
+            Advert ad2=ads.get(1);
+            Post post2=new Post();
+            post2.setName(ad2.getName()+"【广告】");
+            post2.setAdid(ad2.getId());
+            post2.setContain(ad2.getContent());
+            post2.setImg(ad2.getImg());
+            post2.setIs_adpost(1);
+            post2.setUrl(ad2.getUrl());
+            post2.setTitle(ad2.getName()+"【广告】");
+            post2.setExtime(extime);
+            int randomNumber2 = random.nextInt(ads.size()-1);
+            add_ad_postlist.add(randomNumber2,post2);
+            adExprosureRecordMapper.insert_adex(userid,ad2.getId(),extime);
+        }
+
 
 
         //return p.isEmpty()?PageResult.success("暂时没有内容",p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1):PageResult.success(p.getResult(),p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);

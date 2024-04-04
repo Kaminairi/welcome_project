@@ -26,5 +26,7 @@ public class Item {
     private BigInteger PossPk;
     private String UserId;
     private int OwnNum;
+    //奖励信息
+    private int Rewardnum;
 
 }

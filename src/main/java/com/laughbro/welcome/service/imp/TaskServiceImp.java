@@ -11,7 +11,6 @@ import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.task_params.*;
 import com.laughbro.welcome.vo.params.taskpic_params.TaskPicParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -241,7 +240,8 @@ public class TaskServiceImp implements TaskService {
             return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
         }
     }
-    public void GetReward(String userid,String taskid){
+    @Override
+    public void GetReward(String userid, String taskid){
         List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskid);//获得该任务的奖励集合
         for(TaskReward t:taskRewards) {//遍历奖励集合
             TaskRewardLog taskRewardLog=new TaskRewardLog();//新建留痕记录

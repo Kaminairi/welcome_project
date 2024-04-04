@@ -37,4 +37,6 @@ public interface TaskService {
     Result GetTaskFulfillment(int page,int pagesize);
 
     Result RefuseTaskPic(TaskPicParams params);
+
+    void GetReward(String userid, String taskid);
 }
