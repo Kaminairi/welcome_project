@@ -91,4 +91,9 @@ public class CommentController {
     public Result comment_serch(String keyword){
         return commentService.comment_list_keyword(keyword);
     }
+
+    @GetMapping("/admin/comment/getall")
+    public Result Adcomment_getall(int page,int pagesize){
+        return commentService.comment_all(page,pagesize);
+    }
 }
