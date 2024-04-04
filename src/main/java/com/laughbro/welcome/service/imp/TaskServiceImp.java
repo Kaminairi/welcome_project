@@ -2,6 +2,7 @@ package com.laughbro.welcome.service.imp;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.laughbro.welcome.dao.mapper.BagMapper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
 import com.laughbro.welcome.dao.pojo.*;
 import com.laughbro.welcome.service.TaskService;
@@ -23,6 +24,8 @@ import static com.laughbro.welcome.controller.CameraController.parseCommaSeparat
 public class TaskServiceImp implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
+    @Autowired
+    private BagMapper bagMapper;
     /**
      * 【调用接口】 /get/tasksets
      * 【作用】 获取任务集合
@@ -74,7 +77,15 @@ public class TaskServiceImp implements TaskService {
         taskMapper.insert_task_fulfillment(taskConfirm);
         List<TaskReward> taskRewards=taskMapper.select_taskreward_by_taskid(taskConfirm.getTaskid());
         for(TaskReward t:taskRewards) {
-            taskMapper.insert_itempossession(taskConfirm.getUserid(), t.getItemid(), t.getRewardNum());
+            TaskRewardLog taskRewardLog=new TaskRewardLog();
+            taskRewardLog.setItemid(t.getItemid());
+            taskRewardLog.setNum(t.getRewardNum());
+            taskRewardLog.setTaskid(taskConfirm.getTaskid());
+            taskRewardLog.setTime(LocalDateTime.now().toString());
+            taskRewardLog.setUserid(taskConfirm.getUserid());
+            taskMapper.insert_taskrewardlog(taskRewardLog);
+            bagMapper.insert_itempossession(taskConfirm.getUserid(),t.getItemid(),t.getRewardNum());
+
         }
         return Result.success("任务完成!");
     }

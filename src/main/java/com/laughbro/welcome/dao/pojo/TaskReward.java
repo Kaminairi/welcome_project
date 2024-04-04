@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class TaskReward {
-    private String itemid;
     private String taskid;
+    private String itemid;
     private String rewardNum;
 }

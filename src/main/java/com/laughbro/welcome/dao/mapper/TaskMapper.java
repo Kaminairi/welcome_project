@@ -164,4 +164,15 @@ public interface TaskMapper {
 
     @Select("select * from task_sets where set_id=#{setId}")
     TaskSet select_taskset_by_id(String setId);
+
+    @Select("select * from task_reward where task_id=#{taskid}")
+    List<TaskReward> select_taskreward_by_taskid(String taskid);
+
+    @Insert("insert into task_reward_log values (#{itemid},#{num},#{taskid},#{time},#{userid})")
+    void insert_taskrewardlog(TaskRewardLog taskRewardLog);
+
+    @Select("select max(id) from tasks")
+    String select_task_last_id();
+
+    void insert_taskreward(String taskid, String itemid, String rewardNum);
 }
