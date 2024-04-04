@@ -1,10 +1,13 @@
 package com.laughbro.welcome.service.imp;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.CommentMapper;
 import com.laughbro.welcome.dao.mapper.PostMapper;
 import com.laughbro.welcome.dao.pojo.Comment;
 import com.laughbro.welcome.service.CommentService;
 import com.laughbro.welcome.utils.TimeUtils;
+import com.laughbro.welcome.vo.PageResult;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.comment_params.CommentAddParams;
 import com.laughbro.welcome.vo.params.comment_params.CommentComParams;
@@ -136,4 +139,14 @@ public class CommentServiceImp implements CommentService {
         }
     }
 
+    @Override
+    public Result comment_all(int page, int pagesize) {
+        PageHelper.startPage(page,pagesize);
+        Page<Comment> p=(Page<Comment>) commentMapper.select_comments_all();
+        if(p.isEmpty()){
+            return Result.success("还没有数据");
+        }else{
+            return PageResult.success(p,p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
+        }
+    }
 }

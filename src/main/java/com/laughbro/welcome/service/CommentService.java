@@ -27,4 +27,6 @@ public interface CommentService {
     Result comment_update_unread_one(CommentComParams commentComParams);
 
     Result comment_list_keyword(String keyword);
+
+    Result comment_all(int page, int pagesize);
 }
