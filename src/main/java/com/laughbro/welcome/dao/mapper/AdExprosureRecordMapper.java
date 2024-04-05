@@ -1,8 +1,12 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.laughbro.welcome.dao.pojo.Adcount;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 @Mapper
 
@@ -26,4 +30,19 @@ public interface AdExprosureRecordMapper {
 
 
     //获得所有任务的曝光转化率
+    @Select("SELECT" +
+            "    ad.id,ad.name, " +
+            "    SUM(click) AS total_click, " +
+            "    SUM(exposure) AS total_exposure " +
+            "FROM " +
+            "    `ad_exprosure_record` AS record " +
+            "JOIN " +
+            "    ad " +
+            "ON " +
+            "    record.ad_id = ad.id " +
+            "WHERE " +
+            "    DATE(record.extime) = #{date} " +
+            "    AND record.ad_id = #{adid};")
+    public List<Adcount> get_cl_ex_by_day_id(String date,String adid);
+
 }

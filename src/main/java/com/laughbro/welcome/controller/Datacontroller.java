@@ -1,6 +1,9 @@
 package com.laughbro.welcome.controller;
 
+import com.laughbro.welcome.dao.mapper.AdExprosureRecordMapper;
 import com.laughbro.welcome.dao.mapper.VisitMapper;
+import com.laughbro.welcome.dao.pojo.Adcount;
+import com.laughbro.welcome.dao.pojo.Dataadcount;
 import com.laughbro.welcome.dao.pojo.Datevistcount;
 import com.laughbro.welcome.dao.pojo.Visitcount;
 import com.laughbro.welcome.utils.TimeUtils;
@@ -13,12 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class VisitController {
+public class Datacontroller {
 
     @Autowired
     private TimeUtils timeUtils;
     @Autowired
     private VisitMapper visitMapper;
+    @Autowired
+    private AdExprosureRecordMapper adExprosureRecordMapper;
     //增加记录
     @PostMapping("/data/visit/add")
     public Result visitadd(@RequestBody VisitParams visitParams){
@@ -29,7 +34,7 @@ public class VisitController {
 
     //所有记录 日
     @GetMapping("/data/visit/get_n_days")
-    public Result visitgetweek(int bday, int eday){
+    public Result visitgebetweenday(int bday, int eday){
         //获得日期
         List<String> datelist=timeUtils.getDateRange(bday,eday);
         List<Datevistcount> datevistcounts=new ArrayList<>();
@@ -41,17 +46,19 @@ public class VisitController {
         return Result.success(datevistcounts);
     }
 
-    //所有记录 周
+    @GetMapping("/data/ad/get_n_days")
+    public Result adgetbetweenday(int bday, int eday,String adid){
+        //获得日期
+        List<String> datelist=timeUtils.getDateRange(bday,eday);
+        List<Dataadcount> dataadcounts=new ArrayList<>();
+        for (String date : datelist) {
+            List<Adcount> daycount=adExprosureRecordMapper.get_cl_ex_by_day_id(date,adid);
+            dataadcounts.add(new Dataadcount(date,daycount));
+        }
 
+        return Result.success(dataadcounts);
+    }
 
-    //所有记录 月
-
-
-
-
-    //某个点位的当日频率
-
-    //某个点位的
 
 
 
