@@ -174,5 +174,6 @@ public interface TaskMapper {
     @Select("select max(id) from tasks")
     String select_task_last_id();
 
+    @Insert("insert into task_reward(task_id, item_id, reward_num) values (#{taskid},#{itemid},#{rewardNum})")
     void insert_taskreward(String taskid, String itemid, String rewardNum);
 }

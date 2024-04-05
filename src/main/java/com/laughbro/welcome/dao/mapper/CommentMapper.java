@@ -294,6 +294,9 @@ public interface CommentMapper {
     @Select("select users.name as creatername,users.img as createrimg,comments.* from users,comments where contain like concat('%',#{keyWord},'%') and comments.creator=users.id")
     List<Comment> select_comments_by_keyword(String keyword);
 
-    @Select("select * from comments")
+    @Select("SELECT c.*, u1.name AS creatorname, u1.img AS creatorimg, u2.name AS replyname, u2.img AS replyimg" +
+            " FROM comments AS c" +
+            " LEFT JOIN users AS u1 ON c.creator = u1.id" +
+            " LEFT JOIN users AS u2 ON c.reply = u2.id ")
     List<Comment> select_comments_all();
 }

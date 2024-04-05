@@ -121,7 +121,7 @@ public class TaskServiceImp implements TaskService {
             if(taskMapper.insert_task(params)==1){
                 String taskid=taskMapper.select_task_last_id();
                 for (TaskReward t: params.getReward()){
-                    System.out.println(t.toString());
+                    System.out.println(taskid);
                     taskMapper.insert_taskreward(taskid,t.getItemid(),t.getRewardNum());
                 }
                 return Result.success("发布成功");
