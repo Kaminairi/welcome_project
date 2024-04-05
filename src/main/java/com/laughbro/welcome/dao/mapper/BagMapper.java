@@ -62,4 +62,8 @@ public interface BagMapper {
 
     @Select("call sp_update_bag_items_by_userid_itemid_num(#{userid},#{itemid},#{rewardNum})")
     void insert_itempossession(String userid, String itemid, String rewardNum);
+
+
+    @Select("SELECT * from items ")
+    List<Item> select_all_items();
 }
