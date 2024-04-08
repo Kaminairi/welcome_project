@@ -66,4 +66,10 @@ public interface BagMapper {
 
     @Select("SELECT * from items ")
     List<Item> select_all_items();
+
+    @Select("SELECT i.*, tr.reward_num " +
+            "FROM `items` AS i " +
+            "JOIN task_reward AS tr ON i.id = tr.item_id " +
+            "WHERE tr.task_id LIKE #{taskid} ")
+    List<Item> select_reward_by_taskid(String taskid);
 }

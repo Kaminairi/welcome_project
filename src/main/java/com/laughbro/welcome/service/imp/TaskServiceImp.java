@@ -53,11 +53,13 @@ public class TaskServiceImp implements TaskService {
     }
     /**
      * 【调用接口】 /get/task
-     * 【作用】 获取具体任务的详细信息
+     * 【作用】 获取具体任务的详细信息(崔加了可以获得奖励列表的代码
      */
     @Override
     public Result GetTask(String taskid){
-        return Result.success(taskMapper.select_task_by_id(taskid));
+        Task task=taskMapper.select_task_by_id(taskid);
+        task.setReward(bagMapper.select_reward_by_taskid(taskid));
+        return Result.success(task);
     }
     /**
      * 【调用接口】 /get/task-all
