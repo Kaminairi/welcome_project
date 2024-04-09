@@ -1,5 +1,6 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.laughbro.welcome.dao.pojo.AdminShowUser;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
@@ -99,11 +100,12 @@ public interface UserMapper {
      * 【作用】 获取全部用户
      */
     @Select("<script>"
-            + "select * from users "
+            + "select * from users,school_relate "
+            + "where users.class_id = school_relate.class_id "
             + "order by id "
             + "<if test='order != null'>"
-            + "${order}"
+            + " ${order}"
             + "</if>"
             + "</script>")
-    List<User> select_user_all(@Param("order")String order);
+    List<AdminShowUser> select_user_all(@Param("order")String order);
 }
