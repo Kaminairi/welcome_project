@@ -208,17 +208,20 @@ public class TaskServiceImp implements TaskService {
      */
     @Override
     public Result PassTaskPic(TaskPicParams params){
-        taskMapper.update_taskpic(params,"1");
-        TaskConfirm taskConfirm=new TaskConfirm();
-        taskConfirm.setUserid(params.getUserid());
-        taskConfirm.setTaskid(params.getTaskid());
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formatDateTime = now.format(formatter);
-        taskConfirm.setTime(formatDateTime);
-        taskMapper.insert_task_fulfillment(taskConfirm);
-        GetReward(params.getUserid(), params.getTaskid());
-        return Result.success("审核通过");
+        if(taskMapper.update_taskpic(params,"1")>0) {
+            TaskConfirm taskConfirm = new TaskConfirm();
+            taskConfirm.setUserid(params.getUserid());
+            taskConfirm.setTaskid(params.getTaskid());
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formatDateTime = now.format(formatter);
+            taskConfirm.setTime(formatDateTime);
+            taskMapper.insert_task_fulfillment(taskConfirm);
+            GetReward(params.getUserid(), params.getTaskid());
+            return Result.success("审核通过");
+        }else {
+            return Result.success("未知错误");
+        }
     }
     @Override
     public  Result RefuseTaskPic(TaskPicParams params){

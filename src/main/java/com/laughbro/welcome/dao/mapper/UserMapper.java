@@ -99,10 +99,11 @@ public interface UserMapper {
      * 【作用】 获取全部用户
      */
     @Select("<script>"
-            + "select * from users "
+            + "select * from users,school_relate "
+            + "where users.class_id = school_relate.class_id "
             + "order by id "
             + "<if test='order != null'>"
-            + "${order}"
+            + " ${order}"
             + "</if>"
             + "</script>")
     List<User> select_user_all(@Param("order")String order);

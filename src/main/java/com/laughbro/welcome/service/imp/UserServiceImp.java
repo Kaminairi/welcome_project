@@ -5,6 +5,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.laughbro.welcome.dao.mapper.UserMapper;
+import com.laughbro.welcome.dao.pojo.AdminShowUser;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.service.UserService;
 import com.laughbro.welcome.vo.PageResult;
@@ -82,11 +83,11 @@ public class UserServiceImp implements UserService {
     @Override
     public PageResult GetUserAll(int page,int pagesize,int order){
         PageHelper.startPage(page,pagesize);
-        Page<User> p;
+        Page<AdminShowUser> p;
         if(order==0){
-            p=(Page<User>) userMapper.select_user_all("desc");
+            p=(Page<AdminShowUser>) userMapper.select_user_all("desc");
         }else{
-            p=(Page<User>) userMapper.select_user_all("asc");
+            p=(Page<AdminShowUser>) userMapper.select_user_all("asc");
         }
         return p.isEmpty()?PageResult.success("暂时没有用户",p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1):PageResult.success(p.getResult(),p.getTotal()%pagesize==0?p.getTotal()/pagesize:p.getTotal()/pagesize+1);
     }
