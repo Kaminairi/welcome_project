@@ -106,4 +106,9 @@ public interface UserMapper {
             + "</if>"
             + "</script>")
     List<User> select_user_all(@Param("order")String order);
+
+
+
+    @Update("UPDATE `users` SET `admissionletterimg`= #{letterimg} WHERE `id`=#{userid}  and idcard=#{idcard}")
+    public int update_user_letter(String letterimg,String userid,String idcard);
 }

@@ -3,12 +3,14 @@ package com.laughbro.welcome.controller;
 import com.laughbro.welcome.dao.mapper.AdvertMapper;
 import com.laughbro.welcome.dao.mapper.BagMapper;
 import com.laughbro.welcome.dao.mapper.TaskMapper;
+import com.laughbro.welcome.dao.mapper.UserMapper;
 import com.laughbro.welcome.service.OssService;
 import com.laughbro.welcome.utils.TimeUtils;
 import com.laughbro.welcome.vo.Result;
 import com.laughbro.welcome.vo.params.oss_params.OssADParams;
 import com.laughbro.welcome.vo.params.oss_params.OssUpLoadParams;
 import com.laughbro.welcome.vo.params.oss_params.OssitemParams;
+import com.laughbro.welcome.vo.params.oss_params.OssloadParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,8 @@ public class OssController {
     private BagMapper bagMapper;
     @Autowired
     private AdvertMapper advertMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping(value = "/oss/token")
     //这里的R是我自己封装的统一返回对象 你也可以直接返回JSON啥的
@@ -248,6 +252,48 @@ public class OssController {
                     return Result.success(null);
                 } else {
                     return Result.fail(201, "更新上传记录失败", null);
+                }
+                //
+            } else {
+                return Result.fail(201, "上传失败", null);
+            }
+        }
+
+
+    }
+    @PostMapping("uploadfile/load/idcard")
+    public Result ossUpload_idcardbase64(@RequestBody OssloadParams ossloadParams) throws IOException {
+
+        String upload_path = "users/admissnletter";
+        String base64Content = null;
+        if (ossloadParams.getBase64()==null) {
+
+                return Result.fail(201, "务必上传录取通知书", null);
+
+        } else {
+            //解码
+            String[] data = ossloadParams.getBase64().split(",");
+            base64Content = data[1];
+            base64Content = base64Content.replace(" ", "+").replace("\r", "").replace("\n", "").trim();
+            if (base64Content.length() >= 2) {
+                base64Content = base64Content.substring(0, base64Content.length() - 2);
+            }
+            // 解码成字节数组
+            byte[] fileBytes = Base64.getDecoder().decode(base64Content);
+            String filename = ossloadParams.getUserid() + "_" + timeUtils.timeGetNow() + ".jpg";
+            MultipartFile multipartFile = new MockMultipartFile("file", filename, "image/jpeg", fileBytes);
+
+                //上传
+            ossService.uploadfile(multipartFile, upload_path);
+
+            //判断上传是否成功
+            if (ossService.isFileUploaded(upload_path + filename)) {
+
+                //进行改表
+                if (userMapper.update_user_letter(upload_path + filename,ossloadParams.getUserid(),ossloadParams.getIdcard()) == 1) {
+                    return Result.success(null);
+                } else {
+                    return Result.fail(201, "更新上传记录失败,请确认账号和身份证正确", null);
                 }
                 //
             } else {
