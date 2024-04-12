@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.laughbro.welcome.controller.CameraController.parseCommaSeparatedValues;
@@ -44,7 +45,12 @@ public class TaskServiceImp implements TaskService {
      */
     @Override
     public Result GetTasks(String setid,String userid,Integer is_now){
-        List<Task> list=taskMapper.select_task_by_set_id(setid,userid,is_now);
+        List<Task> list=new ArrayList<>();
+        if(is_now==0){
+            list=taskMapper.select_task_by_set_id_no_now(setid,userid);
+        }else {
+            list=taskMapper.select_task_by_set_id(setid,userid,is_now);
+        }
         if(list.isEmpty()){
             return Result.success("还没有任务");
         }else{

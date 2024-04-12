@@ -20,8 +20,30 @@ public interface TaskMapper {
      * 【调用接口】 /get/tasks
      * 【作用】 通过任务组id查询全部任务
      */
-    @Select("call sp_get_tasks_by_setid(#{id},#{userid},#{is_now})")
+    @Select("call sp_get_tasks_by_setid(#{id},#{userid})")
     List<Task> select_task_by_set_id(String id,String userid,Integer is_now);
+
+
+
+    @Select("SELECT  t.*, " +
+            "               IF(fulfilled_tasks.task_id IS NOT NULL, 1, 0) AS is_finish " +
+            "        FROM `tasks` t " +
+            "        LEFT JOIN ( " +
+            "            SELECT `task_id` " +
+            "            FROM `task_fulfillment` " +
+            "            WHERE `user_id` = #{userid} " +
+            "        ) fulfilled_tasks ON t.`id` = fulfilled_tasks.`task_id` " +
+            "        WHERE  " +
+            "            t.`set_id` = #{id} " +
+            "            AND t.`btime` < NOW() " +
+            "            AND (t.`dtime` > NOW() );")
+    List<Task> select_task_by_set_id_no_now(String id,String userid);
+
+
+
+
+
+
     /**
      * 【调用接口】 /get/task
      * 【作用】 通过任务id任务详细信息
