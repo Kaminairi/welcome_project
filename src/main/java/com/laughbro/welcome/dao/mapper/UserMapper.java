@@ -1,5 +1,6 @@
 package com.laughbro.welcome.dao.mapper;
 
+import com.laughbro.welcome.dao.pojo.AdminShowUser;
 import com.laughbro.welcome.dao.pojo.User;
 import com.laughbro.welcome.vo.params.me_params.MeChangeImgParams;
 import com.laughbro.welcome.vo.params.me_params.MeChangeNameParams;
@@ -106,8 +107,7 @@ public interface UserMapper {
             + " ${order}"
             + "</if>"
             + "</script>")
-    List<User> select_user_all(@Param("order")String order);
-
+    List<AdminShowUser> select_user_all(@Param("order")String order);
 
 
     @Update("UPDATE `users` SET `admissionletterimg`= #{letterimg} WHERE `id`=#{userid}  and idcard=#{idcard}")
